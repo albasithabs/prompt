@@ -73,6 +73,17 @@
             <!-- Form Section -->
             <div class="flex-1 card rounded-xl px-6 py-5 dark:bg-gray-800/70 dark:border-gray-700/80 dark:shadow-xl">
                 <form id="promptForm" class="space-y-6">
+                    <!-- Keyword-based AI Prompt Generation -->
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
+                        <h2 class="text-xl font-semibold text-dark dark:text-gray-100 mb-4 section-title">📌 Generate with Keywords (AI)</h2>
+                        <div>
+                            <label for="keywordsInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Enter Keywords:</label>
+                            <textarea id="keywordsInput" name="keywordsInput" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green" placeholder="e.g., futuristic city, flying cars, neon lights, rain"></textarea>
+                        </div>
+                        <button id="generateWithKeywordsBtn" type="button" class="mt-4 w-full text-white py-2.5 px-5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-purple-600 to-pink-500 dark:from-purple-500 dark:to-pink-400 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-pink-400">
+                            Generate with AI
+                        </button>
+                    </div>
                     <!-- 1. Detail Subjek dan Aksi -->
                     <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">📌 1. Detail Subjek dan Aksi</h2>
@@ -1390,50 +1401,7 @@
                 contentWrapper.innerHTML = outputHTML;
                 generatedPromptDiv.appendChild(contentWrapper);
                 
-                // Add click event listeners to copy buttons
-                document.querySelectorAll('.copy-btn').forEach(button => {
-                    button.addEventListener('click', async function() {
-                        const text = this.getAttribute('data-text');
-                        try {
-                            await navigator.clipboard.writeText(text);
-                            const span = this.querySelector('span');
-                            if (span) {
-                                const originalSpanText = span.textContent; // Original text like "Salin" or "Copy"
-                                const successMessage = (originalSpanText === 'Salin') ? '✅ Prompt berhasil disalin!' : '✅ Prompt copied!';
-                                
-                                span.textContent = successMessage;
-                                this.disabled = true; // Disable button temporarily
-
-                                // Remove old success styling classes if they were there
-                                this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
-
-                                setTimeout(() => {
-                                    span.textContent = originalSpanText;
-                                    this.disabled = false; // Re-enable button
-                                }, 2000);
-                            }
-                        } catch (err) {
-                            console.error('Failed to copy text: ', err);
-                            const span = this.querySelector('span');
-                            if (span) {
-                                const originalSpanText = span.textContent;
-                                // Avoid overwriting if it's already showing a success message from a previous click
-                                if (!originalSpanText.startsWith('✅')) {
-                                     const errorMessage = (originalSpanText === 'Salin' || originalSpanText === '✅ Prompt berhasil disalin!') ? '❌ Gagal Salin' : '❌ Copy Failed';
-                                     span.textContent = errorMessage;
-                                     this.disabled = true; // Disable button temporarily
-
-                                     this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
-
-                                     setTimeout(() => {
-                                         span.textContent = originalSpanText; // Revert to original text e.g. "Salin" or "Copy"
-                                         this.disabled = false; // Re-enable
-                                     }, 2000);
-                                }
-                            }
-                        }
-                    });
-                });
+                setupCopyButtonListeners(); // Call after new content is added
 
                 // Remove the old copy button
                 const oldCopyButton = document.getElementById('copyButton');
@@ -1443,9 +1411,9 @@
 
                 // Scroll to generated prompt only on mobile and only when explicitly requested
                 if (window.innerWidth < 1024 && shouldScrollToPrompt) {
-                    generatedPromptDiv.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
+                    generatedPromptDiv.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
                 }
             } catch (error) {
@@ -1460,6 +1428,57 @@
                     `;
                 }
             }
+        }
+
+        // Function to setup copy button listeners (Refactored)
+        function setupCopyButtonListeners() {
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                // Remove existing listener to prevent duplicates if this function is called multiple times on same buttons
+                // A more robust way would be to use AbortController if needed, but for this scope, simple re-adding is fine
+                // if the buttons are truly new. If they are the same buttons, this will add multiple listeners.
+                // Assuming these are always new buttons when this is called after innerHTML update.
+                button.replaceWith(button.cloneNode(true)); // Simple way to remove listeners is to clone the button
+                document.querySelectorAll('.copy-btn').forEach(newButton => { // Re-query for the new buttons
+                    if (newButton.getAttribute('data-listener-attached')) return; // Avoid attaching twice to same new button
+
+                    newButton.addEventListener('click', async function() {
+                        const text = this.getAttribute('data-text');
+                        try {
+                            await navigator.clipboard.writeText(text);
+                            const span = this.querySelector('span');
+                            if (span) {
+                                const originalSpanText = span.textContent;
+                                const successMessage = (originalSpanText === 'Salin') ? '✅ Prompt berhasil disalin!' : '✅ Prompt copied!';
+
+                                span.textContent = successMessage;
+                                this.disabled = true;
+                                this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
+                                setTimeout(() => {
+                                    span.textContent = originalSpanText;
+                                    this.disabled = false;
+                                }, 2000);
+                            }
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                            const span = this.querySelector('span');
+                            if (span) {
+                                const originalSpanText = span.textContent;
+                                if (!originalSpanText.startsWith('✅')) {
+                                     const errorMessage = (originalSpanText === 'Salin' || originalSpanText === '✅ Prompt berhasil disalin!') ? '❌ Gagal Salin' : '❌ Copy Failed';
+                                     span.textContent = errorMessage;
+                                     this.disabled = true;
+                                     this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
+                                     setTimeout(() => {
+                                         span.textContent = originalSpanText;
+                                         this.disabled = false;
+                                     }, 2000);
+                                }
+                            }
+                        }
+                    });
+                    newButton.setAttribute('data-listener-attached', 'true');
+                });
+            });
         }
 
         // Function to add event listeners
@@ -1684,11 +1703,117 @@
             
             // Generate initial prompt with scroll
             window.shouldScrollToPrompt = true;
-            generatePrompt();
+            generatePrompt(); // This will internally call setupCopyButtonListeners
             window.shouldScrollToPrompt = false;
             
             // Setup character search functionality
             setupCharacterSearch();
+
+            // Get DOM references for keyword generation
+            const keywordsInput = document.getElementById('keywordsInput');
+            const generateWithKeywordsBtn = document.getElementById('generateWithKeywordsBtn');
+            const generatedPromptDiv = document.getElementById('generatedPrompt'); // Already used by generatePrompt
+
+            if (generateWithKeywordsBtn && keywordsInput && generatedPromptDiv) {
+                generateWithKeywordsBtn.addEventListener('click', async () => {
+                    const keywords = keywordsInput.value.trim();
+                    if (!keywords) {
+                        alert('Please enter some keywords.');
+                        // Or display message in generatedPromptDiv:
+                        // generatedPromptDiv.innerHTML = `<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative dark:bg-yellow-800/30 dark:border-yellow-600 dark:text-yellow-300" role="alert">Please enter some keywords.</div>`;
+                        return;
+                    }
+
+                    generatedPromptDiv.innerHTML = `
+                        <div class="flex items-center justify-center p-4">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neon-green dark:border-neon-green"></div>
+                            <span class="ml-2 text-gray-600 dark:text-gray-300">Generating with AI...</span>
+                        </div>
+                    `;
+
+                    try {
+                        const response = await fetch('/api/generate-from-keywords', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ keywords: keywords })
+                        });
+
+                        if (!response.ok) {
+                            let errorMsg = `Server error: ${response.status}`; // Default
+                            try {
+                                const errorData = await response.json();
+                                // Use backend's 'error' as primary, then 'detail'
+                                errorMsg = errorData.error || errorData.detail || errorMsg;
+                                if (errorData.error && errorData.detail && errorData.error !== errorData.detail) {
+                                    // If both 'error' and 'detail' are present and different, combine them.
+                                    errorMsg = `${errorData.error} (Details: ${errorData.detail})`;
+                                }
+                            } catch (e) {
+                                console.warn('Could not parse JSON error response from server:', e);
+                                // If parsing fails, errorMsg remains `Server error: ${response.status}`
+                            }
+                            throw new Error(errorMsg); // This will be caught by the outer catch block
+                        }
+
+                        const data = await response.json();
+                        const geminiPromptIndonesian = data.generated_prompt;
+
+                        // Show interim loading for translation
+                        generatedPromptDiv.innerHTML = `
+                            <div class="flex items-center justify-center p-4">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 dark:border-blue-400"></div>
+                                <span class="ml-2 text-gray-600 dark:text-gray-300">Translating AI generated prompt...</span>
+                            </div>
+                        `;
+
+                        const geminiPromptEnglish = await promptHandler.translateText(geminiPromptIndonesian);
+
+                        const outputHTML = `
+                            <div class="space-y-4">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">Generated by AI from Keywords: <span class="font-semibold">${keywords}</span></p>
+                                <div class="bg-blue-50 dark:bg-sky-900/50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="text-sm font-medium text-blue-800 dark:text-sky-300">📄 Prompt (Bahasa Indonesia):</h3>
+                                        <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${geminiPromptIndonesian.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                            <span>Salin</span>
+                                        </button>
+                                    </div>
+                                    <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">${geminiPromptIndonesian}</p>
+                                </div>
+                                <div class="bg-green-50 dark:bg-teal-900/50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="text-sm font-medium text-green-800 dark:text-teal-300">📄 Prompt (English):</h3>
+                                        <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${geminiPromptEnglish.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                            <span>Copy</span>
+                                        </button>
+                                    </div>
+                                    <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">${geminiPromptEnglish}</p>
+                                </div>
+                            </div>
+                        `;
+
+                        generatedPromptDiv.innerHTML = ''; // Clear spinner
+                        const contentWrapper = document.createElement('div');
+                        contentWrapper.className = 'animate-fade-in';
+                        contentWrapper.innerHTML = outputHTML;
+                        generatedPromptDiv.appendChild(contentWrapper);
+
+                        setupCopyButtonListeners(); // Re-attach listeners to new buttons
+
+                    } catch (error) {
+                        console.error('Error generating with AI from keywords:', error); // Log the full error object
+                        generatedPromptDiv.innerHTML =
+                            `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative dark:bg-red-800/30 dark:border-red-600 dark:text-red-300" role="alert">` +
+                            `<strong class="font-bold">Error:</strong>` +
+                            `<span class="block sm:inline"> ${error.message}</span>` + // error.message now contains the detailed message
+                            `</div>`;
+                    }
+                });
+            }
+            // Initial call for any copy buttons already on the page (though likely none at this stage)
+            setupCopyButtonListeners();
         });
 
         // Add animation to form sections
