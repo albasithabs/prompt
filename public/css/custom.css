@@ -1,0 +1,149 @@
+body {
+    /* background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); Original */
+    background: linear-gradient(135deg, #E0F7FA 0%, #B9E6FF 100%); /* New lighter, slightly more vibrant blue gradient */
+    min-height: 100vh;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.7); /* Adjusted opacity */
+    backdrop-filter: blur(12px); /* Slightly increased blur */
+    -webkit-backdrop-filter: blur(12px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Adjusted border */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); /* Adjusted shadow for a subtle, modern look */
+    /* border-radius is handled by Tailwind's rounded-xl, which is good */
+}
+
+.input-field {
+    transition: all 0.3s ease;
+}
+
+.input-field:hover {
+    border-color: #9CA3AF; /* Tailwind's gray-400 */
+}
+
+.input-field:focus {
+    transform: translateY(-2px);
+    /* box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); Original */
+    box-shadow: 0 4px 14px rgba(57, 255, 20, 0.25); /* Neon green shadow */
+}
+
+.section-title {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    /* background: #3B82F6; Original */
+    background: #39FF14; /* Neon Green */
+    border-radius: 2px;
+}
+
+.template-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.template-card:hover {
+    transform: translateY(-4px);
+    border-color: #3B82F6;
+}
+
+#generatedPrompt {
+    transition: all 0.3s ease;
+}
+
+#generatedPrompt::-webkit-scrollbar {
+    width: 8px;
+}
+
+#generatedPrompt::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#generatedPrompt::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#generatedPrompt::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.btn-primary {
+    /* background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); Original */
+    background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%); /* New blue gradient */
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.btn-secondary {
+    /* background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%); Original */
+    background-color: #FFFFFF; /* White background */
+    color: #39FF14; /* Neon green text */
+    border: 2px solid #39FF14; /* Neon green border */
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #39FF14; /* Neon green background on hover */
+    color: #FFFFFF; /* White text on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(57, 255, 20, 0.2); /* Neon green shadow */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Add responsive styles */
+@media (max-width: 1024px) {
+    .lg\:sticky {
+        position: relative;
+        top: 0;
+    }
+
+    .lg\:w-\[500px\] {
+        width: 100%;
+    }
+}
+
+/* Improve scrollbar styling */
+#generatedPrompt::-webkit-scrollbar {
+    width: 6px;
+}
+
+#generatedPrompt::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#generatedPrompt::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+#generatedPrompt::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Add smooth transition for sticky positioning */
+.lg\:sticky {
+    transition: all 0.3s ease;
+}
