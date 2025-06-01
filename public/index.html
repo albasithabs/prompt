@@ -833,6 +833,21 @@
                         </div>
                     </div>
 
+                    <!-- 6. Format Output Prompt -->
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
+                        <h2 class="text-xl font-semibold text-dark dark:text-gray-100 mb-4 section-title">📌 6. Format Output Prompt</h2>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label for="outputFormat" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Format Output</label>
+                                <select id="outputFormat" name="outputFormat" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
+                                    <option value="veo" selected>Default (Veo)</option>
+                                    <option value="runway">RunwayML</option>
+                                    <option value="midjourney">Midjourney</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Audio Mixing -->
                     <div class="md:col-span-2 bg-gray-50 p-2 sm:p-3 md:p-4 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <div class="flex items-center justify-between mb-4">
@@ -996,6 +1011,11 @@
         // Function to generate prompt
         async function generatePrompt() {
             try {
+                // Get selected output format
+                const outputFormatValue = getElementValue('outputFormat', 'veo');
+                const outputFormatDropdown = document.getElementById('outputFormat');
+                const selectedFormatText = outputFormatDropdown.options[outputFormatDropdown.selectedIndex].text;
+
                 // Get all required values with fallbacks
                 const subject = getElementValue('subject', '');
                 const subjectCharacteristics = getElementValue('subjectCharacteristics', 'karakteristik subjek');
@@ -1145,38 +1165,125 @@
                     : 'Tanpa audio';
 
                 // Build the prompt with all inputs
-                let prompt = '';
+                // The prompt is assembled in several stages:
+                // 1. Initial descriptive sentence: Style, Subject, Action, Emotion, Midjourney Keywords (translatable part), Environment.
+                //    This part is built using an array join for better readability.
+                // 2. Cinematography details.
+                // 3. Audio details.
+                // 4. Technical specifications.
+                // 5. Additional user-provided details.
+                // 6. Midjourney untranslatable suffix (appended last to both Indonesian and English versions).
+
+                let descriptivePromptParts = [];
                 
-                // Add subject and characteristics
-                if (subject && subject.trim() !== '') {
-                    prompt += `Buat video bergaya ${style} tentang ${subject}`;
-                } else {
-                    prompt += `Buat video bergaya ${style} tentang ${subjectCharacteristics}`;
+                // Fetch values for the descriptive part
+                const styleVal = getElementValue('style', 'dengan gaya');
+                const subjectVal = getElementValue('subject', '');
+                const subjectCharacteristicsVal = getElementValue('subjectCharacteristics', 'karakteristik subjek');
+                const mainActionVal = getElementValue('mainAction', '');
+                const emotionVal = getElementValue('emotion', '');
+                const outputFormatVal = getElementValue('outputFormat', 'veo'); // Renamed from outputFormatValue for clarity here
+                const locationVal = getElementValue('location', '');
+                const timeVal = getElementValue('time', '');
+                const seasonVal = getElementValue('season', '');
+                const weatherVal = getElementValue('weather', '');
+
+                // Part 1.1: Style and Subject
+                let subjectPartVal = subjectVal && subjectVal.trim() !== '' ? subjectVal : subjectCharacteristicsVal;
+                descriptivePromptParts.push(`Buat video bergaya ${styleVal} tentang ${subjectPartVal}`);
+
+                // Part 1.2: Action and Emotion
+                let actionClause = '';
+                if (mainActionVal && mainActionVal.trim() !== '') {
+                    actionClause = `yang sedang ${mainActionVal}`;
                 }
 
-                // Add action and emotion
-                prompt += ` yang sedang ${mainAction} dengan emosi ${emotion}`;
-
-                // Add location and time
-                if (location && location.trim() !== '') {
-                    prompt += ` di ${location}`;
+                let emotionClause = '';
+                // Add emotion only if it's provided and not already part of the subject (to avoid redundancy).
+                if (emotionVal && emotionVal.trim() !== '') {
+                    const emotionRegex = new RegExp(`\\b${emotionVal.replace(/[-\/\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+                    if (typeof subjectPartVal === 'string' && !subjectPartVal.match(emotionRegex)) {
+                        emotionClause = `dengan emosi ${emotionVal}`;
+                    }
                 }
-                prompt += ` pada ${time} ${season} dengan cuaca ${weather}. \n\n`;
 
-                // Add camera details
-                prompt += `Gunakan pergerakan kamera ${cameraMovement} dari sudut ${cameraAngle} dengan lensa ${focalLength}. `;
-                prompt += `Berikan pencahayaan ${lighting} dan gradiasi warna ${colorGrading}. \n\n`;
-
-                // Add audio details
-                prompt += `${audioText}. \n\n`;
-
-                // Add technical specifications
-                prompt += `Spesifikasi teknis: Kualitas ${videoQuality}.`;
-
-                // Add additional details if present
-                if (additionalDetails) {
-                    prompt += ` \n\n${additionalDetails}`;
+                if (actionClause) {
+                    descriptivePromptParts.push(actionClause);
+                    if (emotionClause) {
+                        descriptivePromptParts.push(emotionClause);
+                    }
+                } else if (emotionClause) {
+                    descriptivePromptParts.push(emotionClause);
                 }
+
+                // Part 1.3: Midjourney Descriptive Keywords (Translatable Part)
+                // These keywords are part of the main description and should be translated.
+                // The untranslatable Midjourney suffix (e.g., --ar) is handled separately later.
+                if (outputFormatVal === 'midjourney') {
+                    descriptivePromptParts.push("photorealistic style, cinematic lighting, ultra detailed");
+                }
+
+                // Part 1.4: Environment Details
+                // Assembles various environment details into a coherent phrase.
+                let environmentClauses = [];
+                if (locationVal && locationVal.trim() !== '') environmentClauses.push(`di ${locationVal.trim()}`);
+                if (timeVal && timeVal.trim() !== '') environmentClauses.push(`pada ${timeVal.trim()}`);
+                if (seasonVal && seasonVal.trim() !== '') environmentClauses.push(seasonVal.trim());
+                if (weatherVal && weatherVal.trim() !== '') environmentClauses.push(`dengan cuaca ${weatherVal.trim()}`);
+
+                if (environmentClauses.length > 0) {
+                    descriptivePromptParts.push(environmentClauses.join(' '));
+                }
+
+                // Join all descriptive parts to form the main prompt sentence.
+                let prompt = descriptivePromptParts.filter(part => part && part.trim() !== '').join(' ').trim();
+
+                // Ensure the descriptive sentence ends with a period if it has content.
+                if (prompt && !/[.!?]$/.test(prompt)) {
+                    prompt += '.';
+                }
+
+                // Add separation for the next block of details.
+                prompt += '\n\n';
+
+                // Stage 2: Cinematography Details
+                // Appends details about camera movement, angle, focal length, lighting, and color grading.
+                // Values are fetched again here for clarity, or could be passed if preferred.
+                const cameraMovementVal = getElementValue('cameraMovement', 'dengan pergerakan kamera');
+                const cameraAngleVal = getElementValue('cameraAngle', 'dari sudut');
+                const focalLengthVal = getElementValue('focalLength', 'dengan lensa');
+                const lightingVal = getElementValue('lighting', 'dengan pencahayaan');
+                const colorGradingVal = getElementValue('colorGrading', 'dengan gradiasi warna');
+
+                prompt += `Gunakan pergerakan kamera ${cameraMovementVal} dari sudut ${cameraAngleVal} dengan lensa ${focalLengthVal}. `;
+                prompt += `Berikan pencahayaan ${lightingVal} dan gradiasi warna ${colorGradingVal}.\n\n`;
+
+                // Stage 3: Audio Details
+                // Appends the comprehensive `audioText` (constructed earlier).
+                prompt += `${audioText}.\n\n`;
+
+                // Stage 4: Technical Specifications
+                const videoQualityVal = getElementValue('videoQuality', 'standar yang jernih');
+                prompt += `Spesifikasi teknis: Kualitas ${videoQualityVal}.`;
+
+                // Stage 5: Additional User-Provided Details
+                const additionalDetailsVal = getElementValue('additionalDetails', '');
+                if (additionalDetailsVal && additionalDetailsVal.trim() !== '') {
+                    prompt += `\n\n${additionalDetailsVal.trim()}`;
+                }
+
+                // Stage 6: Midjourney Untranslatable Suffix
+                // This suffix is not part of the main translatable prompt but is appended at the end.
+                let untranslatableSuffix = '';
+                if (outputFormatVal === 'midjourney') { // Use outputFormatVal here
+                    // Note: The descriptive Midjourney keywords are already in `prompt`.
+                    // Here we only define the suffix.
+                    untranslatableSuffix = ' --ar 16:9 --v 6.0';
+                }
+
+                // `displayIndonesianPrompt` includes the main prompt and the untranslatable suffix.
+                const displayIndonesianPrompt = prompt + untranslatableSuffix;
+
 
                 const generatedPromptDiv = document.getElementById('generatedPrompt');
                 const copyButton = document.getElementById('copyButton');
@@ -1194,69 +1301,77 @@
                 `;
 
                 // Extract dialogs and sound effects before translation
+                // The 'prompt' variable at this stage contains the full descriptive text,
+                // including Midjourney keywords if selected, but NOT the untranslatable suffix.
                 const dialogRegex = /\[([^\]]+)\]/g;
                 const dialogs = [];
                 let match;
-                while ((match = dialogRegex.exec(prompt)) !== null) {
+                while ((match = dialogRegex.exec(prompt)) !== null) { // Use 'prompt' here
                     dialogs.push({
                         original: match[0],
                         text: match[1],
-                        context: prompt.substring(0, match.index).split('Audio:')[1]?.trim() || ''
+                        // Try to get context more reliably if Audio section exists
+                        context: prompt.substring(0, match.index).includes('Audio:') ?
+                                 (prompt.substring(0, match.index).split('Audio:')[1]?.trim() || '') :
+                                 ''
                     });
                 }
 
-                // Replace dialogs with placeholders
-                let promptForTranslation = prompt;
+                // Replace dialogs with placeholders in `promptForTranslation`
+                let promptForTranslation = prompt; // This is the version for translation
                 dialogs.forEach((dialog, index) => {
                     promptForTranslation = promptForTranslation.replace(dialog.original, `[DIALOG_${index}]`);
                 });
 
-                // Translate the prompt using PromptHandler
                 const translatedPrompt = await promptHandler.translateText(promptForTranslation);
 
                 // Restore dialogs in translated prompt
                 let finalTranslatedPrompt = translatedPrompt;
                 dialogs.forEach((dialog, index) => {
-                    // Keep the original Indonesian dialog text and its context
                     const dialogWithContext = dialog.context ? `${dialog.context}: ${dialog.original}` : dialog.original;
-                    // Replace the placeholder with the full dialog including context
                     finalTranslatedPrompt = finalTranslatedPrompt.replace(`[DIALOG_${index}]`, dialogWithContext);
                 });
 
-                // Ensure audio section is properly formatted
+                // Ensure audio section is properly formatted in the translated prompt if dialogs were complex
                 if (finalTranslatedPrompt.includes('Audio:')) {
                     const audioParts = finalTranslatedPrompt.split('Audio:');
                     if (audioParts.length > 1) {
-                        const audioContent = audioParts[1].trim();
-                        if (!audioContent.includes('[')) {
-                            // If audio content doesn't have dialog, add it back
-                            const originalAudio = prompt.split('Audio:')[1]?.trim() || '';
+                        const audioContentInTranslated = audioParts[1].trim();
+                        // Check if the placeholder replacement might have lost structure
+                        if (!audioContentInTranslated.includes('[') && prompt.includes('Audio:') && prompt.split('Audio:')[1].includes('[')) {
+                            const originalAudioStructure = prompt.split('Audio:')[1]?.trim() || ''; // Get original audio part from 'prompt'
                             finalTranslatedPrompt = finalTranslatedPrompt.replace(
-                                `Audio: ${audioContent}`,
-                                `Audio: ${originalAudio}`
+                                `Audio: ${audioContentInTranslated}`,
+                                `Audio: ${originalAudioStructure}` // Restore original structure if needed
                             );
                         }
                     }
                 }
 
+                // Append the untranslatable Midjourney suffix AFTER translation
+                if (untranslatableSuffix) {
+                    finalTranslatedPrompt += untranslatableSuffix;
+                }
+
                 // Create output HTML with better formatting
                 const outputHTML = `
                     <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">Format: <span class="font-semibold">${selectedFormatText}</span></p>
+                        <div class="bg-blue-50 dark:bg-sky-900/50 p-4 rounded-lg">
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-sm font-medium text-blue-800">📄 Prompt dalam Bahasa Indonesia:</h3>
-                                <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${prompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
+                                <h3 class="text-sm font-medium text-blue-800 dark:text-sky-300">📄 Prompt dalam Bahasa Indonesia:</h3>
+                                <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${displayIndonesianPrompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                                     </svg>
                                     <span>Salin</span>
                                 </button>
                             </div>
-                            <p class="text-gray-800 whitespace-pre-line">${prompt}</p>
+                            <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">${displayIndonesianPrompt}</p>
                         </div>
-                        <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="bg-green-50 dark:bg-teal-900/50 p-4 rounded-lg">
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-sm font-medium text-green-800">📄 Prompt dalam Bahasa Inggris:</h3>
+                                <h3 class="text-sm font-medium text-green-800 dark:text-teal-300">📄 Prompt dalam Bahasa Inggris:</h3>
                                 <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${finalTranslatedPrompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
