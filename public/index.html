@@ -51,6 +51,39 @@
             <p class="text-gray-600 text-lg">Buat prompt video yang menakjubkan dengan mudah</p>
         </div>
         
+        <!-- AMSTAM Advertisement Banner -->
+        <div class="max-w-7xl mx-auto mb-8">
+            <a href="https://amstream.live" target="_blank" class="block bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-2">Mau Livestreaming 24 Jam Non-Stop Tanpa Kuota?</h2>
+                        <p class="text-base sm:text-lg opacity-90">Kunjungi AMSTREAM sekarang, Klik Disini!</p>
+                    </div>
+                    <div class="ml-4">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
+            <!-- Form Section -->
+            <div class="flex-1 card rounded-xl px-6 py-5 dark:bg-gray-800/70 dark:border-gray-700/80 dark:shadow-xl">
+                <form id="promptForm" class="space-y-6">
+                    <!-- Keyword-based AI Prompt Generation -->
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
+                        <h2 class="text-xl font-semibold text-dark dark:text-gray-100 mb-4 section-title">📌 Generate with Keywords (AI)</h2>
+                        <div>
+                            <label for="keywordsInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Enter Keywords:</label>
+                            <textarea id="keywordsInput" name="keywordsInput" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green" placeholder="e.g., futuristic city, flying cars, neon lights, rain"></textarea>
+                        </div>
+                        <button id="generateWithKeywordsBtn" type="button" class="mt-4 w-full text-white py-2.5 px-5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-purple-600 to-pink-500 dark:from-purple-500 dark:to-pink-400 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-pink-400">
+                            Generate with AI
+                        </button>
+                    </div>
                     <!-- 1. Detail Subjek dan Aksi -->
                     <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">📌 1. Detail Subjek dan Aksi</h2>
@@ -1193,7 +1226,7 @@
                 } else if (emotionClause) {
                     descriptivePromptParts.push(emotionClause);
                 }
-
+                
                 // Part 1.3: Midjourney Descriptive Keywords (Translatable Part)
                 // These keywords are part of the main description and should be translated.
                 // The untranslatable Midjourney suffix (e.g., --ar) is handled separately later.
@@ -1208,19 +1241,19 @@
                 if (timeVal && timeVal.trim() !== '') environmentClauses.push(`pada ${timeVal.trim()}`);
                 if (seasonVal && seasonVal.trim() !== '') environmentClauses.push(seasonVal.trim());
                 if (weatherVal && weatherVal.trim() !== '') environmentClauses.push(`dengan cuaca ${weatherVal.trim()}`);
-
+                
                 if (environmentClauses.length > 0) {
                     descriptivePromptParts.push(environmentClauses.join(' '));
                 }
 
                 // Join all descriptive parts to form the main prompt sentence.
                 let prompt = descriptivePromptParts.filter(part => part && part.trim() !== '').join(' ').trim();
-
+                
                 // Ensure the descriptive sentence ends with a period if it has content.
                 if (prompt && !/[.!?]$/.test(prompt)) {
                     prompt += '.';
                 }
-
+                
                 // Add separation for the next block of details.
                 prompt += '\n\n';
 
@@ -1258,7 +1291,7 @@
                     // Here we only define the suffix.
                     untranslatableSuffix = ' --ar 16:9 --v 6.0';
                 }
-
+                
                 // `displayIndonesianPrompt` includes the main prompt and the untranslatable suffix.
                 const displayIndonesianPrompt = prompt + untranslatableSuffix;
 
@@ -1289,9 +1322,9 @@
                         original: match[0],
                         text: match[1],
                         // Try to get context more reliably if Audio section exists
-                        context: prompt.substring(0, match.index).includes('Audio:') ?
-                                 (prompt.substring(0, match.index).split('Audio:')[1]?.trim() || '') :
-                                 ''
+                        context: prompt.substring(0, match.index).includes('Audio:') ? 
+                                 (prompt.substring(0, match.index).split('Audio:')[1]?.trim() || '') : 
+                                 '' 
                     });
                 }
 
@@ -1300,7 +1333,7 @@
                 dialogs.forEach((dialog, index) => {
                     promptForTranslation = promptForTranslation.replace(dialog.original, `[DIALOG_${index}]`);
                 });
-
+                
                 const translatedPrompt = await promptHandler.translateText(promptForTranslation);
 
                 // Restore dialogs in translated prompt
@@ -1309,7 +1342,7 @@
                     const dialogWithContext = dialog.context ? `${dialog.context}: ${dialog.original}` : dialog.original;
                     finalTranslatedPrompt = finalTranslatedPrompt.replace(`[DIALOG_${index}]`, dialogWithContext);
                 });
-
+                
                 // Ensure audio section is properly formatted in the translated prompt if dialogs were complex
                 if (finalTranslatedPrompt.includes('Audio:')) {
                     const audioParts = finalTranslatedPrompt.split('Audio:');
@@ -1378,9 +1411,9 @@
 
                 // Scroll to generated prompt only on mobile and only when explicitly requested
                 if (window.innerWidth < 1024 && shouldScrollToPrompt) {
-                    generatedPromptDiv.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    generatedPromptDiv.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
                     });
                 }
             } catch (error) {
@@ -1416,7 +1449,7 @@
                             if (span) {
                                 const originalSpanText = span.textContent;
                                 const successMessage = (originalSpanText === 'Salin') ? '✅ Prompt berhasil disalin!' : '✅ Prompt copied!';
-
+                                
                                 span.textContent = successMessage;
                                 this.disabled = true;
                                 this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
@@ -1710,7 +1743,7 @@
                             try {
                                 const errorData = await response.json();
                                 // Use backend's 'error' as primary, then 'detail'
-                                errorMsg = errorData.error || errorData.detail || errorMsg;
+                                errorMsg = errorData.error || errorData.detail || errorMsg; 
                                 if (errorData.error && errorData.detail && errorData.error !== errorData.detail) {
                                     // If both 'error' and 'detail' are present and different, combine them.
                                     errorMsg = `${errorData.error} (Details: ${errorData.detail})`;
@@ -1724,14 +1757,14 @@
 
                         const data = await response.json();
                         const geminiPromptIndonesian = data.generated_prompt;
-
+                        
                         // Show interim loading for translation
                         generatedPromptDiv.innerHTML = `
                             <div class="flex items-center justify-center p-4">
                                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 dark:border-blue-400"></div>
                                 <span class="ml-2 text-gray-600 dark:text-gray-300">Translating AI generated prompt...</span>
                             </div>
-                        `;
+                        `; 
 
                         const geminiPromptEnglish = await promptHandler.translateText(geminiPromptIndonesian);
 
@@ -1760,7 +1793,7 @@
                                 </div>
                             </div>
                         `;
-
+                        
                         generatedPromptDiv.innerHTML = ''; // Clear spinner
                         const contentWrapper = document.createElement('div');
                         contentWrapper.className = 'animate-fade-in';
@@ -1771,7 +1804,7 @@
 
                     } catch (error) {
                         console.error('Error generating with AI from keywords:', error); // Log the full error object
-                        generatedPromptDiv.innerHTML =
+                        generatedPromptDiv.innerHTML = 
                             `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative dark:bg-red-800/30 dark:border-red-600 dark:text-red-300" role="alert">` +
                             `<strong class="font-bold">Error:</strong>` +
                             `<span class="block sm:inline"> ${error.message}</span>` + // error.message now contains the detailed message
@@ -1780,7 +1813,7 @@
                 });
             }
             // Initial call for any copy buttons already on the page (though likely none at this stage)
-            setupCopyButtonListeners();
+            setupCopyButtonListeners(); 
         });
 
         // Add animation to form sections
