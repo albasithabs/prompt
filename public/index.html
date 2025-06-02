@@ -4,10 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator Prompt Veo 3</title>
+    <script>
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // Apply scrollbar theme class based on initial theme
+      function applyInitialScrollbarTheme() {
+        const generatedPromptDiv = document.getElementById('generatedPrompt');
+        if (generatedPromptDiv) {
+          if (document.documentElement.classList.contains('dark')) {
+            generatedPromptDiv.classList.add('dark-mode-scrollbar');
+          } else {
+            generatedPromptDiv.classList.remove('dark-mode-scrollbar');
+          }
+        }
+      }
+      // Ensure this runs after DOM is available but before full load if possible,
+      // or at least early in DOMContentLoaded.
+      // However, generatedPromptDiv might not be available yet if this script is too high in <head>.
+      // Moving this to DOMContentLoaded is safer.
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
     <script>
         tailwind.config = {
+            darkMode: 'class', // Add or update this line
             theme: {
                 extend: {
                     colors: {
@@ -15,7 +41,13 @@
                         secondary: '#1E40AF',
                         accent: '#60A5FA',
                         dark: '#1F2937',
-                        light: '#F3F4F6'
+                        light: '#F3F4F6',
+                        'neon-green': '#39FF14',
+                        'gradient-blue-start': '#00C6FF',
+                        'gradient-blue-end': '#0072FF',
+                        'calm-green': '#34D399',
+                        'gradient-calm-blue-start': '#3B82F6',
+                        'gradient-calm-blue-end': '#1D4ED8',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif']
@@ -24,186 +56,39 @@
             }
         }
     </script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            min-height: 100vh;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .input-field {
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-        }
-
-        .section-title {
-            position: relative;
-            padding-left: 1rem;
-        }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 24px;
-            background: #3B82F6;
-            border-radius: 2px;
-        }
-
-        .template-card {
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .template-card:hover {
-            transform: translateY(-4px);
-            border-color: #3B82F6;
-        }
-
-        #generatedPrompt {
-            transition: all 0.3s ease;
-        }
-
-        #generatedPrompt::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        /* Add responsive styles */
-        @media (max-width: 1024px) {
-            .lg\:sticky {
-                position: relative;
-                top: 0;
-            }
-            
-            .lg\:w-\[500px\] {
-                width: 100%;
-            }
-        }
-
-        /* Improve scrollbar styling */
-        #generatedPrompt::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-
-        #generatedPrompt::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        /* Add smooth transition for sticky positioning */
-        .lg\:sticky {
-            transition: all 0.3s ease;
-        }
-    </style>
 </head>
-<body class="font-sans">
-    <div class="container mx-auto px-4 py-8">
-        <div class="text-center mb-12 animate-fade-in">
-            <h1 class="text-5xl font-bold text-dark mb-4">Generator Prompt Video Veo 3</h1>
-            <p class="text-gray-600 text-lg">Buat prompt video yang menakjubkan dengan mudah</p>
+<body class="font-sans dark:bg-gray-900 dark:text-gray-200">
+    <div class="container mx-auto px-4 py-12">
+        <div class="flex justify-end mb-4"> <!-- Wrapper for alignment -->
+            <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 10.607a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM10 18a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
         </div>
-        
-        <!-- AMSTAM Advertisement Banner -->
-        <div class="max-w-7xl mx-auto mb-8">
-            <a href="https://amstream.live" target="_blank" class="block bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <h2 class="text-2xl font-bold mb-2">Mau Livestreaming 24 Jam Non-Stop Tanpa Kuota?</h2>
-                        <p class="text-lg opacity-90">Kunjungi AMSTREAM sekarang, Klik Disini!</p>
-                    </div>
-                    <div class="ml-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </a>
+        <div class="text-center mb-12 animate-fade-in">
+            <h1 class="text-4xl sm:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-400">Generator Prompt Video Veo 3</h1>
+            <p class="text-gray-600 text-lg">Buat prompt video yang menakjubkan dengan mudah</p>
         </div>
 
         <!-- Main Content -->
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
             <!-- Form Section -->
-            <div class="flex-1 card rounded-xl p-8">
-                <form id="promptForm" class="space-y-8">
+            <div class="flex-1 card rounded-xl px-6 py-5 dark:bg-gray-800/70 dark:border-gray-700/80 dark:shadow-xl">
+                <form id="promptForm" class="space-y-6">
                     <!-- 1. Detail Subjek dan Aksi -->
-                    <div class="bg-light/50 p-6 rounded-lg">
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">1. Detail Subjek dan Aksi</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Subjek Utama -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Subjek Utama</label>
-                                <input type="text" id="subject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field" placeholder="Contoh: Seorang atlet profesional yang sedang berlari di lintasan">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subjek Utama</label>
+                                <input type="text" id="subject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Contoh: Seorang atlet profesional yang sedang berlari di lintasan">
                             </div>
 
                             <!-- Karakteristik Subjek -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Karakteristik Subjek</label>
-                                <select id="subjectCharacteristics" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Karakteristik Subjek</label>
+                                <select id="subjectCharacteristics" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Pasar & Perdagangan">
                                         <option value="pedagang pasar tradisional yang ramah">Pedagang Pasar Tradisional yang Ramah</option>
                                         <option value="pedagang kaki lima yang gigih">Pedagang Kaki Lima yang Gigih</option>
@@ -329,8 +214,8 @@
 
                             <!-- Aksi Utama -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Aksi Utama</label>
-                                <select id="mainAction" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Aksi Utama</label>
+                                <select id="mainAction" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Aktivitas Pasar">
                                         <option value="berjualan dengan ramah">Berjualan dengan Ramah</option>
                                         <option value="menawar dengan cerdik">Menawar dengan Cerdik</option>
@@ -405,8 +290,8 @@
 
                             <!-- Emosi -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Emosi</label>
-                                <select id="emotion" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Emosi</label>
+                                <select id="emotion" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Emosi Positif">
                                         <option value="ramah tamah">Ramah Tamah</option>
                                         <option value="sopan santun">Sopan Santun</option>
@@ -441,13 +326,13 @@
                     </div>
 
                     <!-- 2. Lingkungan dan Atmosfer -->
-                    <div class="bg-light/50 p-6 rounded-lg">
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">2. Lingkungan dan Atmosfer</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Lokasi -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
-                                <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lokasi</label>
+                                <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Pasar & Perdagangan">
                                         <option value="pasar tradisional yang ramai">Pasar Tradisional yang Ramai</option>
                                         <option value="pasar pagi yang sibuk">Pasar Pagi yang Sibuk</option>
@@ -488,8 +373,8 @@
 
                             <!-- Waktu -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Waktu</label>
-                                <select id="time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Waktu</label>
+                                <select id="time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Pagi">
                                         <option value="subuh yang sejuk">Subuh yang Sejuk</option>
                                         <option value="pagi yang cerah">Pagi yang Cerah</option>
@@ -523,8 +408,8 @@
 
                             <!-- Cuaca -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Cuaca</label>
-                                <select id="weather" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cuaca</label>
+                                <select id="weather" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Cerah">
                                         <option value="cerah berkilau">Cerah Berkilau</option>
                                         <option value="terang benderang">Terang Benderang</option>
@@ -558,8 +443,8 @@
 
                             <!-- Musim -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Musim</label>
-                                <select id="season" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Musim</label>
+                                <select id="season" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <optgroup label="Musim Kemarau">
                                         <option value="kemarau yang terik">Kemarau yang Terik</option>
                                         <option value="musim kering">Musim Kering</option>
@@ -587,13 +472,13 @@
                     </div>
 
                     <!-- 3. Sinematografi -->
-                    <div class="bg-light/50 p-6 rounded-lg">
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">3. Sinematografi</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Gaya -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gaya</label>
-                                <select id="style" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gaya</label>
+                                <select id="style" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="sinematik yang epik">Sinematik yang Epik</option>
                                     <option value="dokumenter yang mendalam">Dokumenter yang Mendalam</option>
                                     <option value="anime yang dinamis">Anime yang Dinamis</option>
@@ -608,8 +493,8 @@
 
                             <!-- Pergerakan Kamera -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pergerakan Kamera</label>
-                                <select id="cameraMovement" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pergerakan Kamera</label>
+                                <select id="cameraMovement" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="statik yang stabil">Statik yang Stabil</option>
                                     <option value="panning yang halus">Panning yang Halus</option>
                                     <option value="dolly yang dinamis">Dolly yang Dinamis</option>
@@ -623,8 +508,8 @@
 
                             <!-- Sudut Kamera -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Sudut Kamera</label>
-                                <select id="cameraAngle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sudut Kamera</label>
+                                <select id="cameraAngle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="setinggi mata yang natural">Setinggi Mata yang Natural</option>
                                     <option value="sudut rendah yang dramatis">Sudut Rendah yang Dramatis</option>
                                     <option value="sudut tinggi yang mengesankan">Sudut Tinggi yang Mengesankan</option>
@@ -636,8 +521,8 @@
 
                             <!-- Panjang Fokus -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Panjang Fokus</label>
-                                <select id="focalLength" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Panjang Fokus</label>
+                                <select id="focalLength" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="lebar (24mm) yang luas">Lebar (24mm) yang Luas</option>
                                     <option value="medium (50mm) yang natural">Medium (50mm) yang Natural</option>
                                     <option value="telefoto (85mm) yang intim">Telefoto (85mm) yang Intim</option>
@@ -648,8 +533,8 @@
 
                             <!-- Pencahayaan -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pencahayaan</label>
-                                <select id="lighting" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pencahayaan</label>
+                                <select id="lighting" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="alami yang natural">Alami yang Natural</option>
                                     <option value="dramatis yang intens">Dramatis yang Intens</option>
                                     <option value="lembut yang menenangkan">Lembut yang Menenangkan</option>
@@ -663,8 +548,8 @@
 
                             <!-- Gradiasi Warna -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gradiasi Warna</label>
-                                <select id="colorGrading" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gradiasi Warna</label>
+                                <select id="colorGrading" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="alami yang natural">Alami yang Natural</option>
                                     <option value="hangat yang menyejukkan">Hangat yang Menyejukkan</option>
                                     <option value="dingin yang menenangkan">Dingin yang Menenangkan</option>
@@ -679,13 +564,13 @@
                     </div>
 
                     <!-- 4. Audio -->
-                    <div class="bg-light/50 p-6 rounded-lg">
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">4. Audio</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Dialog -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Dialog</label>
-                                <select id="dialog" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dialog</label>
+                                <select id="dialog" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">Tanpa Dialog</option>
                                     <option value="narasi yang informatif">Narasi yang Informatif</option>
                                     <option value="dialog yang natural">Dialog yang Natural</option>
@@ -695,14 +580,14 @@
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customDialogInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan jenis dialog yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan jenis dialog yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Karakter Dialog -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Karakter Dialog</label>
-                                <select id="dialogCharacter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Karakter Dialog</label>
+                                <select id="dialogCharacter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">Tidak Ada</option>
                                     <optgroup label="Pembawa Berita">
                                         <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
@@ -747,17 +632,17 @@
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customDialogCharacterInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan karakter suara yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan karakter suara yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Isi Dialog -->
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Isi Dialog</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Isi Dialog</label>
                                 <div id="dialogInputs" class="space-y-4">
                                     <div class="flex gap-4 items-start">
                                         <div class="w-1/4">
-                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field dialog-character">
+                                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dialog-character dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                                 <option value="Karakter 1">Karakter 1</option>
                                                 <option value="Karakter 2">Karakter 2</option>
                                                 <option value="Karakter 3">Karakter 3</option>
@@ -766,7 +651,7 @@
                                                 <option value="custom">Input Manual</option>
                                             </select>
                                         </div>
-                                        <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field" placeholder="Masukkan dialog...">
+                                        <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Masukkan dialog...">
                                         <button type="button" class="text-red-500 hover:text-red-700" onclick="removeDialog(this)">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -775,13 +660,13 @@
                                     </div>
                                 </div>
                                 <div class="flex gap-2 mt-2">
-                                    <button type="button" onclick="addDialogInput()" class="text-primary hover:text-blue-700 flex items-center gap-1">
+                                    <button type="button" onclick="addDialogInput()" class="text-calm-green hover:brightness-125 flex items-center gap-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
                                         Tambah Dialog
                                     </button>
-                                    <button type="button" onclick="addDialogCharacter()" class="text-primary hover:text-blue-700 flex items-center gap-1">
+                                    <button type="button" onclick="addDialogCharacter()" class="text-calm-green hover:brightness-125 flex items-center gap-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
@@ -792,8 +677,8 @@
 
                             <!-- Suasana Suara -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Suasana Suara</label>
-                                <select id="voiceMood" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Suasana Suara</label>
+                                <select id="voiceMood" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">Tidak Ada</option>
                                     <optgroup label="Emosi">
                                         <option value="gembira yang ceria">Gembira yang Ceria</option>
@@ -810,14 +695,14 @@
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customVoiceMoodInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan suasana suara yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan suasana suara yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Musik Latar -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Musik Latar</label>
-                                <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field mb-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Musik Latar</label>
+                                <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field mb-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">Tanpa Musik</option>
                                     <optgroup label="Genre">
                                         <option value="instrumental yang elegan">Instrumental yang Elegan</option>
@@ -837,14 +722,14 @@
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customMusicInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan musik yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan musik yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Efek Suara -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Efek Suara</label>
-                                <select id="soundEffects" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field mb-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Efek Suara</label>
+                                <select id="soundEffects" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field mb-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">Tanpa Efek</option>
                                     <optgroup label="Alam">
                                         <option value="hujan yang menyejukkan">Hujan yang Menyejukkan</option>
@@ -868,7 +753,7 @@
                                 <div id="customSoundEffectsInput" class="hidden">
                                     <div id="soundEffectsInputs" class="space-y-2">
                                         <div class="flex gap-2">
-                                            <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan efek suara...">
+                                            <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan efek suara...">
                                             <button type="button" class="text-red-500 hover:text-red-700" onclick="removeSoundEffect(this)">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -876,7 +761,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="addSoundEffect()" class="mt-2 text-primary hover:text-blue-700 flex items-center gap-1">
+                                    <button type="button" onclick="addSoundEffect()" class="mt-2 text-calm-green hover:brightness-125 flex items-center gap-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
@@ -887,22 +772,22 @@
 
                             <!-- Volume -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Volume</label>
-                                <select id="volume" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume</label>
+                                <select id="volume" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="rendah yang halus">Rendah yang Halus</option>
                                     <option value="sedang yang seimbang">Sedang yang Seimbang</option>
                                     <option value="tinggi yang powerful">Tinggi yang Powerful</option>
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customVolumeInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan volume yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan volume yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Background Music -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Background Music</label>
-                                <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Background Music</label> <!-- This was a duplicate ID, assuming it's a typo and should be a new label or removed -->
+                                <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">No Background Music</option>
                                     <option value="dangdut koplo">Dangdut Koplo</option>
                                     <option value="ambient yang menenangkan">Ambient yang Menenangkan</option>
@@ -911,14 +796,14 @@
                                     <option value="custom">Input Manual</option>
                                 </select>
                                 <div id="customMusicInput" class="hidden mt-2">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Deskripsikan jenis musik yang diinginkan...">
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan jenis musik yang diinginkan...">
                                 </div>
                             </div>
 
                             <!-- Audio Translation -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Audio Translation</label>
-                                <select id="audioTranslation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Audio Translation</label>
+                                <select id="audioTranslation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="none">No Translation</option>
                                     <option value="english">Translate to English (Keep Dialog Original)</option>
                                     <option value="full_english">Full English Translation</option>
@@ -928,13 +813,13 @@
                     </div>
 
                     <!-- 5. Parameter Teknis dan Tambahan -->
-                    <div class="bg-light/50 p-6 rounded-lg">
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <h2 class="text-xl font-semibold text-dark mb-4 section-title">5. Parameter Teknis dan Tambahan</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Kualitas Video -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kualitas Video</label>
-                                <select id="videoQuality" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kualitas Video</label>
+                                <select id="videoQuality" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                     <option value="standar yang jernih">Standar yang Jernih</option>
                                     <option value="hd yang tajam">HD yang Tajam</option>
                                     <option value="4k yang ultra tajam">4K yang Ultra Tajam</option>
@@ -944,56 +829,67 @@
 
                             <!-- Detail Tambahan -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Tambahan</label>
-                                <textarea id="additionalDetails" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" rows="3" placeholder="Tambahkan detail tambahan atau persyaratan spesifik untuk meningkatkan kualitas video..."></textarea>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Detail Tambahan</label>
+                                <textarea id="additionalDetails" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" rows="3" placeholder="Tambahkan detail tambahan atau persyaratan spesifik untuk meningkatkan kualitas video..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Negative Prompt -->
+                    <div class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
+                        <h2 class="text-xl font-semibold text-dark dark:text-gray-100 mb-4 section-title">6. Negative Prompt</h2>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label for="negativePromptInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Masukkan hal-hal yang ingin dihindari (opsional):</label>
+                                <textarea id="negativePromptInput" name="negativePromptInput" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Contoh: teks, buram, kualitas rendah, watermark, deformasi"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <!-- Audio Mixing -->
-                    <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg">
+                    <div class="md:col-span-2 bg-gray-50 p-2 sm:p-3 md:p-4 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Pengaturan Audio Mixing</h3>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Pengaturan Audio Mixing</h3>
                             <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" id="showAudioMixing" class="form-checkbox h-5 w-5 text-primary rounded border-gray-300 focus:ring-primary">
-                                <span class="text-sm text-gray-600">Tampilkan Pengaturan</span>
+                                <input type="checkbox" id="showAudioMixing" class="form-checkbox h-5 w-5 text-calm-green rounded border-gray-300 focus:ring-calm-green transition-colors duration-200">
+                                <span class="text-sm text-gray-600 dark:text-gray-300">Tampilkan Pengaturan</span>
                             </label>
                         </div>
                         <div id="audioMixingContent" class="hidden">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Dialog Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Dialog</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Dialog</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="dialogVolume" min="0" max="100" value="80" class="w-full">
-                                        <span id="dialogVolumeValue" class="text-sm text-gray-600">80%</span>
+                                        <span id="dialogVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">80%</span>
                                     </div>
                                 </div>
 
                                 <!-- Music Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Musik</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Musik</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="musicVolume" min="0" max="100" value="60" class="w-full">
-                                        <span id="musicVolumeValue" class="text-sm text-gray-600">60%</span>
+                                        <span id="musicVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">60%</span>
                                     </div>
                                 </div>
 
                                 <!-- Effects Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Efek Suara</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Efek Suara</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="effectsVolume" min="0" max="100" value="40" class="w-full">
-                                        <span id="effectsVolumeValue" class="text-sm text-gray-600">40%</span>
+                                        <span id="effectsVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">40%</span>
                                     </div>
                                 </div>
 
                                 <!-- Overall Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Keseluruhan</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Keseluruhan</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="overallVolume" min="0" max="100" value="100" class="w-full">
-                                        <span id="overallVolumeValue" class="text-sm text-gray-600">100%</span>
+                                        <span id="overallVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -1001,20 +897,20 @@
                     </div>
 
                     <!-- Audio Processing -->
-                    <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg">
+                    <div class="md:col-span-2 bg-gray-50 p-2 sm:p-3 md:p-4 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Pengolahan Audio</h3>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Pengolahan Audio</h3>
                             <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" id="showAudioProcessing" class="form-checkbox h-5 w-5 text-primary rounded border-gray-300 focus:ring-primary">
-                                <span class="text-sm text-gray-600">Tampilkan Pengaturan</span>
+                                <input type="checkbox" id="showAudioProcessing" class="form-checkbox h-5 w-5 text-calm-green rounded border-gray-300 focus:ring-calm-green transition-colors duration-200">
+                                <span class="text-sm text-gray-600 dark:text-gray-300">Tampilkan Pengaturan</span>
                             </label>
                         </div>
                         <div id="audioProcessingContent" class="hidden">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Equalizer -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Equalizer</label>
-                                    <select id="equalizer" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Equalizer</label>
+                                    <select id="equalizer" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                         <option value="none">Tanpa Equalizer</option>
                                         <option value="vocal boost">Vocal Boost</option>
                                         <option value="bass boost">Bass Boost</option>
@@ -1026,8 +922,8 @@
 
                                 <!-- Compression -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kompresi</label>
-                                    <select id="compression" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kompresi</label>
+                                    <select id="compression" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                         <option value="none">Tanpa Kompresi</option>
                                         <option value="light">Ringan</option>
                                         <option value="medium">Sedang</option>
@@ -1038,8 +934,8 @@
 
                                 <!-- Reverb -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Reverb</label>
-                                    <select id="reverb" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reverb</label>
+                                    <select id="reverb" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                         <option value="none">Tanpa Reverb</option>
                                         <option value="room">Room</option>
                                         <option value="hall">Hall</option>
@@ -1050,8 +946,8 @@
 
                                 <!-- Spatial Audio -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Spatial Audio</label>
-                                    <select id="spatialAudio" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Spatial Audio</label>
+                                    <select id="spatialAudio" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                                         <option value="none">Tanpa Spatial Audio</option>
                                         <option value="stereo">Stereo</option>
                                         <option value="surround">Surround</option>
@@ -1063,19 +959,19 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
+                    <button type="submit" class="w-full text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-gradient-calm-blue-start to-gradient-calm-blue-end">
                         Buat Prompt
                     </button>
                 </form>
             </div>
 
             <!-- Output Section -->
-            <div class="w-full lg:w-[500px] card rounded-xl p-8 lg:sticky lg:top-8">
+            <div class="w-full lg:w-[500px] card rounded-xl px-6 py-5 lg:sticky lg:top-8 dark:bg-gray-800/70 dark:border-gray-700/80 dark:shadow-xl">
                 <h2 class="text-xl font-semibold text-dark mb-4 section-title">Prompt yang Dihasilkan</h2>
-                <div id="generatedPrompt" class="bg-light/50 p-6 rounded-lg border border-gray-200 min-h-[calc(100vh-200px)] overflow-y-auto">
+                <div id="generatedPrompt" class="bg-light/50 p-3 sm:p-4 md:p-6 rounded-xl border border-gray-300 min-h-[180px] overflow-y-auto dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                     <p class="text-gray-500">Prompt yang Anda hasilkan akan muncul di sini...</p>
                 </div>
-                <button id="copyButton" class="mt-4 w-full btn-secondary text-dark py-3 px-4 rounded-lg hidden">
+                <button id="copyButton" class="mt-4 w-full btn-secondary text-dark dark:bg-gray-800 dark:text-calm-green dark:border-calm-green dark:hover:bg-calm-green dark:hover:text-gray-900 py-3 px-4 rounded-lg hidden font-semibold">
                     Salin ke Clipboard
                 </button>
             </div>
@@ -1137,6 +1033,13 @@
                 const dialogCharacter = getElementValue('dialogCharacter', 'none');
                 const voiceMood = getElementValue('voiceMood', 'none');
                 const additionalDetails = getElementValue('additionalDetails', '');
+                const negativePromptVal = getElementValue('negativePromptInput', '').trim();
+
+                let negativePromptIndo = negativePromptVal;
+                let negativePromptEng = '';
+                if (negativePromptIndo) {
+                    negativePromptEng = await promptHandler.translateText(negativePromptIndo);
+                }
 
                 // Get all dialog inputs with their characters
                 const dialogInputs = Array.from(document.querySelectorAll('#dialogInputs .flex')).map(div => {
@@ -1262,38 +1165,114 @@
                     : 'Tanpa audio';
 
                 // Build the prompt with all inputs
-                let prompt = '';
+                // The prompt is assembled in several stages:
+                // 1. Initial descriptive sentence: Style, Subject, Action, Emotion, Midjourney Keywords (translatable part), Environment.
+                //    This part is built using an array join for better readability.
+                // 2. Cinematography details.
+                // 3. Audio details.
+                // 4. Technical specifications.
+                // 5. Additional user-provided details.
+                // 6. Midjourney untranslatable suffix (appended last to both Indonesian and English versions).
+
+                let descriptivePromptParts = [];
                 
-                // Add subject and characteristics
-                if (subject && subject.trim() !== '') {
-                    prompt += `Buat video bergaya ${style} tentang ${subject}`;
-                } else {
-                    prompt += `Buat video bergaya ${style} tentang ${subjectCharacteristics}`;
+                // Fetch values for the descriptive part
+                const styleVal = getElementValue('style', 'dengan gaya');
+                const subjectVal = getElementValue('subject', '');
+                const subjectCharacteristicsVal = getElementValue('subjectCharacteristics', 'karakteristik subjek');
+                const mainActionVal = getElementValue('mainAction', '');
+                const emotionVal = getElementValue('emotion', '');
+                const locationVal = getElementValue('location', '');
+                const timeVal = getElementValue('time', '');
+                const seasonVal = getElementValue('season', '');
+                const weatherVal = getElementValue('weather', '');
+
+                // Part 1.1: Style and Subject
+                let subjectPartVal = subjectVal && subjectVal.trim() !== '' ? subjectVal : subjectCharacteristicsVal;
+                descriptivePromptParts.push(`Buat video bergaya ${styleVal} tentang ${subjectPartVal}`);
+
+                // Part 1.2: Action and Emotion
+                let actionClause = '';
+                if (mainActionVal && mainActionVal.trim() !== '') {
+                    actionClause = `yang sedang ${mainActionVal}`;
                 }
 
-                // Add action and emotion
-                prompt += ` yang sedang ${mainAction} dengan emosi ${emotion}`;
-
-                // Add location and time
-                if (location && location.trim() !== '') {
-                    prompt += ` di ${location}`;
+                let emotionClause = '';
+                // Add emotion only if it's provided and not already part of the subject (to avoid redundancy).
+                if (emotionVal && emotionVal.trim() !== '') {
+                    const emotionRegex = new RegExp(`\\b${emotionVal.replace(/[-\/\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+                    if (typeof subjectPartVal === 'string' && !subjectPartVal.match(emotionRegex)) {
+                        emotionClause = `dengan emosi ${emotionVal}`;
+                    }
                 }
-                prompt += ` pada ${time} ${season} dengan cuaca ${weather}. \n\n`;
 
-                // Add camera details
-                prompt += `Gunakan pergerakan kamera ${cameraMovement} dari sudut ${cameraAngle} dengan lensa ${focalLength}. `;
-                prompt += `Berikan pencahayaan ${lighting} dan gradiasi warna ${colorGrading}. \n\n`;
-
-                // Add audio details
-                prompt += `${audioText}. \n\n`;
-
-                // Add technical specifications
-                prompt += `Spesifikasi teknis: Kualitas ${videoQuality}.`;
-
-                // Add additional details if present
-                if (additionalDetails) {
-                    prompt += ` \n\n${additionalDetails}`;
+                if (actionClause) {
+                    descriptivePromptParts.push(actionClause);
+                    if (emotionClause) {
+                        descriptivePromptParts.push(emotionClause);
+                    }
+                } else if (emotionClause) {
+                    descriptivePromptParts.push(emotionClause);
                 }
+
+                // Part 1.4: Environment Details
+                // Assembles various environment details into a coherent phrase.
+                let environmentClauses = [];
+                if (locationVal && locationVal.trim() !== '') environmentClauses.push(`di ${locationVal.trim()}`);
+                if (timeVal && timeVal.trim() !== '') environmentClauses.push(`pada ${timeVal.trim()}`);
+                if (seasonVal && seasonVal.trim() !== '') environmentClauses.push(seasonVal.trim());
+                if (weatherVal && weatherVal.trim() !== '') environmentClauses.push(`dengan cuaca ${weatherVal.trim()}`);
+
+                if (environmentClauses.length > 0) {
+                    descriptivePromptParts.push(environmentClauses.join(' '));
+                }
+
+                // Join all descriptive parts to form the main prompt sentence.
+                let prompt = descriptivePromptParts.filter(part => part && part.trim() !== '').join(' ').trim();
+
+                // Ensure the descriptive sentence ends with a period if it has content.
+                if (prompt && !/[.!?]$/.test(prompt)) {
+                    prompt += '.';
+                }
+
+                // Add separation for the next block of details.
+                prompt += '\n\n';
+
+                // Stage 2: Cinematography Details
+                // Appends details about camera movement, angle, focal length, lighting, and color grading.
+                // Values are fetched again here for clarity, or could be passed if preferred.
+                const cameraMovementVal = getElementValue('cameraMovement', 'dengan pergerakan kamera');
+                const cameraAngleVal = getElementValue('cameraAngle', 'dari sudut');
+                const focalLengthVal = getElementValue('focalLength', 'dengan lensa');
+                const lightingVal = getElementValue('lighting', 'dengan pencahayaan');
+                const colorGradingVal = getElementValue('colorGrading', 'dengan gradiasi warna');
+
+                prompt += `Gunakan pergerakan kamera ${cameraMovementVal} dari sudut ${cameraAngleVal} dengan lensa ${focalLengthVal}. `;
+                prompt += `Berikan pencahayaan ${lightingVal} dan gradiasi warna ${colorGradingVal}.\n\n`;
+
+                // Stage 3: Audio Details
+                // Appends the comprehensive `audioText` (constructed earlier).
+                prompt += `${audioText}.\n\n`;
+
+                // Stage 4: Technical Specifications
+                const videoQualityVal = getElementValue('videoQuality', 'standar yang jernih');
+                prompt += `Spesifikasi teknis: Kualitas ${videoQualityVal}.`;
+
+                // Stage 5: Additional User-Provided Details
+                const additionalDetailsVal = getElementValue('additionalDetails', '');
+                if (additionalDetailsVal && additionalDetailsVal.trim() !== '') {
+                    prompt += `\n\n${additionalDetailsVal.trim()}`;
+                }
+
+                // Positive Indonesian prompt is in 'prompt'
+                // Now, assemble final display strings with negative prompts
+                let displayIndonesianPrompt = prompt;
+                if (negativePromptIndo) {
+                    displayIndonesianPrompt += `\n\n--no ${negativePromptIndo}`;
+                }
+
+                // 'finalTranslatedPrompt' from below will be the positive English prompt
+                // It will be further modified after translation.
 
                 const generatedPromptDiv = document.getElementById('generatedPrompt');
                 const copyButton = document.getElementById('copyButton');
@@ -1305,132 +1284,103 @@
                 // Show loading state
                 generatedPromptDiv.innerHTML = `
                     <div class="flex items-center justify-center p-4">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-calm-green"></div>
                         <span class="ml-2 text-gray-600">Menerjemahkan prompt...</span>
                     </div>
                 `;
 
                 // Extract dialogs and sound effects before translation
+                // The 'prompt' variable at this stage contains the full descriptive text,
+                // including Midjourney keywords if selected, but NOT the untranslatable suffix.
                 const dialogRegex = /\[([^\]]+)\]/g;
                 const dialogs = [];
                 let match;
-                while ((match = dialogRegex.exec(prompt)) !== null) {
+                while ((match = dialogRegex.exec(prompt)) !== null) { // Use 'prompt' here
                     dialogs.push({
                         original: match[0],
                         text: match[1],
-                        context: prompt.substring(0, match.index).split('Audio:')[1]?.trim() || ''
+                        // Try to get context more reliably if Audio section exists
+                        context: prompt.substring(0, match.index).includes('Audio:') ?
+                                 (prompt.substring(0, match.index).split('Audio:')[1]?.trim() || '') :
+                                 ''
                     });
                 }
 
-                // Replace dialogs with placeholders
-                let promptForTranslation = prompt;
+                // Replace dialogs with placeholders in `promptForTranslation`
+                let promptForTranslation = prompt; // This is the version for translation
                 dialogs.forEach((dialog, index) => {
                     promptForTranslation = promptForTranslation.replace(dialog.original, `[DIALOG_${index}]`);
                 });
 
-                // Translate the prompt using PromptHandler
                 const translatedPrompt = await promptHandler.translateText(promptForTranslation);
 
                 // Restore dialogs in translated prompt
                 let finalTranslatedPrompt = translatedPrompt;
                 dialogs.forEach((dialog, index) => {
-                    // Keep the original Indonesian dialog text and its context
                     const dialogWithContext = dialog.context ? `${dialog.context}: ${dialog.original}` : dialog.original;
-                    // Replace the placeholder with the full dialog including context
                     finalTranslatedPrompt = finalTranslatedPrompt.replace(`[DIALOG_${index}]`, dialogWithContext);
                 });
 
-                // Ensure audio section is properly formatted
+                // Ensure audio section is properly formatted in the translated prompt if dialogs were complex
                 if (finalTranslatedPrompt.includes('Audio:')) {
                     const audioParts = finalTranslatedPrompt.split('Audio:');
                     if (audioParts.length > 1) {
-                        const audioContent = audioParts[1].trim();
-                        if (!audioContent.includes('[')) {
-                            // If audio content doesn't have dialog, add it back
-                            const originalAudio = prompt.split('Audio:')[1]?.trim() || '';
+                        const audioContentInTranslated = audioParts[1].trim();
+                        // Check if the placeholder replacement might have lost structure
+                        if (!audioContentInTranslated.includes('[') && prompt.includes('Audio:') && prompt.split('Audio:')[1].includes('[')) {
+                            const originalAudioStructure = prompt.split('Audio:')[1]?.trim() || ''; // Get original audio part from 'prompt'
                             finalTranslatedPrompt = finalTranslatedPrompt.replace(
-                                `Audio: ${audioContent}`,
-                                `Audio: ${originalAudio}`
+                                `Audio: ${audioContentInTranslated}`,
+                                `Audio: ${originalAudioStructure}` // Restore original structure if needed
                             );
                         }
                     }
                 }
 
+                // (Positive) English prompt is in 'finalTranslatedPrompt' after dialog restoration
+                // Now, assemble final English display string with negative prompt
+                let finalTranslatedPromptWithNegative = finalTranslatedPrompt;
+                if (negativePromptEng) {
+                    finalTranslatedPromptWithNegative += `\n\n--no ${negativePromptEng}`;
+                }
+
                 // Create output HTML with better formatting
                 const outputHTML = `
                     <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
+                        <div class="bg-blue-50 dark:bg-sky-900/50 p-4 rounded-lg">
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-sm font-medium text-blue-800">Prompt dalam Bahasa Indonesia:</h3>
-                                <button type="button" class="copy-btn text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1 px-3 py-1 rounded border border-blue-200 hover:border-blue-400 transition-colors" data-text="${prompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
+                                <h3 class="text-sm font-medium text-blue-800 dark:text-sky-300">📄 Prompt dalam Bahasa Indonesia:</h3>
+                                <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${displayIndonesianPrompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                                     </svg>
                                     <span>Salin</span>
                                 </button>
                             </div>
-                            <p class="text-gray-800 whitespace-pre-line">${prompt}</p>
+                            <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">${displayIndonesianPrompt}</p>
                         </div>
-                        <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="bg-green-50 dark:bg-teal-900/50 p-4 rounded-lg">
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-sm font-medium text-green-800">Prompt dalam Bahasa Inggris:</h3>
-                                <button type="button" class="copy-btn text-green-600 hover:text-green-800 text-sm flex items-center gap-1 px-3 py-1 rounded border border-green-200 hover:border-green-400 transition-colors" data-text="${finalTranslatedPrompt.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
+                                <h3 class="text-sm font-medium text-green-800 dark:text-teal-300">📄 Prompt dalam Bahasa Inggris:</h3>
+                                <button type="button" class="copy-btn bg-accent text-white hover:bg-accent/90 transition duration-200 rounded px-3 py-1 text-sm flex items-center gap-1 font-medium" data-text="${finalTranslatedPromptWithNegative.replace(/"/g, '&quot;').replace(/\n/g, '\\n')}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                                     </svg>
                                     <span>Copy</span>
                                 </button>
                             </div>
-                            <p class="text-gray-800 whitespace-pre-line">${finalTranslatedPrompt}</p>
+                            <p class="text-gray-800 whitespace-pre-line">${finalTranslatedPromptWithNegative}</p>
                         </div>
                     </div>
                 `;
 
-                generatedPromptDiv.innerHTML = outputHTML;
+                generatedPromptDiv.innerHTML = ''; // Clear previous content
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'animate-fade-in'; // Apply fade-in animation
+                contentWrapper.innerHTML = outputHTML;
+                generatedPromptDiv.appendChild(contentWrapper);
                 
-                // Add click event listeners to copy buttons
-                document.querySelectorAll('.copy-btn').forEach(button => {
-                    button.addEventListener('click', async function() {
-                        const text = this.getAttribute('data-text');
-                        try {
-                            await navigator.clipboard.writeText(text);
-                            
-                            // Update button text to show success
-                            const span = this.querySelector('span');
-                            if (span) {
-                                const originalText = span.textContent;
-                                span.textContent = originalText === 'Salin' ? '✓ Tersalin!' : '✓ Copied!';
-                                this.classList.add('text-green-600');
-                                this.classList.add('border-green-400');
-                                
-                                // Reset button after 2 seconds
-                                setTimeout(() => {
-                                    span.textContent = originalText;
-                                    this.classList.remove('text-green-600');
-                                    this.classList.remove('border-green-400');
-                                }, 2000);
-                            }
-                        } catch (err) {
-                            console.error('Failed to copy text: ', err);
-                            
-                            // Show error state
-                            const span = this.querySelector('span');
-                            if (span) {
-                                const originalText = span.textContent;
-                                span.textContent = '❌ Gagal';
-                                this.classList.add('text-red-600');
-                                this.classList.add('border-red-400');
-                                
-                                // Reset button after 2 seconds
-                                setTimeout(() => {
-                                    span.textContent = originalText;
-                                    this.classList.remove('text-red-600');
-                                    this.classList.remove('border-red-400');
-                                }, 2000);
-                            }
-                        }
-                    });
-                });
+                setupCopyButtonListeners(); // Call after new content is added
 
                 // Remove the old copy button
                 const oldCopyButton = document.getElementById('copyButton');
@@ -1457,6 +1407,57 @@
                     `;
                 }
             }
+        }
+
+        // Function to setup copy button listeners (Refactored)
+        function setupCopyButtonListeners() {
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                // Remove existing listener to prevent duplicates if this function is called multiple times on same buttons
+                // A more robust way would be to use AbortController if needed, but for this scope, simple re-adding is fine
+                // if the buttons are truly new. If they are the same buttons, this will add multiple listeners.
+                // Assuming these are always new buttons when this is called after innerHTML update.
+                button.replaceWith(button.cloneNode(true)); // Simple way to remove listeners is to clone the button
+                document.querySelectorAll('.copy-btn').forEach(newButton => { // Re-query for the new buttons
+                    if (newButton.getAttribute('data-listener-attached')) return; // Avoid attaching twice to same new button
+
+                    newButton.addEventListener('click', async function() {
+                        const text = this.getAttribute('data-text');
+                        try {
+                            await navigator.clipboard.writeText(text);
+                            const span = this.querySelector('span');
+                            if (span) {
+                                const originalSpanText = span.textContent;
+                                const successMessage = (originalSpanText === 'Salin') ? '✅ Prompt berhasil disalin!' : '✅ Prompt copied!';
+
+                                span.textContent = successMessage;
+                                this.disabled = true;
+                                this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
+                                setTimeout(() => {
+                                    span.textContent = originalSpanText;
+                                    this.disabled = false;
+                                }, 2000);
+                            }
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                            const span = this.querySelector('span');
+                            if (span) {
+                                const originalSpanText = span.textContent;
+                                if (!originalSpanText.startsWith('✅')) {
+                                     const errorMessage = (originalSpanText === 'Salin' || originalSpanText === '✅ Prompt berhasil disalin!') ? '❌ Gagal Salin' : '❌ Copy Failed';
+                                     span.textContent = errorMessage;
+                                     this.disabled = true;
+                                     this.classList.remove('text-green-600', 'border-green-400', 'text-red-600', 'border-red-400');
+                                     setTimeout(() => {
+                                         span.textContent = originalSpanText;
+                                         this.disabled = false;
+                                     }, 2000);
+                                }
+                            }
+                        }
+                    });
+                    newButton.setAttribute('data-listener-attached', 'true');
+                });
+            });
         }
 
         // Function to add event listeners
@@ -1588,11 +1589,12 @@
                 newDialog.className = 'flex gap-4 items-start';
                 newDialog.innerHTML = `
                     <div class="w-1/4">
-                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field dialog-character">
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dialog-character dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green">
                             ${Array.from(document.querySelectorAll('.dialog-character option')).map(opt => opt.outerHTML).join('')}
                         </select>
                     </div>
-                    <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary input-field" placeholder="Masukkan dialog...">
+                    <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Masukkan dialog...">
+                                            <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-calm-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-calm-green" placeholder="Deskripsikan efek suara...">
                     <button type="button" class="text-red-500 hover:text-red-700" onclick="removeDialog(this)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -1667,7 +1669,53 @@
 
         // Initialize when the page loads
         document.addEventListener('DOMContentLoaded', async function() {
-            // Add all event listeners
+                const generatedPromptDiv = document.getElementById('generatedPrompt'); // Get reference here for initial scrollbar setup
+
+                // Function to apply scrollbar theme based on current documentElement class
+                function applyScrollbarTheme() {
+                    if (generatedPromptDiv) {
+                        if (document.documentElement.classList.contains('dark')) {
+                            generatedPromptDiv.classList.add('dark-mode-scrollbar');
+                        } else {
+                            generatedPromptDiv.classList.remove('dark-mode-scrollbar');
+                        }
+                    }
+                }
+
+                applyInitialScrollbarTheme(); // Call the function defined in the head, now that div is available
+                                            // Self-correction: applyInitialScrollbarTheme was defined in <head>,
+                                            // let's redefine or call applyScrollbarTheme directly.
+                applyScrollbarTheme(); // Apply scrollbar theme on initial load based on class in <html>
+
+                // Theme toggle button setup
+                const themeToggleBtn = document.getElementById('theme-toggle');
+                const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+                const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+                function updateThemeIconsVisibility() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        themeToggleDarkIcon.classList.remove('hidden');
+                        themeToggleLightIcon.classList.add('hidden');
+                    } else {
+                        themeToggleDarkIcon.classList.add('hidden');
+                        themeToggleLightIcon.classList.remove('hidden');
+                    }
+                    applyScrollbarTheme(); // Update scrollbar on theme toggle
+                }
+
+                updateThemeIconsVisibility(); // Initial icon visibility
+
+                themeToggleBtn.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    if (document.documentElement.classList.contains('dark')) {
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                    updateThemeIconsVisibility(); // Update icons and scrollbar
+                });
+
+                // Add all event listeners for form inputs
             addInputListeners();
             
             // Set initial volume displays
@@ -1681,11 +1729,15 @@
             
             // Generate initial prompt with scroll
             window.shouldScrollToPrompt = true;
-            generatePrompt();
+            generatePrompt(); // This will internally call setupCopyButtonListeners
             window.shouldScrollToPrompt = false;
             
             // Setup character search functionality
             setupCharacterSearch();
+
+            // Initial call for any copy buttons already on the page (though likely none at this stage)
+            // and for buttons generated by the main form.
+            setupCopyButtonListeners();
         });
 
         // Add animation to form sections
@@ -1728,4 +1780,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
