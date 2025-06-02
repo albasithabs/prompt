@@ -653,87 +653,105 @@
             initializeCopyButton: () => {}, 
             translateText: async (text) => {
                 console.log("Original Indonesian for Translation:", text);
-                await new Promise(resolve => setTimeout(resolve, 200)); 
+                await new Promise(resolve => setTimeout(resolve, 100)); // Shorter delay for faster UI update
 
                 let translated = text;
 
+                // Dictionary for direct word/phrase replacements. Order matters for longer phrases.
+                // More specific phrases should come before more general ones.
                 const dictionary = {
-                    // Kategori 1: Detail Subjek dan Aksi
+                    // Specific phrases with "yang"
+                    "pedagang pasar tradisional yang ramah": "a friendly traditional market vendor",
+                    "petani padi yang tekun": "a diligent rice farmer",
+                    "pengrajin batik yang teliti": "a meticulous batik artisan",
+                    "juru masak tradisional yang handal": "a reliable traditional chef",
+                    "pembawa acara talkshow yang interaktif": "an interactive talk show host",
+                    "pembawa berita profesional yang tegas": "a firm professional news anchor",
+                    "sinematik yang epik": "epic cinematic style",
+                    "dokumenter yang mendalam": "in-depth documentary style",
+                    "anime yang dinamis": "dynamic anime style",
+                    "kartun yang ceria": "cheerful cartoon style",
+                    "realistis yang natural": "natural realistic style",
+                    "statik yang stabil": "static and stable camera movement",
+                    "panning yang halus": "smooth panning camera movement",
+                    "dolly yang dinamis": "dynamic dolly movement",
+                    "setinggi mata yang natural": "natural eye-level angle",
+                    "sudut rendah yang dramatis": "dramatic low angle",
+                    "lebar (24mm) yang luas": "wide (24mm) expansive lens",
+                    "medium (50mm) yang natural": "medium (50mm) natural lens",
+                    "alami yang natural": "natural", // Generic, context will differentiate
+                    "dramatis yang intens": "intense dramatic",
+                    "hangat yang menyejukkan": "soothing warm",
+                    "dingin yang menenangkan": "calming cool",
+                    "narasi yang informatif": "informative narration",
+                    "dialog yang natural": "natural dialogue",
+                    "gembira yang ceria": "joyful and cheerful mood",
+                    "sedih yang mengharukan": "touchingly sad mood",
+                    "instrumental yang elegan": "elegant instrumental music",
+                    "pop yang energik": "energetic pop music",
+                    "hujan yang menyejukkan": "refreshing rain sound",
+                    "keramaian kota yang dinamis": "dynamic city bustle sound",
+                    "rendah yang halus": "low and smooth volume",
+                    "sedang yang seimbang": "medium and balanced volume",
+                    "standar yang jernih (16:9)": "standard clear quality (16:9)",
+                    "hd yang tajam (16:9)": "HD sharp quality (16:9)",
+
+                    // General terms (applied after specific phrases)
                     "Buat video bergaya": "Create a video in the style of",
                     "tentang": "about",
-                    "yang sedang": "who is",
-                    "dengan emosi": "with emotion",
-                    "berjualan dengan ramah": "selling friendly", "menawar dengan cerdik": "bargaining smartly", "mengatur dagangan dengan rapi": "arranging merchandise neatly",
-                    "pedagang pasar tradisional yang ramah": "a friendly traditional market vendor", "petani padi yang tekun": "a diligent rice farmer",
-                    "ramah tamah": "friendly", "sopan santun": "polite", "ikhlas": "sincere", "sabar": "patient", "gigih": "persistent",
-                    "bersemangat": "enthusiastic", "penuh semangat": "full of spirit", "bergairah": "passionate", "antusias": "enthusiastic", "bersemangat tinggi": "highly spirited",
-                    "tenang": "calm", "tenteram": "peaceful", "damai": "peaceful", "nyaman": "comfortable", "tentram": "serene",
-                    "gembira": "joyful", "ceria": "cheerful", "bahagia": "happy", "riang": "gleeful", "sukacita": "joyous",
-
-                    // Kategori 2: Lingkungan dan Atmosfer
-                    "di": "at", // General preposition, context matters
-                    "pada": "on", // General preposition, context matters
-                    "pasar tradisional yang ramai": "a bustling traditional market", "sawah yang hijau": "green rice fields",
-                    "subuh yang sejuk": "a cool dawn", "pagi yang cerah": "a bright morning", "siang yang terik": "a scorching noon",
-                    "cerah berkilau": "sparkling bright", "hujan rintik-rintik": "drizzling rain",
-                    "kemarau yang terik": "a hot dry season", "hujan yang sejuk": "a cool rainy season",
-
-                    // Kategori 3: Sinematografi
+                    "yang sedang": "who is", // This is a common one to refine
+                    "dengan emosi": "with an emotion of",
+                    "di": "at",
+                    "pada": "on", // Can also mean "at" for time
+                    "dengan cuaca": "with weather that is",
                     "Sinematografi:": "Cinematography:",
-                    "Pergerakan kamera": "Camera movement", "dari sudut": "from an angle of", "menggunakan lensa": "using a lens",
-                    "Pencahayaan": "Lighting:", "dengan gradiasi warna": "with color grading of",
-                    "sinematik yang epik": "epic cinematic", "dokumenter yang mendalam": "in-depth documentary",
-                    "statik yang stabil": "static and stable", "panning yang halus": "smooth panning",
-                    "setinggi mata yang natural": "eye-level natural", "sudut rendah yang dramatis": "dramatic low angle",
-                    "lebar (24mm) yang luas": "wide (24mm) expansive", "medium (50mm) yang natural": "medium (50mm) natural",
-                    "alami yang natural": "natural", // Could be ambiguous, context from "Pencahayaan" or "Gradiasi Warna" helps
-                    "dramatis yang intens": "intense dramatic",
-
-                    // Kategori 4: Audio
-                    "Audio:": "Audio:", "Dialog:": "Dialogue:", "oleh": "by", "dengan suasana": "with an atmosphere of",
-                    "Musik Latar:": "Background Music:", "Efek Suara:": "Sound Effects:",
-                    "Volume:": "Volume:", "(Volume:": "(Volume:",
+                    "Pergerakan kamera": "Camera movement:",
+                    "dari sudut": "from an angle of",
+                    "menggunakan lensa": "using a lens of",
+                    "Pencahayaan": "Lighting:",
+                    "dengan gradiasi warna": "with color grading of",
+                    "Audio:": "Audio:",
+                    "Dialog:": "Dialogue:",
+                    "oleh": "by",
+                    "dengan suasana": "with an atmosphere of",
+                    "Musik Latar:": "Background Music:",
+                    "Efek Suara:": "Sound Effects:",
+                    "Volume:": "Volume:", // General volume, specific ones handled above
                     "Karakteristik Volume Audio:": "Overall Audio Volume Characteristic:",
                     "Terjemahan Audio:": "Audio Translation:",
-                    "narasi yang informatif": "informative narration", "dialog yang natural": "natural dialogue",
-                    "pembawa berita profesional yang tegas": "a firm professional news anchor", "pria dewasa yang profesional": "a professional adult male",
-                    "gembira yang ceria": "joyful and cheerful", // Repeated from emotion, context helps
-                    "instrumental yang elegan": "elegant instrumental", "pop yang energik": "energetic pop",
-                    "hujan yang menyejukkan": "refreshing rain sound", // Repeated from weather, context helps
-                    "rendah yang halus": "low and smooth", "sedang yang seimbang": "medium and balanced",
-                    "Tanpa Terjemahan": "No Translation", "Terjemahkan ke Subtitle Inggris (Dialog Asli)": "Translate to English Subtitles (Original Dialogue)",
+                    "Tanpa Terjemahan": "No Translation",
+                    "Terjemahkan ke Subtitle Inggris (Dialog Asli)": "Translate to English Subtitles (Original Dialogue)",
                     "Alih Suara ke Bahasa Inggris": "Voiceover in English",
+                    "Kualitas Video:": "Video Quality:",
+                    "Detail Tambahan:": "Additional Details:",
+                    "Tanpa audio spesifik.": "No specific audio.",
                     "Volume Master Audio:": "Master Audio Volume:",
-
-                    // Kategori 5: Parameter Teknis dan Tambahan
-                    "Kualitas Video:": "Video Quality:", "Detail Tambahan:": "Additional Details:",
-                    "standar yang jernih (16:9)": "standard clear (16:9)", "hd yang tajam (16:9)": "HD sharp (16:9)",
-
-                    // General terms
-                    "tidak ditentukan": "unspecified", "melakukan sesuatu": "doing something", "subjek tidak ditentukan": "an unspecified subject",
+                    "tidak ditentukan": "unspecified",
+                    "melakukan sesuatu": "doing something",
+                    "subjek tidak ditentukan": "an unspecified subject",
                     "Tanpa Dialog": "No Dialogue", "Tidak Ada": "None", "Tanpa Musik": "No Music", "Tanpa Efek": "No Effects",
-                    "dan": "and", "atau": "or",
-                    // Specific cases for "yang"
-                    "yang ramah": "who is friendly", "yang tekun": "who is diligent", "yang epik": "that is epic",
-                     // Fallback for "yang" if not part of a longer phrase
-                    "yang": "that is/which is"
+                    "dan": "and", "atau": "or"
                 };
                 
                 const sortedKeys = Object.keys(dictionary).sort((a, b) => b.length - a.length);
 
                 for (const key of sortedKeys) {
                     const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const regex = new RegExp(escapedKey, 'g'); // Case-insensitive might be better: 'gi'
+                    const regex = new RegExp(escapedKey, 'g');
                     translated = translated.replace(regex, dictionary[key]);
                 }
-                
-                // Post-processing for common patterns after dictionary replacement
-                translated = translated.replace(/Create a video in the style of an unspecified subject/g, "Create a video about an unspecified subject"); // Correction
-                translated = translated.replace(/at an unspecified subject/g, "about an unspecified subject");
-                translated = translated.replace(/, \./g, "."); // Remove comma before period
-                translated = translated.replace(/\s+\./g, "."); // Remove space before period
-                translated = translated.replace(/\s+,/g, ","); // Remove space before comma
 
+                // Attempt to refine "yang" translations if they weren't caught by specific phrases
+                // This is tricky and can lead to errors if not careful
+                translated = translated.replace(/ an unspecified subject that is\/which is /g, " an unspecified subject who is ");
+                translated = translated.replace(/ a (.+?) that is\/which is /g, " a $1 that is "); // e.g., "a friendly vendor that is"
+                translated = translated.replace(/ that is\/which is /g, " that is "); // General fallback
+
+                // Clean up common artifacts
+                translated = translated.replace(/, \./g, "."); 
+                translated = translated.replace(/\s+\./g, "."); 
+                translated = translated.replace(/\s+,/g, ","); 
+                translated = translated.replace(/\s{2,}/g, ' '); // Replace multiple spaces with single
 
                 console.log("Translated English Prompt (Placeholder Attempt):", translated);
                 return translated;
@@ -1002,14 +1020,16 @@
             fieldsWithCustomInput.forEach(id => {
                 const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`;
                 document.getElementById(customInputDivId)?.classList.add('hidden');
-                 // Reset select to its first actual option if "Input Manual" was selected
                 const selectField = document.getElementById(id);
                 if (selectField && selectField.options.length > 1) {
+                    // Set to the first option that is NOT "custom"
+                    let defaultIndex = 0;
                     if (selectField.options[0].value === "custom" && selectField.options[1]) {
-                         selectField.value = selectField.options[1].value;
-                    } else if (selectField.options[0]) {
-                         selectField.value = selectField.options[0].value;
+                        defaultIndex = 1;
                     }
+                    selectField.selectedIndex = defaultIndex;
+                } else if (selectField && selectField.options.length === 1 && selectField.options[0].value !== "custom") {
+                    selectField.selectedIndex = 0;
                 }
             });
             
