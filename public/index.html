@@ -60,14 +60,15 @@
             ring-color: #3B82F6;
         }
         
-        .form-section-title {
-            font-size: 1.125rem; 
-            font-weight: 600; 
-            color: #374151; 
-            margin-bottom: 1rem;
+        .form-category-title {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* semibold */
+            color: #374151; /* gray-700 */
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid #E5E7EB; 
+            border-bottom: 1px solid #E5E7EB; /* gray-200 */
+            margin-bottom: 1rem;
         }
+
 
         #generatedPrompt::-webkit-scrollbar,
         #generatedPromptEnglish::-webkit-scrollbar {
@@ -119,9 +120,9 @@
                 </div>
 
                 <div class="card rounded-b-xl p-6 lg:p-8">
-                    <form id="promptForm" class="space-y-6">
+                    <form id="promptForm" class="space-y-8"> 
                         <div class="p-4 border border-gray-200 rounded-lg bg-white">
-                            <h2 class="form-section-title">Field Wajib</h2>
+                            <h2 class="form-category-title">1. Detail Subjek dan Aksi</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">1. Subjek</label>
@@ -130,6 +131,7 @@
                                 <div>
                                     <label for="mainAction" class="block text-sm font-medium text-gray-700 mb-1">2. Aksi Utama</label>
                                     <select id="mainAction" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Aktivitas Pasar">
                                             <option value="berjualan dengan ramah">Berjualan dengan Ramah</option>
                                             <option value="menawar dengan cerdik">Menawar dengan Cerdik</option>
@@ -183,158 +185,33 @@
                                             <option value="membawakan berita dengan profesional">Membawakan Berita dengan Profesional</option>
                                             <option value="mewawancarai narasumber dengan cerdas">Mewawancarai Narasumber dengan Cerdas</option>
                                             <option value="membawakan talkshow dengan interaktif">Membawakan Talkshow dengan Interaktif</option>
-                                            <option value="membawakan kuis dengan energik">Membawakan Kuis dengan Energik</option>
-                                            <option value="membawakan acara musik dengan dinamis">Membawakan Acara Musik dengan Dinamis</option>
-                                            <option value="membawakan variety show dengan ceria">Membawakan Variety Show dengan Ceria</option>
-                                            <option value="membawakan reality show dengan natural">Membawakan Reality Show dengan Natural</option>
-                                            <option value="membawakan dokumenter dengan informatif">Membawakan Dokumenter dengan Informatif</option>
-                                            <option value="membawakan cooking show dengan ramah">Membawakan Cooking Show dengan Ramah</option>
-                                            <option value="membawakan travel show dengan antusias">Membawakan Travel Show dengan Antusias</option>
-                                            <option value="membawakan lifestyle show dengan elegan">Membawakan Lifestyle Show dengan Elegan</option>
-                                            <option value="membawakan acara olahraga dengan bersemangat">Membawakan Acara Olahraga dengan Bersemangat</option>
-                                            <option value="membawakan breaking news dengan tegas">Membawakan Breaking News dengan Tegas</option>
-                                            <option value="membawakan liputan langsung dengan tangkas">Membawakan Liputan Langsung dengan Tangkas</option>
-                                            <option value="membawakan debat politik dengan bijaksana">Membawakan Debat Politik dengan Bijaksana</option>
-                                            <option value="membawakan analisis ekonomi dengan cermat">Membawakan Analisis Ekonomi dengan Cermat</option>
-                                            <option value="membawakan berita hiburan dengan ceria">Membawakan Berita Hiburan dengan Ceria</option>
-                                            <option value="membawakan berita teknologi dengan informatif">Membawakan Berita Teknologi dengan Informatif</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customMainActionInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan aksi utama...">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4 border border-gray-200 rounded-lg bg-white space-y-4">
-                             <h2 class="form-section-title">Field Opsional</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <label for="subjectCharacteristics" class="block text-sm font-medium text-gray-700 mb-1">3. Biografi (Karakteristik Subjek)</label>
                                     <select id="subjectCharacteristics" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Pasar & Perdagangan">
                                             <option value="pedagang pasar tradisional yang ramah">Pedagang Pasar Tradisional yang Ramah</option>
                                             <option value="pedagang kaki lima yang gigih">Pedagang Kaki Lima yang Gigih</option>
                                             <option value="pedagang warung kopi yang ceria">Pedagang Warung Kopi yang Ceria</option>
-                                            <option value="pedagang makanan tradisional yang bersemangat">Pedagang Makanan Tradisional yang Bersemangat</option>
-                                            <option value="pedagang buah-buahan yang ramah">Pedagang Buah-buahan yang Ramah</option>
-                                            <option value="pedagang ikan yang tangguh">Pedagang Ikan yang Tangguh</option>
-                                            <option value="pedagang sayuran yang tekun">Pedagang Sayuran yang Tekun</option>
-                                            <option value="pedagang bumbu dapur yang teliti">Pedagang Bumbu Dapur yang Teliti</option>
                                         </optgroup>
                                         <optgroup label="Pertanian & Perkebunan">
                                             <option value="petani padi yang tekun">Petani Padi yang Tekun</option>
                                             <option value="petani sayuran yang teliti">Petani Sayuran yang Teliti</option>
-                                            <option value="petani buah-buahan yang sabar">Petani Buah-buahan yang Sabar</option>
-                                            <option value="petani kopi yang berdedikasi">Petani Kopi yang Berdedikasi</option>
-                                            <option value="petani teh yang telaten">Petani Teh yang Telaten</option>
-                                            <option value="petani rempah yang cermat">Petani Rempah yang Cermat</option>
-                                            <option value="petani organik yang inovatif">Petani Organik yang Inovatif</option>
-                                            <option value="petani hidroponik yang modern">Petani Hidroponik yang Modern</option>
                                         </optgroup>
                                         <optgroup label="Kerajinan & Seni Tradisional">
                                             <option value="pengrajin batik yang teliti">Pengrajin Batik yang Teliti</option>
                                             <option value="pengrajin ukir kayu yang sabar">Pengrajin Ukir Kayu yang Sabar</option>
-                                            <option value="pengrajin keramik yang cermat">Pengrajin Keramik yang Cermat</option>
-                                            <option value="pengrajin perak yang telaten">Pengrajin Perak yang Telaten</option>
-                                            <option value="pengrajin anyaman yang tekun">Pengrajin Anyaman yang Tekun</option>
-                                            <option value="pengrajin tenun yang detail">Pengrajin Tenun yang Detail</option>
-                                            <option value="pengrajin wayang yang kreatif">Pengrajin Wayang yang Kreatif</option>
-                                            <option value="pengrajin songket yang teliti">Pengrajin Songket yang Teliti</option>
-                                        </optgroup>
-                                        <optgroup label="Kuliner & Makanan">
-                                            <option value="juru masak tradisional yang handal">Juru Masak Tradisional yang Handal</option>
-                                            <option value="pedagang sate yang ramah">Pedagang Sate yang Ramah</option>
-                                            <option value="pedagang bakso yang ceria">Pedagang Bakso yang Ceria</option>
-                                            <option value="pedagang nasi goreng yang lincah">Pedagang Nasi Goreng yang Lincah</option>
-                                            <option value="pedagang martabak yang tekun">Pedagang Martabak yang Tekun</option>
-                                            <option value="pedagang es cendol yang ramah">Pedagang Es Cendol yang Ramah</option>
-                                            <option value="pedagang gorengan yang gigih">Pedagang Gorengan yang Gigih</option>
-                                            <option value="pedagang rujak yang ceria">Pedagang Rujak yang Ceria</option>
-                                        </optgroup>
-                                        <optgroup label="Transportasi & Pengangkutan">
-                                            <option value="tukang becak yang ramah">Tukang Becak yang Ramah</option>
-                                            <option value="tukang ojek yang tangguh">Tukang Ojek yang Tangguh</option>
-                                            <option value="tukang angkot yang ceria">Tukang Angkot yang Ceria</option>
-                                            <option value="tukang delman yang sabar">Tukang Delman yang Sabar</option>
-                                            <option value="tukang perahu yang berani">Tukang Perahu yang Berani</option>
-                                            <option value="tukang gerobak yang gigih">Tukang Gerobak yang Gigih</option>
-                                            <option value="tukang pikul yang kuat">Tukang Pikul yang Kuat</option>
-                                            <option value="tukang dorong yang tekun">Tukang Dorong yang Tekun</option>
-                                        </optgroup>
-                                        <optgroup label="Pendidikan & Pengajaran">
-                                            <option value="guru ngaji yang sabar">Guru Ngaji yang Sabar</option>
-                                            <option value="guru mengaji yang telaten">Guru Mengaji yang Telaten</option>
-                                            <option value="guru silat yang tegas">Guru Silat yang Tegas</option>
-                                            <option value="guru tari tradisional yang luwes">Guru Tari Tradisional yang Luwes</option>
-                                            <option value="guru gamelan yang teliti">Guru Gamelan yang Teliti</option>
-                                            <option value="guru wayang yang bijaksana">Guru Wayang yang Bijaksana</option>
-                                            <option value="guru batik yang telaten">Guru Batik yang Telaten</option>
-                                            <option value="guru kerajinan yang kreatif">Guru Kerajinan yang Kreatif</option>
-                                        </optgroup>
-                                        <optgroup label="Kesehatan & Pengobatan">
-                                            <option value="tabib tradisional yang bijaksana">Tabib Tradisional yang Bijaksana</option>
-                                            <option value="dukun beranak yang sabar">Dukun Beranak yang Sabar</option>
-                                            <option value="tukang pijat yang telaten">Tukang Pijat yang Telaten</option>
-                                            <option value="tukang urut yang handal">Tukang Urut yang Handal</option>
-                                            <option value="tukang bekam yang teliti">Tukang Bekam yang Teliti</option>
-                                            <option value="tukang jamu yang cermat">Tukang Jamu yang Cermat</option>
-                                            <option value="tukang akupuntur yang sabar">Tukang Akupuntur yang Sabar</option>
-                                            <option value="tukang refleksi yang telaten">Tukang Refleksi yang Telaten</option>
-                                        </optgroup>
-                                        <optgroup label="Pertukangan & Konstruksi">
-                                            <option value="tukang kayu yang teliti">Tukang Kayu yang Teliti</option>
-                                            <option value="tukang batu yang kuat">Tukang Batu yang Kuat</option>
-                                            <option value="tukang atap yang berani">Tukang Atap yang Berani</option>
-                                            <option value="tukang listrik yang cermat">Tukang Listrik yang Cermat</option>
-                                            <option value="tukang pipa yang telaten">Tukang Pipa yang Telaten</option>
-                                            <option value="tukang cat yang teliti">Tukang Cat yang Teliti</option>
-                                            <option value="tukang las yang tangguh">Tukang Las yang Tangguh</option>
-                                            <option value="tukang ukir yang sabar">Tukang Ukir yang Sabar</option>
-                                        </optgroup>
-                                        <optgroup label="Perikanan & Kelautan">
-                                            <option value="nelayan tradisional yang tangguh">Nelayan Tradisional yang Tangguh</option>
-                                            <option value="nelayan jaring yang berani">Nelayan Jaring yang Berani</option>
-                                            <option value="nelayan pancing yang sabar">Nelayan Pancing yang Sabar</option>
-                                            <option value="pembudidaya ikan yang telaten">Pembudidaya Ikan yang Telaten</option>
-                                            <option value="pembudidaya udang yang teliti">Pembudidaya Udang yang Teliti</option>
-                                            <option value="pembudidaya rumput laut yang tekun">Pembudidaya Rumput Laut yang Tekun</option>
-                                            <option value="pengolah hasil laut yang cermat">Pengolah Hasil Laut yang Cermat</option>
-                                            <option value="pedagang hasil laut yang ramah">Pedagang Hasil Laut yang Ramah</option>
-                                        </optgroup>
-                                        <optgroup label="Seni & Hiburan">
-                                            <option value="dalang wayang yang bijaksana">Dalang Wayang yang Bijaksana</option>
-                                            <option value="penari tradisional yang luwes">Penari Tradisional yang Luwes</option>
-                                            <option value="pemain gamelan yang teliti">Pemain Gamelan yang Teliti</option>
-                                            <option value="pemain angklung yang ceria">Pemain Angklung yang Ceria</option>
-                                            <option value="pemain suling yang sabar">Pemain Suling yang Sabar</option>
-                                            <option value="pemain kendang yang energik">Pemain Kendang yang Energik</option>
-                                            <option value="pemain rebana yang bersemangat">Pemain Rebana yang Bersemangat</option>
-                                            <option value="pemain kecapi yang tenang">Pemain Kecapi yang Tenang</option>
                                         </optgroup>
                                         <optgroup label="Pembawa Acara & Presenter">
                                             <option value="pembawa acara talkshow yang interaktif">Pembawa Acara Talkshow yang Interaktif</option>
-                                            <option value="pembawa acara kuis yang energik">Pembawa Acara Kuis yang Energik</option>
-                                            <option value="pembawa acara musik yang dinamis">Pembawa Acara Musik yang Dinamis</option>
-                                            <option value="pembawa acara variety show yang ceria">Pembawa Acara Variety Show yang Ceria</option>
-                                            <option value="pembawa acara reality show yang natural">Pembawa Acara Reality Show yang Natural</option>
-                                            <option value="pembawa acara dokumenter yang informatif">Pembawa Acara Dokumenter yang Informatif</option>
-                                            <option value="pembawa acara cooking show yang ramah">Pembawa Acara Cooking Show yang Ramah</option>
-                                            <option value="pembawa acara travel show yang antusias">Pembawa Acara Travel Show yang Antusias</option>
-                                            <option value="pembawa acara lifestyle yang elegan">Pembawa Acara Lifestyle yang Elegan</option>
-                                            <option value="pembawa acara olahraga yang bersemangat">Pembawa Acara Olahraga yang Bersemangat</option>
                                             <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
-                                            <option value="pembawa berita senior yang bijaksana">Pembawa Berita Senior yang Bijaksana</option>
-                                            <option value="pembawa berita muda yang dinamis">Pembawa Berita Muda yang Dinamis</option>
-                                            <option value="pembawa berita olahraga yang bersemangat">Pembawa Berita Olahraga yang Bersemangat</option>
-                                            <option value="pembawa berita ekonomi yang cermat">Pembawa Berita Ekonomi yang Cermat</option>
-                                            <option value="pembawa berita hiburan yang ceria">Pembawa Berita Hiburan yang Ceria</option>
-                                            <option value="pembawa berita politik yang serius">Pembawa Berita Politik yang Serius</option>
-                                            <option value="pembawa berita teknologi yang informatif">Pembawa Berita Teknologi yang Informatif</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customSubjectCharacteristicsInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan karakteristik subjek...">
@@ -343,6 +220,7 @@
                                 <div>
                                     <label for="emotion" class="block text-sm font-medium text-gray-700 mb-1">4. Emosi</label>
                                     <select id="emotion" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Emosi Positif">
                                             <option value="ramah tamah">Ramah Tamah</option>
                                             <option value="sopan santun">Sopan Santun</option>
@@ -371,51 +249,34 @@
                                             <option value="riang">Riang</option>
                                             <option value="sukacita">Sukacita</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customEmotionInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan emosi...">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                            <h2 class="form-category-title">2. Lingkungan dan Atmosfer</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <label for="location" class="block text-sm font-medium text-gray-700 mb-1">5. Tempat (Lokasi)</label>
                                     <select id="location" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Pasar & Perdagangan">
                                             <option value="pasar tradisional yang ramai">Pasar Tradisional yang Ramai</option>
                                             <option value="pasar pagi yang sibuk">Pasar Pagi yang Sibuk</option>
                                             <option value="warung kopi yang nyaman">Warung Kopi yang Nyaman</option>
-                                            <option value="kaki lima yang meriah">Kaki Lima yang Meriah</option>
-                                            <option value="pasar malam yang gemerlap">Pasar Malam yang Gemerlap</option>
                                         </optgroup>
                                         <optgroup label="Pertanian & Perkebunan">
                                             <option value="sawah yang hijau">Sawah yang Hijau</option>
                                             <option value="kebun yang subur">Kebun yang Subur</option>
-                                            <option value="ladang yang luas">Ladang yang Luas</option>
-                                            <option value="perkebunan yang asri">Perkebunan yang Asri</option>
-                                            <option value="kebun organik yang sejuk">Kebun Organik yang Sejuk</option>
                                         </optgroup>
                                         <optgroup label="Desa & Kampung">
                                             <option value="desa yang damai">Desa yang Damai</option>
                                             <option value="kampung yang asri">Kampung yang Asri</option>
-                                            <option value="pedesaan yang sejuk">Pedesaan yang Sejuk</option>
-                                            <option value="perkampungan yang ramai">Perkampungan yang Ramai</option>
-                                            <option value="lingkungan yang rukun">Lingkungan yang Rukun</option>
                                         </optgroup>
-                                        <optgroup label="Pesisir & Laut">
-                                            <option value="pantai yang indah">Pantai yang Indah</option>
-                                            <option value="pelabuhan yang ramai">Pelabuhan yang Ramai</option>
-                                            <option value="pulau yang sepi">Pulau yang Sepi</option>
-                                            <option value="pesisir yang tenang">Pesisir yang Tenang</option>
-                                            <option value="teluk yang menawan">Teluk yang Menawan</option>
-                                        </optgroup>
-                                        <optgroup label="Kota & Perkotaan">
-                                            <option value="kota yang ramai">Kota yang Ramai</option>
-                                            <option value="perkotaan yang modern">Perkotaan yang Modern</option>
-                                            <option value="pusat kota yang sibuk">Pusat Kota yang Sibuk</option>
-                                            <option value="kawasan yang berkembang">Kawasan yang Berkembang</option>
-                                            <option value="lingkungan yang dinamis">Lingkungan yang Dinamis</option>
-                                        </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customLocationInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan lokasi...">
@@ -424,35 +285,23 @@
                                 <div>
                                     <label for="time" class="block text-sm font-medium text-gray-700 mb-1">6. Waktu</label>
                                     <select id="time" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Pagi">
                                             <option value="subuh yang sejuk">Subuh yang Sejuk</option>
                                             <option value="pagi yang cerah">Pagi yang Cerah</option>
-                                            <option value="fajar yang menyejukkan">Fajar yang Menyejukkan</option>
-                                            <option value="pagi buta yang dingin">Pagi Buta yang Dingin</option>
-                                            <option value="matahari terbit yang indah">Matahari Terbit yang Indah</option>
                                         </optgroup>
                                         <optgroup label="Siang">
                                             <option value="siang yang terik">Siang yang Terik</option>
                                             <option value="tengah hari yang panas">Tengah Hari yang Panas</option>
-                                            <option value="dzuhur yang terang">Dzuhur yang Terang</option>
-                                            <option value="siang bolong yang terik">Siang Bolong yang Terik</option>
-                                            <option value="ashar yang hangat">Ashar yang Hangat</option>
                                         </optgroup>
                                         <optgroup label="Sore">
                                             <option value="sore yang hangat">Sore yang Hangat</option>
                                             <option value="senja yang romantis">Senja yang Romantis</option>
-                                            <option value="maghrib yang indah">Maghrib yang Indah</option>
-                                            <option value="petang yang sejuk">Petang yang Sejuk</option>
-                                            <option value="sore hari yang tenang">Sore Hari yang Tenang</option>
                                         </optgroup>
                                         <optgroup label="Malam">
                                             <option value="malam yang sejuk">Malam yang Sejuk</option>
-                                            <option value="malam hari yang tenang">Malam Hari yang Tenang</option>
-                                            <option value="isya yang damai">Isya yang Damai</option>
                                             <option value="tengah malam yang sunyi">Tengah Malam yang Sunyi</option>
-                                            <option value="dini hari yang sepi">Dini Hari yang Sepi</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customTimeInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan waktu...">
@@ -461,35 +310,23 @@
                                 <div>
                                     <label for="weather" class="block text-sm font-medium text-gray-700 mb-1">7. Cuaca</label>
                                     <select id="weather" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Cerah">
                                             <option value="cerah berkilau">Cerah Berkilau</option>
-                                            <option value="terang benderang">Terang Benderang</option>
                                             <option value="matahari bersinar terang">Matahari Bersinar Terang</option>
-                                            <option value="langit biru jernih">Langit Biru Jernih</option>
-                                            <option value="cuaca cerah ceria">Cuaca Cerah Ceria</option>
                                         </optgroup>
                                         <optgroup label="Hujan">
                                             <option value="hujan rintik-rintik">Hujan Rintik-rintik</option>
-                                            <option value="hujan gerimis">Hujan Gerimis</option>
                                             <option value="hujan deras">Hujan Deras</option>
-                                            <option value="hujan lebat">Hujan Lebat</option>
-                                            <option value="hujan badai">Hujan Badai</option>
                                         </optgroup>
                                         <optgroup label="Berawan">
                                             <option value="berawan lembut">Berawan Lembut</option>
                                             <option value="mendung">Mendung</option>
-                                            <option value="awan mendung">Awan Mendung</option>
-                                            <option value="berawan tebal">Berawan Tebal</option>
-                                            <option value="mendung gelap">Mendung Gelap</option>
                                         </optgroup>
                                         <optgroup label="Khusus">
                                             <option value="angin sepoi-sepoi">Angin Sepoi-sepoi</option>
-                                            <option value="angin kencang">Angin Kencang</option>
                                             <option value="berkabut">Berkabut</option>
-                                            <option value="embun pagi">Embun Pagi</option>
-                                            <option value="udara sejuk">Udara Sejuk</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customWeatherInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan cuaca...">
@@ -498,46 +335,39 @@
                                 <div>
                                     <label for="season" class="block text-sm font-medium text-gray-700 mb-1">8. Musim</label>
                                     <select id="season" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <optgroup label="Musim Kemarau">
                                             <option value="kemarau yang terik">Kemarau yang Terik</option>
                                             <option value="musim kering">Musim Kering</option>
-                                            <option value="panas terik">Panas Terik</option>
-                                            <option value="kekeringan">Kekeringan</option>
-                                            <option value="kemarau panjang">Kemarau Panjang</option>
                                         </optgroup>
                                         <optgroup label="Musim Hujan">
                                             <option value="hujan yang sejuk">Hujan yang Sejuk</option>
                                             <option value="musim penghujan">Musim Penghujan</option>
-                                            <option value="hujan lebat">Hujan Lebat</option>
-                                            <option value="musim basah">Musim Basah</option>
-                                            <option value="hujan deras">Hujan Deras</option>
                                         </optgroup>
                                         <optgroup label="Peralihan">
                                             <option value="peralihan musim">Peralihan Musim</option>
                                             <option value="musim pancaroba">Musim Pancaroba</option>
-                                            <option value="pergantian musim">Pergantian Musim</option>
-                                            <option value="transisi musim">Transisi Musim</option>
-                                            <option value="perubahan musim">Perubahan Musim</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customSeasonInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan musim...">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                            <h2 class="form-category-title">3. Sinematografi</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <label for="style" class="block text-sm font-medium text-gray-700 mb-1">9. Gaya Video</label>
                                     <select id="style" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="sinematik yang epik">Sinematik yang Epik</option>
                                         <option value="dokumenter yang mendalam">Dokumenter yang Mendalam</option>
                                         <option value="anime yang dinamis">Anime yang Dinamis</option>
                                         <option value="kartun yang ceria">Kartun yang Ceria</option>
                                         <option value="realistis yang natural">Realistis yang Natural</option>
-                                        <option value="vintage yang klasik">Vintage yang Klasik</option>
-                                        <option value="futuristik yang modern">Futuristik yang Modern</option>
-                                        <option value="film noir yang misterius">Film Noir yang Misterius</option>
-                                        <option value="komersial yang profesional">Komersial yang Profesional</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customStyleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gaya video...">
@@ -546,15 +376,11 @@
                                 <div>
                                     <label for="cameraMovement" class="block text-sm font-medium text-gray-700 mb-1">10. Gerakan Kamera</label>
                                     <select id="cameraMovement" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="statik yang stabil">Statik yang Stabil</option>
                                         <option value="panning yang halus">Panning yang Halus</option>
                                         <option value="dolly yang dinamis">Dolly yang Dinamis</option>
                                         <option value="tracking yang mengalir">Tracking yang Mengalir</option>
-                                        <option value="drone yang spektakuler">Drone yang Spektakuler</option>
-                                        <option value="crane yang elegan">Crane yang Elegan</option>
-                                        <option value="steadicam yang stabil">Steadicam yang Stabil</option>
-                                        <option value="handheld yang natural">Handheld yang Natural</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customCameraMovementInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gerakan kamera...">
@@ -563,13 +389,10 @@
                                 <div>
                                     <label for="cameraAngle" class="block text-sm font-medium text-gray-700 mb-1">11. Sudut Kamera</label>
                                     <select id="cameraAngle" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="setinggi mata yang natural">Setinggi Mata yang Natural</option>
                                         <option value="sudut rendah yang dramatis">Sudut Rendah yang Dramatis</option>
                                         <option value="sudut tinggi yang mengesankan">Sudut Tinggi yang Mengesankan</option>
-                                        <option value="sudut mata burung yang spektakuler">Sudut Mata Burung yang Spektakuler</option>
-                                        <option value="sudut belanda yang dinamis">Sudut Belanda yang Dinamis</option>
-                                        <option value="dari balik bahu yang intim">Dari Balik Bahu yang Intim</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customCameraAngleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan sudut kamera...">
@@ -578,12 +401,10 @@
                                 <div>
                                     <label for="focalLength" class="block text-sm font-medium text-gray-700 mb-1">12. Panjang Fokus</label>
                                     <select id="focalLength" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="lebar (24mm) yang luas">Lebar (24mm) yang Luas</option>
                                         <option value="medium (50mm) yang natural">Medium (50mm) yang Natural</option>
                                         <option value="telefoto (85mm) yang intim">Telefoto (85mm) yang Intim</option>
-                                        <option value="ultra lebar (16mm) yang spektakuler">Ultra Lebar (16mm) yang Spektakuler</option>
-                                        <option value="makro yang detail">Makro yang Detail</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customFocalLengthInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan panjang fokus...">
@@ -592,15 +413,10 @@
                                 <div>
                                     <label for="lighting" class="block text-sm font-medium text-gray-700 mb-1">13. Pencahayaan</label>
                                     <select id="lighting" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="alami yang natural">Alami yang Natural</option>
                                         <option value="dramatis yang intens">Dramatis yang Intens</option>
                                         <option value="lembut yang menenangkan">Lembut yang Menenangkan</option>
-                                        <option value="cahaya latar yang elegan">Cahaya Latar yang Elegan</option>
-                                        <option value="studio yang profesional">Studio yang Profesional</option>
-                                        <option value="rendah yang misterius">Rendah yang Misterius</option>
-                                        <option value="tinggi yang ceria">Tinggi yang Ceria</option>
-                                        <option value="neon yang futuristik">Neon yang Futuristik</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customLightingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan pencahayaan...">
@@ -609,30 +425,28 @@
                                 <div>
                                     <label for="colorGrading" class="block text-sm font-medium text-gray-700 mb-1">14. Gradiasi Warna</label>
                                     <select id="colorGrading" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="alami yang natural">Alami yang Natural</option>
                                         <option value="hangat yang menyejukkan">Hangat yang Menyejukkan</option>
                                         <option value="dingin yang menenangkan">Dingin yang Menenangkan</option>
-                                        <option value="vintage yang klasik">Vintage yang Klasik</option>
-                                        <option value="kontras tinggi yang dramatis">Kontras Tinggi yang Dramatis</option>
-                                        <option value="desaturasi yang elegan">Desaturasi yang Elegan</option>
-                                        <option value="cerlang yang hidup">Cerlang yang Hidup</option>
-                                        <option value="monokrom yang timeless">Monokrom yang Timeless</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                     <div id="customColorGradingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gradiasi warna...">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                            <h2 class="form-category-title">4. Audio</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                  <div>
                                     <label for="dialog" class="block text-sm font-medium text-gray-700 mb-1">15. Suara Video (Dialog)</label>
                                     <select id="dialog" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="none">Tanpa Dialog</option>
                                         <option value="narasi yang informatif">Narasi yang Informatif</option>
                                         <option value="dialog yang natural">Dialog yang Natural</option>
-                                        <option value="monolog yang mendalam">Monolog yang Mendalam</option>
-                                        <option value="wawancara yang profesional">Wawancara yang Profesional</option>
-                                        <option value="voice over yang elegan">Voice Over yang Elegan</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customDialogInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan dialog...">
@@ -641,21 +455,17 @@
                                 <div>
                                     <label for="dialogCharacter" class="block text-sm font-medium text-gray-700 mb-1">16. Karakter Dialog</label>
                                     <select id="dialogCharacter" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="none">Tidak Ada</option>
                                         <optgroup label="Pembawa Berita">
                                             <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
-                                            <option value="pembawa berita senior yang bijaksana">Pembawa Berita Senior yang Bijaksana</option>
-                                            <option value="pembawa berita muda yang dinamis">Pembawa Berita Muda yang Dinamis</option>
                                         </optgroup>
                                         <optgroup label="Suara Pria">
                                             <option value="pria dewasa yang profesional">Pria Dewasa yang Profesional</option>
-                                            <option value="pria muda yang energik">Pria Muda yang Energik</option>
                                         </optgroup>
                                         <optgroup label="Suara Wanita">
                                             <option value="wanita dewasa yang elegan">Wanita Dewasa yang Elegan</option>
-                                            <option value="wanita muda yang dinamis">Wanita Muda yang Dinamis</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customDialogCharacterInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan karakter suara...">
@@ -664,18 +474,15 @@
                                 <div>
                                     <label for="voiceMood" class="block text-sm font-medium text-gray-700 mb-1">17. Suasana Suara (Dialog)</label>
                                     <select id="voiceMood" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="none">Tidak Ada</option>
                                         <optgroup label="Emosi">
                                             <option value="gembira yang ceria">Gembira yang Ceria</option>
                                             <option value="sedih yang mengharukan">Sedih yang Mengharukan</option>
-                                            <option value="marah yang tegas">Marah yang Tegas</option>
-                                            <option value="tenang yang menenangkan">Tenang yang Menenangkan</option>
                                         </optgroup>
                                         <optgroup label="Suasana">
                                             <option value="ramai yang dinamis">Ramai yang Dinamis</option>
-                                            <option value="sepi yang misterius">Sepi yang Misterius</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customVoiceMoodInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan suasana suara...">
@@ -684,17 +491,15 @@
                                 <div>
                                     <label for="backgroundMusic" class="block text-sm font-medium text-gray-700 mb-1">18. Suara Musik</label>
                                     <select id="backgroundMusic" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="none">Tanpa Musik</option>
                                         <optgroup label="Genre">
                                             <option value="instrumental yang elegan">Instrumental yang Elegan</option>
                                             <option value="pop yang energik">Pop yang Energik</option>
-                                            <option value="dangdut koplo">Dangdut Koplo</option>
                                         </optgroup>
                                         <optgroup label="Suasana">
                                             <option value="dramatis yang intens">Dramatis yang Intens</option>
-                                            <option value="romantis yang lembut">Romantis yang Lembut</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customMusicInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan musik...">
@@ -703,15 +508,14 @@
                                 <div>
                                     <label for="soundEffects" class="block text-sm font-medium text-gray-700 mb-1">19. Efek Suara</label>
                                     <select id="soundEffects" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="none">Tanpa Efek</option>
                                         <optgroup label="Alam">
                                             <option value="hujan yang menyejukkan">Hujan yang Menyejukkan</option>
-                                            <option value="angin yang sepoi-sepoi">Angin yang Sepoi-sepoi</option>
                                         </optgroup>
                                         <optgroup label="Perkotaan">
                                             <option value="keramaian kota yang dinamis">Keramaian Kota yang Dinamis</option>
                                         </optgroup>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customSoundEffectsInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan efek suara...">
@@ -720,10 +524,10 @@
                                 <div>
                                     <label for="volume" class="block text-sm font-medium text-gray-700 mb-1">20. Karakteristik Volume Audio</label>
                                     <select id="volume" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
                                         <option value="rendah yang halus">Rendah yang Halus</option>
                                         <option value="sedang yang seimbang" selected>Sedang yang Seimbang</option>
                                         <option value="tinggi yang powerful">Tinggi yang Powerful</option>
-                                        <option value="custom">Input Manual</option>
                                     </select>
                                      <div id="customVolumeInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan volume...">
@@ -737,6 +541,38 @@
                                         <option value="english_voiceover">Alih Suara ke Bahasa Inggris</option>
                                     </select>
                                 </div>
+                            </div>
+                             <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-white">
+                                <div class="flex items-center justify-between cursor-pointer" onclick="toggleAudioMixing()">
+                                    <h3 class="text-md font-semibold text-gray-700">Pengaturan Audio Mixing Lanjutan</h3>
+                                    <svg id="audioMixingChevron" class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                <div id="audioMixingContent" class="hidden mt-4 space-y-3">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="dialogVolume" class="block text-sm font-medium text-gray-700">Volume Dialog: <span id="dialogVolumeValue" class="font-normal text-purple-600">80%</span></label>
+                                            <input type="range" id="dialogVolume" min="0" max="100" value="80" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+                                        </div>
+                                        <div>
+                                            <label for="musicVolume" class="block text-sm font-medium text-gray-700">Volume Musik: <span id="musicVolumeValue" class="font-normal text-purple-600">60%</span></label>
+                                            <input type="range" id="musicVolume" min="0" max="100" value="60" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+                                        </div>
+                                        <div>
+                                            <label for="effectsVolume" class="block text-sm font-medium text-gray-700">Volume Efek: <span id="effectsVolumeValue" class="font-normal text-purple-600">40%</span></label>
+                                            <input type="range" id="effectsVolume" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+                                        </div>
+                                        <div>
+                                            <label for="overallVolume" class="block text-sm font-medium text-gray-700">Volume Master: <span id="overallVolumeValue" class="font-normal text-purple-600">100%</span></label>
+                                            <input type="range" id="overallVolume" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white">
+                            <h2 class="form-category-title">5. Parameter Teknis dan Tambahan</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <label for="videoQuality" class="block text-sm font-medium text-gray-700 mb-1">22. Kualitas Video (Aspek Rasio)</label>
                                     <select id="videoQuality" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
@@ -755,32 +591,6 @@
                             </div>
                         </div>
                         
-                        <div class="p-4 border border-gray-200 rounded-lg bg-white">
-                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleAudioMixing()">
-                                <h3 class="text-md font-semibold text-gray-700">Pengaturan Audio Mixing Lanjutan</h3>
-                                <svg id="audioMixingChevron" class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                            <div id="audioMixingContent" class="hidden mt-4 space-y-3">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="dialogVolume" class="block text-sm font-medium text-gray-700">Volume Dialog: <span id="dialogVolumeValue" class="font-normal text-purple-600">80%</span></label>
-                                        <input type="range" id="dialogVolume" min="0" max="100" value="80" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
-                                    </div>
-                                    <div>
-                                        <label for="musicVolume" class="block text-sm font-medium text-gray-700">Volume Musik: <span id="musicVolumeValue" class="font-normal text-purple-600">60%</span></label>
-                                        <input type="range" id="musicVolume" min="0" max="100" value="60" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
-                                    </div>
-                                    <div>
-                                        <label for="effectsVolume" class="block text-sm font-medium text-gray-700">Volume Efek: <span id="effectsVolumeValue" class="font-normal text-purple-600">40%</span></label>
-                                        <input type="range" id="effectsVolume" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
-                                    </div>
-                                    <div>
-                                        <label for="overallVolume" class="block text-sm font-medium text-gray-700">Volume Master: <span id="overallVolumeValue" class="font-normal text-purple-600">100%</span></label>
-                                        <input type="range" id="overallVolume" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                          <input type="hidden" id="equalizer" value="none">
                         <input type="hidden" id="compression" value="none">
                         <input type="hidden" id="reverb" value="none">
@@ -840,85 +650,95 @@
 
     <script type="module">
         const promptHandler = {
-            initializeCopyButton: () => {}, // Placeholder
+            initializeCopyButton: () => {}, 
             translateText: async (text) => {
-                console.log("Original Indonesian Prompt for Translation:", text);
-                await new Promise(resolve => setTimeout(resolve, 200)); // Simulate API delay
+                console.log("Original Indonesian for Translation:", text);
+                await new Promise(resolve => setTimeout(resolve, 200)); 
 
                 let translated = text;
 
-                // Specific structural replacements first
-                translated = translated.replace(/Buat video bergaya (.*?) tentang (.*?) yang sedang (.*?)(?: dengan emosi (.*?))?(?: di (.*?))?(?: pada (.*?))?(?: (.*?))?(?: dengan cuaca (.*?))?\./g, 
-                    (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-                        let eng = `Create a ${p1 || 'unspecified style'} video about ${p2 || 'an unspecified subject'} who is ${p3 || 'doing something'}`;
-                        if (p4 && p4 !== 'none' && p4.toLowerCase() !== 'ramah tamah') eng += ` with ${p4} emotion`;
-                        if (p5 && p5 !== 'none') eng += ` at ${p5}`;
-                        if (p6 && p6 !== 'none' && p6.toLowerCase() !== 'pagi yang cerah') eng += ` on ${p6}`;
-                        if (p7 && p7 !== 'none' && p7.toLowerCase() !== 'kemarau yang terik') eng += ` during ${p7} season`;
-                        if (p8 && p8 !== 'none' && p8.toLowerCase() !== 'cerah berkilau') eng += ` with ${p8} weather`;
-                        return eng + ".";
-                    });
-
-                translated = translated.replace(/Sinematografi: Pergerakan kamera (.*?)(?: dari sudut (.*?))?(?: menggunakan lensa (.*?))?\. Pencahayaan (.*?)(?: dengan gradiasi warna (.*?))?\./g,
-                    (match, p1, p2, p3, p4, p5) => {
-                        let eng = `Cinematography: ${p1 || 'unspecified'} camera movement`;
-                        if (p2 && p2 !== 'none' && p2.toLowerCase() !== 'setinggi mata yang natural') eng += ` from a/an ${p2} angle`;
-                        if (p3 && p3 !== 'none' && p3.toLowerCase() !== 'medium (50mm) yang natural') eng += ` using a ${p3} lens`;
-                        eng += `. Lighting is ${p4 || 'unspecified'}`;
-                        if (p5 && p5 !== 'none' && p5.toLowerCase() !== 'alami yang natural') eng += ` with ${p5} color grading`;
-                        return eng + ".";
-                    });
-                
-                translated = translated.replace(/Audio: (.*?)\. Volume Master Audio: (.*?)%\./g, (match, p1, p2) => `Audio: ${p1}. Master Audio Volume: ${p2}%.`);
-                translated = translated.replace(/Audio: Tanpa audio spesifik\./g, "Audio: No specific audio.");
-                
-                translated = translated.replace(/Dialog: "(.*?)"(?: oleh (.*?))?(?: dengan suasana (.*?))?(?: \(Volume: (.*?)%\))?/g, 
-                    (match, dialog, character, mood, volume) => {
-                        let eng = `Dialog: "${dialog}"`;
-                        if (character && character !== 'none') eng += ` by ${character}`;
-                        if (mood && mood !== 'none') eng += ` with a ${mood} mood`;
-                        if (volume) eng += ` (Volume: ${volume}%)`;
-                        return eng;
-                });
-
-                translated = translated.replace(/Musik Latar: (.*?)(?: \(Volume: (.*?)%\))?/g, (match, music, volume) => `Background Music: ${music}` + (volume ? ` (Volume: ${volume}%)` : ''));
-                translated = translated.replace(/Efek Suara: (.*?)(?: \(Volume: (.*?)%\))?/g, (match, effect, volume) => `Sound Effects: ${effect}` + (volume ? ` (Volume: ${effect}%)` : ''));
-                translated = translated.replace(/Karakteristik Volume Audio: (.*?)\./g, "Overall Audio Volume Characteristic: $1.");
-                
-                translated = translated.replace(/Terjemahan Audio: english_subtitle/g, "Audio Translation: English subtitles (Original Dialog).");
-                translated = translated.replace(/Terjemahan Audio: english_voiceover/g, "Audio Translation: English voiceover.");
-                translated = translated.replace(/Terjemahan Audio: none/g, "Audio Translation: None.");
-                translated = translated.replace(/Terjemahan Audio: (.*?)\./g, "Audio Translation: $1.");
-
-
-                translated = translated.replace(/Kualitas Video: (.*?)\./g, "Video Quality: $1.");
-                translated = translated.replace(/Detail Tambahan: (.*)/g, "Additional Details: $1");
-
-                // General word/phrase replacements (apply these last)
                 const dictionary = {
-                    'tidak ditentukan': 'unspecified', 'melakukan sesuatu': 'doing something', 'subjek tidak ditentukan': 'an unspecified subject',
-                    'dengan emosi': 'with emotion', 'di lokasi': 'at location', 'pada waktu': 'at time', 'dengan cuaca': 'with weather',
-                    'dari sudut': 'from angle', 'menggunakan lensa': 'using lens', 'Pencahayaan': 'Lighting', 'gradiasi warna': 'color grading',
-                    // Add more translations for common dropdown values if they are not caught by structural regexes
-                    'berjualan dengan ramah': 'selling friendly', 'mencangkul dengan tekun': 'hoeing diligently',
-                    'sinematik yang epik': 'epic cinematic', 'alami yang natural': 'natural', 'pagi yang cerah': 'bright morning',
-                    'kemarau yang terik': 'hot dry season', 'cerah berkilau': 'sparkling bright', 'setinggi mata yang natural': 'eye-level natural',
-                    'medium (50mm) yang natural': 'medium (50mm) natural', 'standar yang jernih (16:9)': 'standard clear (16:9)',
-                    'Tanpa Dialog': 'No Dialog', 'Tidak Ada': 'None', 'Tanpa Musik': 'No Music', 'Tanpa Efek': 'No Effects',
-                    'sedang yang seimbang': 'medium balanced'
-                    // ... more dictionary items
-                };
+                    // Kategori 1: Detail Subjek dan Aksi
+                    "Buat video bergaya": "Create a video in the style of",
+                    "tentang": "about",
+                    "yang sedang": "who is",
+                    "dengan emosi": "with emotion",
+                    "berjualan dengan ramah": "selling friendly", "menawar dengan cerdik": "bargaining smartly", "mengatur dagangan dengan rapi": "arranging merchandise neatly",
+                    "pedagang pasar tradisional yang ramah": "a friendly traditional market vendor", "petani padi yang tekun": "a diligent rice farmer",
+                    "ramah tamah": "friendly", "sopan santun": "polite", "ikhlas": "sincere", "sabar": "patient", "gigih": "persistent",
+                    "bersemangat": "enthusiastic", "penuh semangat": "full of spirit", "bergairah": "passionate", "antusias": "enthusiastic", "bersemangat tinggi": "highly spirited",
+                    "tenang": "calm", "tenteram": "peaceful", "damai": "peaceful", "nyaman": "comfortable", "tentram": "serene",
+                    "gembira": "joyful", "ceria": "cheerful", "bahagia": "happy", "riang": "gleeful", "sukacita": "joyous",
 
-                for (const [key, value] of Object.entries(dictionary)) {
-                    // Use a regex that matches whole words to avoid partial replacements
-                    const regex = new RegExp(`\\b${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-                    translated = translated.replace(regex, value);
+                    // Kategori 2: Lingkungan dan Atmosfer
+                    "di": "at", // General preposition, context matters
+                    "pada": "on", // General preposition, context matters
+                    "pasar tradisional yang ramai": "a bustling traditional market", "sawah yang hijau": "green rice fields",
+                    "subuh yang sejuk": "a cool dawn", "pagi yang cerah": "a bright morning", "siang yang terik": "a scorching noon",
+                    "cerah berkilau": "sparkling bright", "hujan rintik-rintik": "drizzling rain",
+                    "kemarau yang terik": "a hot dry season", "hujan yang sejuk": "a cool rainy season",
+
+                    // Kategori 3: Sinematografi
+                    "Sinematografi:": "Cinematography:",
+                    "Pergerakan kamera": "Camera movement", "dari sudut": "from an angle of", "menggunakan lensa": "using a lens",
+                    "Pencahayaan": "Lighting:", "dengan gradiasi warna": "with color grading of",
+                    "sinematik yang epik": "epic cinematic", "dokumenter yang mendalam": "in-depth documentary",
+                    "statik yang stabil": "static and stable", "panning yang halus": "smooth panning",
+                    "setinggi mata yang natural": "eye-level natural", "sudut rendah yang dramatis": "dramatic low angle",
+                    "lebar (24mm) yang luas": "wide (24mm) expansive", "medium (50mm) yang natural": "medium (50mm) natural",
+                    "alami yang natural": "natural", // Could be ambiguous, context from "Pencahayaan" or "Gradiasi Warna" helps
+                    "dramatis yang intens": "intense dramatic",
+
+                    // Kategori 4: Audio
+                    "Audio:": "Audio:", "Dialog:": "Dialogue:", "oleh": "by", "dengan suasana": "with an atmosphere of",
+                    "Musik Latar:": "Background Music:", "Efek Suara:": "Sound Effects:",
+                    "Volume:": "Volume:", "(Volume:": "(Volume:",
+                    "Karakteristik Volume Audio:": "Overall Audio Volume Characteristic:",
+                    "Terjemahan Audio:": "Audio Translation:",
+                    "narasi yang informatif": "informative narration", "dialog yang natural": "natural dialogue",
+                    "pembawa berita profesional yang tegas": "a firm professional news anchor", "pria dewasa yang profesional": "a professional adult male",
+                    "gembira yang ceria": "joyful and cheerful", // Repeated from emotion, context helps
+                    "instrumental yang elegan": "elegant instrumental", "pop yang energik": "energetic pop",
+                    "hujan yang menyejukkan": "refreshing rain sound", // Repeated from weather, context helps
+                    "rendah yang halus": "low and smooth", "sedang yang seimbang": "medium and balanced",
+                    "Tanpa Terjemahan": "No Translation", "Terjemahkan ke Subtitle Inggris (Dialog Asli)": "Translate to English Subtitles (Original Dialogue)",
+                    "Alih Suara ke Bahasa Inggris": "Voiceover in English",
+                    "Volume Master Audio:": "Master Audio Volume:",
+
+                    // Kategori 5: Parameter Teknis dan Tambahan
+                    "Kualitas Video:": "Video Quality:", "Detail Tambahan:": "Additional Details:",
+                    "standar yang jernih (16:9)": "standard clear (16:9)", "hd yang tajam (16:9)": "HD sharp (16:9)",
+
+                    // General terms
+                    "tidak ditentukan": "unspecified", "melakukan sesuatu": "doing something", "subjek tidak ditentukan": "an unspecified subject",
+                    "Tanpa Dialog": "No Dialogue", "Tidak Ada": "None", "Tanpa Musik": "No Music", "Tanpa Efek": "No Effects",
+                    "dan": "and", "atau": "or",
+                    // Specific cases for "yang"
+                    "yang ramah": "who is friendly", "yang tekun": "who is diligent", "yang epik": "that is epic",
+                     // Fallback for "yang" if not part of a longer phrase
+                    "yang": "that is/which is"
+                };
+                
+                const sortedKeys = Object.keys(dictionary).sort((a, b) => b.length - a.length);
+
+                for (const key of sortedKeys) {
+                    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(escapedKey, 'g'); // Case-insensitive might be better: 'gi'
+                    translated = translated.replace(regex, dictionary[key]);
                 }
                 
+                // Post-processing for common patterns after dictionary replacement
+                translated = translated.replace(/Create a video in the style of an unspecified subject/g, "Create a video about an unspecified subject"); // Correction
+                translated = translated.replace(/at an unspecified subject/g, "about an unspecified subject");
+                translated = translated.replace(/, \./g, "."); // Remove comma before period
+                translated = translated.replace(/\s+\./g, "."); // Remove space before period
+                translated = translated.replace(/\s+,/g, ","); // Remove space before comma
+
+
                 console.log("Translated English Prompt (Placeholder Attempt):", translated);
                 return translated;
             },
-            initializeDropdownTranslations: async () => {} // Placeholder
+            initializeDropdownTranslations: async () => {} 
         };
         
         promptHandler.initializeCopyButton();
@@ -956,9 +776,9 @@
                 const getVal = (id, customInputSelector, defaultValIfEmpty = '') => {
                     let val = getElementValue(id);
                     if (val === 'custom') {
-                        val = getCustomInputValue(customInputSelector, ''); // Get custom input, default to empty if blank
+                        val = getCustomInputValue(customInputSelector, ''); 
                     }
-                    return val || defaultValIfEmpty; // If val is empty (either from select or custom), use defaultValIfEmpty
+                    return val || defaultValIfEmpty; 
                 };
 
                 const subject = getElementValue('subject');
@@ -983,8 +803,8 @@
                 const soundEffectsText = getVal('soundEffects', '#customSoundEffectsInput input');
                 const volumeCharacteristic = getVal('volume', '#customVolumeInput input');
 
-                const audioTranslation = getElementValue('audioTranslation'); // No custom input for this
-                const videoQuality = getElementValue('videoQuality'); // No custom input for this
+                const audioTranslation = getElementValue('audioTranslation'); 
+                const videoQuality = getElementValue('videoQuality'); 
                 const additionalDetails = getElementValue('additionalDetails');
 
                 const showAudioMixing = document.getElementById('showAudioMixing').value === 'true';
@@ -1141,12 +961,11 @@
             const formElements = document.querySelectorAll('#promptForm input[type="text"], #promptForm select, #promptForm textarea, #promptForm input[type="range"]');
             formElements.forEach(element => {
                 const eventType = (element.type === 'range' || element.tagName === 'SELECT') ? 'change' : 'input';
-                // For textareas and text inputs, also listen to keyup for more immediate feedback
                 if (element.tagName === 'TEXTAREA' || (element.tagName === 'INPUT' && element.type === 'text')) {
                     element.addEventListener('input', () => generatePrompt());
-                    element.addEventListener('keyup', () => generatePrompt()); // Added keyup
+                    element.addEventListener('keyup', () => generatePrompt());
                 }
-                element.addEventListener(eventType, () => generatePrompt()); // Existing listener
+                element.addEventListener(eventType, () => generatePrompt()); 
 
                 if (element.type === 'range') {
                      element.addEventListener('input', () => { 
@@ -1169,7 +988,7 @@
                         }
                         generatePrompt();
                     });
-                    const customInputField = customInputDiv.querySelector('input[type="text"]'); // More specific selector
+                    const customInputField = customInputDiv.querySelector('input[type="text"]'); 
                     if(customInputField) {
                         customInputField.addEventListener('input', () => generatePrompt());
                         customInputField.addEventListener('keyup', () => generatePrompt());
@@ -1183,6 +1002,15 @@
             fieldsWithCustomInput.forEach(id => {
                 const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`;
                 document.getElementById(customInputDivId)?.classList.add('hidden');
+                 // Reset select to its first actual option if "Input Manual" was selected
+                const selectField = document.getElementById(id);
+                if (selectField && selectField.options.length > 1) {
+                    if (selectField.options[0].value === "custom" && selectField.options[1]) {
+                         selectField.value = selectField.options[1].value;
+                    } else if (selectField.options[0]) {
+                         selectField.value = selectField.options[0].value;
+                    }
+                }
             });
             
             updateVolumeDisplay('dialogVolume', 'dialogVolumeValue');
