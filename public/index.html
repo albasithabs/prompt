@@ -15,7 +15,7 @@
                         secondary: '#1E40AF',
                         accent: '#60A5FA',
                         dark: '#1F2937',
-                        light: '#F9FAFB', // Lighter gray for backgrounds
+                        light: '#F9FAFB', 
                         purple: {
                             DEFAULT: '#8B5CF6',
                             dark: '#7C3AED',
@@ -24,6 +24,11 @@
                         orange: {
                             DEFAULT: '#F97316',
                             dark: '#EA580C',
+                        },
+                        green: {
+                            DEFAULT: '#22C55E',
+                            dark: '#16A34A',
+                            light: '#DCFCE7'
                         }
                     },
                     fontFamily: {
@@ -61,14 +66,13 @@
         }
         
         .form-category-title {
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 600; /* semibold */
-            color: #374151; /* gray-700 */
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            color: #374151; 
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid #E5E7EB; /* gray-200 */
+            border-bottom: 1px solid #E5E7EB; 
             margin-bottom: 1rem;
         }
-
 
         #generatedPrompt::-webkit-scrollbar,
         #generatedPromptEnglish::-webkit-scrollbar {
@@ -107,10 +111,69 @@
             border-radius: 50%;
             border: none;
         }
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px; /* md:max-w-2xl */
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="font-sans text-gray-800">
     <div class="container mx-auto px-4 py-8">
+
+        <div class="max-w-4xl mx-auto mb-6 p-4 border border-gray-200 rounded-lg shadow-sm bg-white">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <h2 class="text-md font-semibold text-gray-700">Status Akun</h2>
+                </div>
+                <span class="text-xs text-blue-700 bg-blue-100 px-2 py-1 rounded-full font-medium border border-blue-300">Trial</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">
+                <svg class="inline w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                2 prompts tersisa hari ini
+            </p>
+            <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700 flex items-start">
+                <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                <p><strong>Tips:</strong> Setup API key Gemini untuk unlimited prompts gratis selamanya!</p>
+            </div>
+            <div class="mt-4">
+                <button id="setupApiKeyButton" class="w-full sm:w-auto flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-green-600 text-green-700 hover:bg-green-50 transition-colors duration-150">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H5v-2H3v-2H1v-4a6 6 0 016-6h7zm0 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0h2m0 0h2m0 0h2m0 0h2"></path></svg>
+                    Setup API Key <span class="ml-1 text-xs">(Gratis unlimited)</span>
+                </button>
+            </div>
+        </div>
         
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
             <div class="flex-1">
@@ -135,56 +198,10 @@
                                         <optgroup label="Aktivitas Pasar">
                                             <option value="berjualan dengan ramah">Berjualan dengan Ramah</option>
                                             <option value="menawar dengan cerdik">Menawar dengan Cerdik</option>
-                                            <option value="mengatur dagangan dengan rapi">Mengatur Dagangan dengan Rapi</option>
-                                            <option value="melayani pembeli dengan sopan">Melayani Pembeli dengan Sopan</option>
-                                            <option value="memanggil pembeli dengan lantang">Memanggil Pembeli dengan Lantang</option>
                                         </optgroup>
                                         <optgroup label="Aktivitas Pertanian">
                                             <option value="mencangkul dengan tekun">Mencangkul dengan Tekun</option>
                                             <option value="menanam padi dengan telaten">Menanam Padi dengan Telaten</option>
-                                            <option value="memetik hasil panen dengan ceria">Memetik Hasil Panen dengan Ceria</option>
-                                            <option value="mengairi sawah dengan teliti">Mengairi Sawah dengan Teliti</option>
-                                            <option value="merawat tanaman dengan sabar">Merawat Tanaman dengan Sabar</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Kerajinan">
-                                            <option value="membatik dengan teliti">Membatik dengan Teliti</option>
-                                            <option value="mengukir kayu dengan sabar">Mengukir Kayu dengan Sabar</option>
-                                            <option value="menganyam dengan tekun">Menganyam dengan Tekun</option>
-                                            <option value="menenun dengan telaten">Menenun dengan Telaten</option>
-                                            <option value="membuat keramik dengan cermat">Membuat Keramik dengan Cermat</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Kuliner">
-                                            <option value="memasak dengan semangat">Memasak dengan Semangat</option>
-                                            <option value="mengaduk bumbu dengan teliti">Mengaduk Bumbu dengan Teliti</option>
-                                            <option value="menggoreng dengan lincah">Menggoreng dengan Lincah</option>
-                                            <option value="menyajikan makanan dengan rapi">Menyajikan Makanan dengan Rapi</option>
-                                            <option value="membuat jamu dengan telaten">Membuat Jamu dengan Telaten</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Transportasi">
-                                            <option value="mengayuh becak dengan gigih">Mengayuh Becak dengan Gigih</option>
-                                            <option value="mengemudi ojek dengan tangguh">Mengemudi Ojek dengan Tangguh</option>
-                                            <option value="mengemudi delman dengan sabar">Mengemudi Delman dengan Sabar</option>
-                                            <option value="mengangkut barang dengan kuat">Mengangkut Barang dengan Kuat</option>
-                                            <option value="mendorong gerobak dengan tekun">Mendorong Gerobak dengan Tekun</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Seni">
-                                            <option value="mendalang wayang dengan bijaksana">Mendalang Wayang dengan Bijaksana</option>
-                                            <option value="menari tradisional dengan luwes">Menari Tradisional dengan Luwes</option>
-                                            <option value="memainkan gamelan dengan teliti">Memainkan Gamelan dengan Teliti</option>
-                                            <option value="memainkan angklung dengan ceria">Memainkan Angklung dengan Ceria</option>
-                                            <option value="menyanyi lagu daerah dengan merdu">Menyanyi Lagu Daerah dengan Merdu</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Pengobatan">
-                                            <option value="mengobati dengan bijaksana">Mengobati dengan Bijaksana</option>
-                                            <option value="memijat dengan telaten">Memijat dengan Telaten</option>
-                                            <option value="membuat jamu dengan teliti">Membuat Jamu dengan Teliti</option>
-                                            <option value="mengurut dengan handal">Mengurut dengan Handal</option>
-                                            <option value="membekam dengan cermat">Membekam dengan Cermat</option>
-                                        </optgroup>
-                                        <optgroup label="Aktivitas Pembawa Acara">
-                                            <option value="membawakan berita dengan profesional">Membawakan Berita dengan Profesional</option>
-                                            <option value="mewawancarai narasumber dengan cerdas">Mewawancarai Narasumber dengan Cerdas</option>
-                                            <option value="membawakan talkshow dengan interaktif">Membawakan Talkshow dengan Interaktif</option>
                                         </optgroup>
                                     </select>
                                     <div id="customMainActionInput" class="hidden mt-2">
@@ -197,20 +214,9 @@
                                         <option value="custom">Input Manual</option>
                                         <optgroup label="Pasar & Perdagangan">
                                             <option value="pedagang pasar tradisional yang ramah">Pedagang Pasar Tradisional yang Ramah</option>
-                                            <option value="pedagang kaki lima yang gigih">Pedagang Kaki Lima yang Gigih</option>
-                                            <option value="pedagang warung kopi yang ceria">Pedagang Warung Kopi yang Ceria</option>
                                         </optgroup>
                                         <optgroup label="Pertanian & Perkebunan">
                                             <option value="petani padi yang tekun">Petani Padi yang Tekun</option>
-                                            <option value="petani sayuran yang teliti">Petani Sayuran yang Teliti</option>
-                                        </optgroup>
-                                        <optgroup label="Kerajinan & Seni Tradisional">
-                                            <option value="pengrajin batik yang teliti">Pengrajin Batik yang Teliti</option>
-                                            <option value="pengrajin ukir kayu yang sabar">Pengrajin Ukir Kayu yang Sabar</option>
-                                        </optgroup>
-                                        <optgroup label="Pembawa Acara & Presenter">
-                                            <option value="pembawa acara talkshow yang interaktif">Pembawa Acara Talkshow yang Interaktif</option>
-                                            <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
                                         </optgroup>
                                     </select>
                                     <div id="customSubjectCharacteristicsInput" class="hidden mt-2">
@@ -224,30 +230,9 @@
                                         <optgroup label="Emosi Positif">
                                             <option value="ramah tamah">Ramah Tamah</option>
                                             <option value="sopan santun">Sopan Santun</option>
-                                            <option value="ikhlas">Ikhlas</option>
-                                            <option value="sabar">Sabar</option>
-                                            <option value="gigih">Gigih</option>
                                         </optgroup>
                                         <optgroup label="Semangat">
                                             <option value="bersemangat">Bersemangat</option>
-                                            <option value="penuh semangat">Penuh Semangat</option>
-                                            <option value="bergairah">Bergairah</option>
-                                            <option value="antusias">Antusias</option>
-                                            <option value="bersemangat tinggi">Bersemangat Tinggi</option>
-                                        </optgroup>
-                                        <optgroup label="Ketenangan">
-                                            <option value="tenang">Tenang</option>
-                                            <option value="tenteram">Tenteram</option>
-                                            <option value="damai">Damai</option>
-                                            <option value="nyaman">Nyaman</option>
-                                            <option value="tentram">Tentram</option>
-                                        </optgroup>
-                                        <optgroup label="Kebahagiaan">
-                                            <option value="gembira">Gembira</option>
-                                            <option value="ceria">Ceria</option>
-                                            <option value="bahagia">Bahagia</option>
-                                            <option value="riang">Riang</option>
-                                            <option value="sukacita">Sukacita</option>
                                         </optgroup>
                                     </select>
                                     <div id="customEmotionInput" class="hidden mt-2">
@@ -266,16 +251,9 @@
                                         <option value="custom">Input Manual</option>
                                         <optgroup label="Pasar & Perdagangan">
                                             <option value="pasar tradisional yang ramai">Pasar Tradisional yang Ramai</option>
-                                            <option value="pasar pagi yang sibuk">Pasar Pagi yang Sibuk</option>
-                                            <option value="warung kopi yang nyaman">Warung Kopi yang Nyaman</option>
                                         </optgroup>
                                         <optgroup label="Pertanian & Perkebunan">
                                             <option value="sawah yang hijau">Sawah yang Hijau</option>
-                                            <option value="kebun yang subur">Kebun yang Subur</option>
-                                        </optgroup>
-                                        <optgroup label="Desa & Kampung">
-                                            <option value="desa yang damai">Desa yang Damai</option>
-                                            <option value="kampung yang asri">Kampung yang Asri</option>
                                         </optgroup>
                                     </select>
                                     <div id="customLocationInput" class="hidden mt-2">
@@ -287,20 +265,10 @@
                                     <select id="time" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <optgroup label="Pagi">
-                                            <option value="subuh yang sejuk">Subuh yang Sejuk</option>
                                             <option value="pagi yang cerah">Pagi yang Cerah</option>
                                         </optgroup>
                                         <optgroup label="Siang">
                                             <option value="siang yang terik">Siang yang Terik</option>
-                                            <option value="tengah hari yang panas">Tengah Hari yang Panas</option>
-                                        </optgroup>
-                                        <optgroup label="Sore">
-                                            <option value="sore yang hangat">Sore yang Hangat</option>
-                                            <option value="senja yang romantis">Senja yang Romantis</option>
-                                        </optgroup>
-                                        <optgroup label="Malam">
-                                            <option value="malam yang sejuk">Malam yang Sejuk</option>
-                                            <option value="tengah malam yang sunyi">Tengah Malam yang Sunyi</option>
                                         </optgroup>
                                     </select>
                                     <div id="customTimeInput" class="hidden mt-2">
@@ -313,19 +281,9 @@
                                         <option value="custom">Input Manual</option>
                                         <optgroup label="Cerah">
                                             <option value="cerah berkilau">Cerah Berkilau</option>
-                                            <option value="matahari bersinar terang">Matahari Bersinar Terang</option>
                                         </optgroup>
                                         <optgroup label="Hujan">
                                             <option value="hujan rintik-rintik">Hujan Rintik-rintik</option>
-                                            <option value="hujan deras">Hujan Deras</option>
-                                        </optgroup>
-                                        <optgroup label="Berawan">
-                                            <option value="berawan lembut">Berawan Lembut</option>
-                                            <option value="mendung">Mendung</option>
-                                        </optgroup>
-                                        <optgroup label="Khusus">
-                                            <option value="angin sepoi-sepoi">Angin Sepoi-sepoi</option>
-                                            <option value="berkabut">Berkabut</option>
                                         </optgroup>
                                     </select>
                                     <div id="customWeatherInput" class="hidden mt-2">
@@ -338,15 +296,9 @@
                                         <option value="custom">Input Manual</option>
                                         <optgroup label="Musim Kemarau">
                                             <option value="kemarau yang terik">Kemarau yang Terik</option>
-                                            <option value="musim kering">Musim Kering</option>
                                         </optgroup>
                                         <optgroup label="Musim Hujan">
                                             <option value="hujan yang sejuk">Hujan yang Sejuk</option>
-                                            <option value="musim penghujan">Musim Penghujan</option>
-                                        </optgroup>
-                                        <optgroup label="Peralihan">
-                                            <option value="peralihan musim">Peralihan Musim</option>
-                                            <option value="musim pancaroba">Musim Pancaroba</option>
                                         </optgroup>
                                     </select>
                                     <div id="customSeasonInput" class="hidden mt-2">
@@ -365,9 +317,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="sinematik yang epik">Sinematik yang Epik</option>
                                         <option value="dokumenter yang mendalam">Dokumenter yang Mendalam</option>
-                                        <option value="anime yang dinamis">Anime yang Dinamis</option>
-                                        <option value="kartun yang ceria">Kartun yang Ceria</option>
-                                        <option value="realistis yang natural">Realistis yang Natural</option>
                                     </select>
                                     <div id="customStyleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gaya video...">
@@ -379,8 +328,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="statik yang stabil">Statik yang Stabil</option>
                                         <option value="panning yang halus">Panning yang Halus</option>
-                                        <option value="dolly yang dinamis">Dolly yang Dinamis</option>
-                                        <option value="tracking yang mengalir">Tracking yang Mengalir</option>
                                     </select>
                                     <div id="customCameraMovementInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gerakan kamera...">
@@ -392,7 +339,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="setinggi mata yang natural">Setinggi Mata yang Natural</option>
                                         <option value="sudut rendah yang dramatis">Sudut Rendah yang Dramatis</option>
-                                        <option value="sudut tinggi yang mengesankan">Sudut Tinggi yang Mengesankan</option>
                                     </select>
                                     <div id="customCameraAngleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan sudut kamera...">
@@ -404,7 +350,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="lebar (24mm) yang luas">Lebar (24mm) yang Luas</option>
                                         <option value="medium (50mm) yang natural">Medium (50mm) yang Natural</option>
-                                        <option value="telefoto (85mm) yang intim">Telefoto (85mm) yang Intim</option>
                                     </select>
                                     <div id="customFocalLengthInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan panjang fokus...">
@@ -416,7 +361,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="alami yang natural">Alami yang Natural</option>
                                         <option value="dramatis yang intens">Dramatis yang Intens</option>
-                                        <option value="lembut yang menenangkan">Lembut yang Menenangkan</option>
                                     </select>
                                     <div id="customLightingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan pencahayaan...">
@@ -428,7 +372,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="alami yang natural">Alami yang Natural</option>
                                         <option value="hangat yang menyejukkan">Hangat yang Menyejukkan</option>
-                                        <option value="dingin yang menenangkan">Dingin yang Menenangkan</option>
                                     </select>
                                     <div id="customColorGradingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gradiasi warna...">
@@ -446,7 +389,6 @@
                                         <option value="custom">Input Manual</option>
                                         <option value="none">Tanpa Dialog</option>
                                         <option value="narasi yang informatif">Narasi yang Informatif</option>
-                                        <option value="dialog yang natural">Dialog yang Natural</option>
                                     </select>
                                      <div id="customDialogInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan dialog...">
@@ -457,14 +399,8 @@
                                     <select id="dialogCharacter" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="none">Tidak Ada</option>
-                                        <optgroup label="Pembawa Berita">
-                                            <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
-                                        </optgroup>
                                         <optgroup label="Suara Pria">
                                             <option value="pria dewasa yang profesional">Pria Dewasa yang Profesional</option>
-                                        </optgroup>
-                                        <optgroup label="Suara Wanita">
-                                            <option value="wanita dewasa yang elegan">Wanita Dewasa yang Elegan</option>
                                         </optgroup>
                                     </select>
                                      <div id="customDialogCharacterInput" class="hidden mt-2">
@@ -478,10 +414,6 @@
                                         <option value="none">Tidak Ada</option>
                                         <optgroup label="Emosi">
                                             <option value="gembira yang ceria">Gembira yang Ceria</option>
-                                            <option value="sedih yang mengharukan">Sedih yang Mengharukan</option>
-                                        </optgroup>
-                                        <optgroup label="Suasana">
-                                            <option value="ramai yang dinamis">Ramai yang Dinamis</option>
                                         </optgroup>
                                     </select>
                                      <div id="customVoiceMoodInput" class="hidden mt-2">
@@ -495,10 +427,6 @@
                                         <option value="none">Tanpa Musik</option>
                                         <optgroup label="Genre">
                                             <option value="instrumental yang elegan">Instrumental yang Elegan</option>
-                                            <option value="pop yang energik">Pop yang Energik</option>
-                                        </optgroup>
-                                        <optgroup label="Suasana">
-                                            <option value="dramatis yang intens">Dramatis yang Intens</option>
                                         </optgroup>
                                     </select>
                                      <div id="customMusicInput" class="hidden mt-2">
@@ -513,9 +441,6 @@
                                         <optgroup label="Alam">
                                             <option value="hujan yang menyejukkan">Hujan yang Menyejukkan</option>
                                         </optgroup>
-                                        <optgroup label="Perkotaan">
-                                            <option value="keramaian kota yang dinamis">Keramaian Kota yang Dinamis</option>
-                                        </optgroup>
                                     </select>
                                      <div id="customSoundEffectsInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan efek suara...">
@@ -525,9 +450,8 @@
                                     <label for="volume" class="block text-sm font-medium text-gray-700 mb-1">20. Karakteristik Volume Audio</label>
                                     <select id="volume" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
-                                        <option value="rendah yang halus">Rendah yang Halus</option>
                                         <option value="sedang yang seimbang" selected>Sedang yang Seimbang</option>
-                                        <option value="tinggi yang powerful">Tinggi yang Powerful</option>
+                                        <option value="rendah yang halus">Rendah yang Halus</option>
                                     </select>
                                      <div id="customVolumeInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan volume...">
@@ -648,110 +572,151 @@
         </div>
     </div>
 
+    <div id="apiKeyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Setup API Key untuk Free Unlimited</h2>
+                <button id="closeApiKeyModal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <p class="text-sm text-gray-700">Status Tier Saat Ini: <span class="font-semibold text-blue-600">Trial</span></p>
+                <p class="text-xs text-gray-500">2 prompts tersisa hari ini</p>
+            </div>
+
+            <div class="mb-4 p-3 bg-green-light border border-green-200 rounded-md">
+                <h3 class="text-md font-semibold text-green-700 mb-1">✨ Free Unlimited dengan API Key Gemini</h3>
+                <p class="text-sm text-green-600">Gunakan API Key Gemini Anda sendiri untuk mendapat unlimited prompts gratis selamanya! Tidak ada batasan harian, tidak ada biaya berlangganan.</p>
+                <ul class="list-disc list-inside text-xs text-green-500 mt-2 space-y-1">
+                    <li>100% gratis dari Google AI Studio</li>
+                    <li>Unlimited prompts tanpa batas</li>
+                    <li>Data aman, API key tersimpan lokal</li>
+                    <li>Response cepat langsung dari Gemini</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <label for="geminiApiKey" class="block text-sm font-medium text-gray-700 mb-1">Masukkan API Key Gemini Anda</label>
+                <input type="password" id="geminiApiKey" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 input-field" placeholder="Alza...">
+                <p class="text-xs text-gray-500 mt-1">Dapatkan gratis di <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 hover:underline">Google AI Studio <svg class="inline w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a></p>
+            </div>
+
+            <button id="saveApiKeyButton" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 flex items-center justify-center mb-6">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                Simpan & Aktifkan Free Unlimited
+            </button>
+
+            <div class="border-t border-gray-200 pt-4">
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Tutorial Lengkap Setup API Key:</h3>
+                <a href="#" class="block w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    Tonton Tutorial YouTube
+                </a>
+                <p class="text-sm font-medium text-gray-600 mb-1">Langkah Detail Setup:</p>
+                <ol class="list-decimal list-inside text-xs text-gray-500 space-y-1">
+                    <li>Buka Google AI Studio: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 hover:underline">Klik link ini</a></li>
+                    <li>Login Google: Masuk dengan akun Google</li>
+                    <li>Create API Key: Klik tombol "Create API Key"</li>
+                    <li>Pilih Project: Pilih atau buat project baru</li>
+                    <li>Copy Key: Copy kode "AIza..."</li>
+                    <li>Paste di Sini: Masukkan di form di atas</li>
+                    <li>Klik Simpan: Klik tombol hijau di atas</li>
+                    <li>Selesai: Unlimited prompts aktif!</li>
+                </ol>
+            </div>
+             <div id="apiKeySuccessMessage" class="hidden mt-4 p-3 bg-green-light border border-green-300 rounded-md text-sm text-green-700">
+                <p>✅ <strong>Setelah setup berhasil:</strong> Anda akan mendapat unlimited prompts gratis selamanya!</p>
+                <p class="text-xs">API key disimpan aman dengan enkripsi di browser Anda, tidak dikirim ke server manapun.</p>
+            </div>
+        </div>
+    </div>
+
+
     <script type="module">
         const promptHandler = {
             initializeCopyButton: () => {}, 
             translateText: async (text) => {
                 console.log("Original Indonesian for Translation:", text);
-                await new Promise(resolve => setTimeout(resolve, 100)); // Shorter delay for faster UI update
+                await new Promise(resolve => setTimeout(resolve, 100)); 
 
                 let translated = text;
-
-                // Dictionary for direct word/phrase replacements. Order matters for longer phrases.
-                // More specific phrases should come before more general ones.
                 const dictionary = {
-                    // Specific phrases with "yang"
-                    "pedagang pasar tradisional yang ramah": "a friendly traditional market vendor",
-                    "petani padi yang tekun": "a diligent rice farmer",
-                    "pengrajin batik yang teliti": "a meticulous batik artisan",
-                    "juru masak tradisional yang handal": "a reliable traditional chef",
-                    "pembawa acara talkshow yang interaktif": "an interactive talk show host",
-                    "pembawa berita profesional yang tegas": "a firm professional news anchor",
-                    "sinematik yang epik": "epic cinematic style",
-                    "dokumenter yang mendalam": "in-depth documentary style",
-                    "anime yang dinamis": "dynamic anime style",
-                    "kartun yang ceria": "cheerful cartoon style",
-                    "realistis yang natural": "natural realistic style",
-                    "statik yang stabil": "static and stable camera movement",
-                    "panning yang halus": "smooth panning camera movement",
-                    "dolly yang dinamis": "dynamic dolly movement",
-                    "setinggi mata yang natural": "natural eye-level angle",
-                    "sudut rendah yang dramatis": "dramatic low angle",
-                    "lebar (24mm) yang luas": "wide (24mm) expansive lens",
-                    "medium (50mm) yang natural": "medium (50mm) natural lens",
-                    "alami yang natural": "natural", // Generic, context will differentiate
-                    "dramatis yang intens": "intense dramatic",
-                    "hangat yang menyejukkan": "soothing warm",
-                    "dingin yang menenangkan": "calming cool",
-                    "narasi yang informatif": "informative narration",
-                    "dialog yang natural": "natural dialogue",
-                    "gembira yang ceria": "joyful and cheerful mood",
-                    "sedih yang mengharukan": "touchingly sad mood",
-                    "instrumental yang elegan": "elegant instrumental music",
-                    "pop yang energik": "energetic pop music",
-                    "hujan yang menyejukkan": "refreshing rain sound",
-                    "keramaian kota yang dinamis": "dynamic city bustle sound",
-                    "rendah yang halus": "low and smooth volume",
-                    "sedang yang seimbang": "medium and balanced volume",
-                    "standar yang jernih (16:9)": "standard clear quality (16:9)",
-                    "hd yang tajam (16:9)": "HD sharp quality (16:9)",
+                    "Buat video bergaya (.+?) tentang (.+?) yang sedang (.+?)(?: dengan emosi (.+?))?(?: di (.+?))?(?: pada (.+?))?(?: (musim .+?))?(?: dengan cuaca (.+?))?\\.": (match) => {
+                        let [_, style, subject, action, emotion, location, time, season, weather] = match;
+                        let eng = `Create a ${dictionary[style.trim()] || style.trim()} video about ${dictionary[subject.trim()] || subject.trim()} who is ${dictionary[action.trim()] || action.trim()}`;
+                        if (emotion && emotion.trim() !== 'none' && emotion.trim().toLowerCase() !== 'ramah tamah') eng += ` with an emotion of ${dictionary[emotion.trim()] || emotion.trim()}`;
+                        if (location && location.trim() !== 'none') eng += ` at ${dictionary[location.trim()] || location.trim()}`;
+                        if (time && time.trim() !== 'none' && time.trim().toLowerCase() !== 'pagi yang cerah') eng += ` on ${dictionary[time.trim()] || time.trim()}`;
+                        if (season && season.trim() !== 'none' && season.trim().toLowerCase() !== 'kemarau yang terik') eng += ` during ${dictionary[season.trim()] || season.trim()}`;
+                        if (weather && weather.trim() !== 'none' && weather.trim().toLowerCase() !== 'cerah berkilau') eng += ` with weather that is ${dictionary[weather.trim()] || weather.trim()}`;
+                        return eng + ".";
+                    },
+                    "Sinematografi: Pergerakan kamera (.+?)(?: dari sudut (.+?))?(?: menggunakan lensa (.+?))?\\. Pencahayaan (.+?)(?: dengan gradiasi warna (.+?))?\\.": (match) => {
+                        let [_, cameraMovement, cameraAngle, focalLength, lighting, colorGrading] = match;
+                        let eng = `Cinematography: ${dictionary[cameraMovement.trim()] || cameraMovement.trim()} camera movement`;
+                        if (cameraAngle && cameraAngle.trim() !== 'none' && cameraAngle.trim().toLowerCase() !== 'setinggi mata yang natural') eng += ` from an angle of ${dictionary[cameraAngle.trim()] || cameraAngle.trim()}`;
+                        if (focalLength && focalLength.trim() !== 'none' && focalLength.trim().toLowerCase() !== 'medium (50mm) yang natural') eng += ` using a lens of ${dictionary[focalLength.trim()] || focalLength.trim()}`;
+                        eng += `. Lighting: ${dictionary[lighting.trim()] || lighting.trim()}`;
+                        if (colorGrading && colorGrading.trim() !== 'none' && colorGrading.trim().toLowerCase() !== 'alami yang natural') eng += ` with color grading of ${dictionary[colorGrading.trim()] || colorGrading.trim()}`;
+                        return eng + ".";
+                    },
+                    "Audio: (.*?)\\. Volume Master Audio: (.*?)%\\." : "Audio: $1. Master Audio Volume: $2%.",
+                    "Audio: Tanpa audio spesifik\\.": "Audio: No specific audio.",
+                    'Dialog: "([^"]*)"(?: oleh ([^,(]+))?(?: dengan suasana ([^,(]+))?(?: \\(Volume: (\\d+)%\\))?': (match) => {
+                        let [_, dialog, character, mood, volume] = match;
+                        let eng = `Dialogue: "${dialog}"`;
+                        if (character && character.trim() !== 'none') eng += ` by ${dictionary[character.trim()] || character.trim()}`;
+                        if (mood && mood.trim() !== 'none') eng += ` with an atmosphere of ${dictionary[mood.trim()] || mood.trim()}`;
+                        if (volume) eng += ` (Volume: ${volume}%)`;
+                        return eng;
+                    },
+                    "Musik Latar: (.+?)(?: \\(Volume: (\\d+)%\\))?": (match, p1, p2) => `Background Music: ${dictionary[p1.trim()] || p1.trim()}` + (p2 ? ` (Volume: ${p2}%)` : ''),
+                    "Efek Suara: (.+?)(?: \\(Volume: (\\d+)%\\))?": (match, p1, p2) => `Sound Effects: ${dictionary[p1.trim()] || p1.trim()}` + (p2 ? ` (Volume: ${p2}%)` : ''),
+                    "Karakteristik Volume Audio: (.+?)\\.": "Overall Audio Volume Characteristic: $1.",
+                    "Terjemahan Audio: english_subtitle": "Audio Translation: English subtitles (Original Dialogue).",
+                    "Terjemahan Audio: english_voiceover": "Audio Translation: English voiceover.",
+                    "Terjemahan Audio: none": "Audio Translation: None.",
+                    "Kualitas Video: (.+?)\\.": "Video Quality: $1.",
+                    "Detail Tambahan: (.*)": "Additional Details: $1",
 
-                    // General terms (applied after specific phrases)
-                    "Buat video bergaya": "Create a video in the style of",
-                    "tentang": "about",
-                    "yang sedang": "who is", // This is a common one to refine
-                    "dengan emosi": "with an emotion of",
-                    "di": "at",
-                    "pada": "on", // Can also mean "at" for time
-                    "dengan cuaca": "with weather that is",
-                    "Sinematografi:": "Cinematography:",
-                    "Pergerakan kamera": "Camera movement:",
-                    "dari sudut": "from an angle of",
-                    "menggunakan lensa": "using a lens of",
-                    "Pencahayaan": "Lighting:",
-                    "dengan gradiasi warna": "with color grading of",
-                    "Audio:": "Audio:",
-                    "Dialog:": "Dialogue:",
-                    "oleh": "by",
-                    "dengan suasana": "with an atmosphere of",
-                    "Musik Latar:": "Background Music:",
-                    "Efek Suara:": "Sound Effects:",
-                    "Volume:": "Volume:", // General volume, specific ones handled above
-                    "Karakteristik Volume Audio:": "Overall Audio Volume Characteristic:",
-                    "Terjemahan Audio:": "Audio Translation:",
-                    "Tanpa Terjemahan": "No Translation",
-                    "Terjemahkan ke Subtitle Inggris (Dialog Asli)": "Translate to English Subtitles (Original Dialogue)",
-                    "Alih Suara ke Bahasa Inggris": "Voiceover in English",
-                    "Kualitas Video:": "Video Quality:",
-                    "Detail Tambahan:": "Additional Details:",
-                    "Tanpa audio spesifik.": "No specific audio.",
-                    "Volume Master Audio:": "Master Audio Volume:",
-                    "tidak ditentukan": "unspecified",
-                    "melakukan sesuatu": "doing something",
-                    "subjek tidak ditentukan": "an unspecified subject",
-                    "Tanpa Dialog": "No Dialogue", "Tidak Ada": "None", "Tanpa Musik": "No Music", "Tanpa Efek": "No Effects",
-                    "dan": "and", "atau": "or"
+                    // INDIVIDUAL WORDS/SHORT PHRASES (fallback, less precise)
+                    "berjualan dengan ramah": "selling friendly", "mencangkul dengan tekun": "hoeing diligently",
+                    "pedagang pasar tradisional yang ramah": "a friendly traditional market vendor", "petani padi yang tekun": "a diligent rice farmer",
+                    "ramah tamah": "friendly", "sopan santun": "polite", "bersemangat": "enthusiastic", "tenang": "calm", "gembira": "joyful",
+                    "pasar tradisional yang ramai": "a bustling traditional market", "sawah yang hijau": "green rice fields",
+                    "pagi yang cerah": "a bright morning", "siang yang terik": "a scorching noon",
+                    "cerah berkilau": "sparkling bright", "hujan rintik-rintik": "drizzling rain",
+                    "kemarau yang terik": "a hot dry season", "hujan yang sejuk": "a cool rainy season",
+                    "sinematik yang epik": "epic cinematic", "dokumenter yang mendalam": "in-depth documentary",
+                    "statik yang stabil": "static and stable", "panning yang halus": "smooth panning",
+                    "setinggi mata yang natural": "natural eye-level", "sudut rendah yang dramatis": "dramatic low angle",
+                    "lebar (24mm) yang luas": "wide (24mm) expansive", "medium (50mm) yang natural": "medium (50mm) natural",
+                    "alami yang natural": "natural", "dramatis yang intens": "intense dramatic",
+                    "narasi yang informatif": "informative narration", "dialog yang natural": "natural dialogue",
+                    "pembawa berita profesional yang tegas": "a firm professional news anchor",
+                    "instrumental yang elegan": "elegant instrumental", "pop yang energik": "energetic pop",
+                    "rendah yang halus": "low and smooth", "sedang yang seimbang": "medium and balanced",
+                    "standar yang jernih (16:9)": "standard clear (16:9)",
+                    "tidak ditentukan": "unspecified", "melakukan sesuatu": "doing something", "subjek tidak ditentukan": "an unspecified subject",
+                    "Tanpa Dialog": "No Dialogue", "Tidak Ada": "None", "Tanpa Musik": "No Music", "Tanpa Efek": "No Effects"
                 };
                 
-                const sortedKeys = Object.keys(dictionary).sort((a, b) => b.length - a.length);
+                const sortedRegexKeys = Object.keys(dictionary).sort((a, b) => b.length - a.length);
 
-                for (const key of sortedKeys) {
-                    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const regex = new RegExp(escapedKey, 'g');
-                    translated = translated.replace(regex, dictionary[key]);
+                for (const key of sortedRegexKeys) {
+                    const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                    if (typeof dictionary[key] === 'function') {
+                        translated = translated.replace(regex, dictionary[key]);
+                    } else {
+                        translated = translated.replace(regex, dictionary[key]);
+                    }
                 }
+                // General "yang" replacement as a last resort if it's still there and not part of a known phrase
+                translated = translated.replace(/\s+yang\s+/g, " that is "); // Avoids "yang" at start/end of sentence
 
-                // Attempt to refine "yang" translations if they weren't caught by specific phrases
-                // This is tricky and can lead to errors if not careful
-                translated = translated.replace(/ an unspecified subject that is\/which is /g, " an unspecified subject who is ");
-                translated = translated.replace(/ a (.+?) that is\/which is /g, " a $1 that is "); // e.g., "a friendly vendor that is"
-                translated = translated.replace(/ that is\/which is /g, " that is "); // General fallback
-
-                // Clean up common artifacts
-                translated = translated.replace(/, \./g, "."); 
-                translated = translated.replace(/\s+\./g, "."); 
-                translated = translated.replace(/\s+,/g, ","); 
-                translated = translated.replace(/\s{2,}/g, ' '); // Replace multiple spaces with single
+                translated = translated.replace(/, \./g, ".").replace(/\s+\./g, ".").replace(/\s+,/g, ",").replace(/\s{2,}/g, ' ');
 
                 console.log("Translated English Prompt (Placeholder Attempt):", translated);
                 return translated;
@@ -786,10 +751,10 @@
             chevron.classList.toggle('rotate-180');
             const isMixingVisible = !content.classList.contains('hidden');
             document.getElementById('showAudioMixing').value = isMixingVisible.toString();
-            generatePrompt();
+            // No auto-generate on toggle
         }
 
-        async function generatePrompt(shouldScroll = false) {
+        async function generatePromptLogic() { // Renamed from generatePrompt to avoid conflict with potential global
             try {
                 const getVal = (id, customInputSelector, defaultValIfEmpty = '') => {
                     let val = getElementValue(id);
@@ -898,10 +863,6 @@
                 const translatedPrompt = await promptHandler.translateText(prompt);
                 generatedPromptEnglishDiv.innerHTML = `<p class="text-gray-800 whitespace-pre-line">${translatedPrompt}</p>`;
 
-                if (shouldScroll && window.innerWidth < 1024) {
-                    document.querySelector('.lg\\:w-\\[500px\\]').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-
             } catch (error) {
                 console.error('Error generating prompt:', error);
                 const generatedPromptDiv = document.getElementById('generatedPrompt');
@@ -976,22 +937,7 @@
         ];
 
         function addInputListeners() {
-            const formElements = document.querySelectorAll('#promptForm input[type="text"], #promptForm select, #promptForm textarea, #promptForm input[type="range"]');
-            formElements.forEach(element => {
-                const eventType = (element.type === 'range' || element.tagName === 'SELECT') ? 'change' : 'input';
-                if (element.tagName === 'TEXTAREA' || (element.tagName === 'INPUT' && element.type === 'text')) {
-                    element.addEventListener('input', () => generatePrompt());
-                    element.addEventListener('keyup', () => generatePrompt());
-                }
-                element.addEventListener(eventType, () => generatePrompt()); 
-
-                if (element.type === 'range') {
-                     element.addEventListener('input', () => { 
-                        updateVolumeDisplay(element.id, element.id + 'Value');
-                    });
-                }
-            });
-
+            // Remove auto-generation from most fields
             fieldsWithCustomInput.forEach(id => {
                 const select = document.getElementById(id);
                 const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`;
@@ -1004,15 +950,42 @@
                            const inputField = customInputDiv.querySelector('input');
                            if(inputField) inputField.value = '';
                         }
-                        generatePrompt();
+                        // No generatePrompt() here
                     });
                     const customInputField = customInputDiv.querySelector('input[type="text"]'); 
                     if(customInputField) {
-                        customInputField.addEventListener('input', () => generatePrompt());
-                        customInputField.addEventListener('keyup', () => generatePrompt());
+                        // No generatePrompt() on input/keyup for custom fields either
                     }
                 }
             });
+            
+            // Textarea for additional details - no auto prompt
+            const additionalDetailsTextarea = document.getElementById('additionalDetails');
+            if (additionalDetailsTextarea) {
+                // Listeners removed that would call generatePrompt()
+            }
+
+            // Range sliders - only update display, no auto prompt
+            const rangeSliders = document.querySelectorAll('#promptForm input[type="range"]');
+            rangeSliders.forEach(slider => {
+                slider.addEventListener('input', () => { 
+                    updateVolumeDisplay(slider.id, slider.id + 'Value');
+                    // No generatePrompt() here
+                });
+                slider.addEventListener('change', () => {
+                     updateVolumeDisplay(slider.id, slider.id + 'Value');
+                    // No generatePrompt() here
+                });
+            });
+
+            // Form submission still triggers prompt generation
+            const promptForm = document.getElementById('promptForm');
+            if (promptForm) {
+                promptForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    generatePromptLogic(); // Call the renamed logic function
+                });
+            }
         }
         
         document.getElementById('resetButton')?.addEventListener('click', () => {
@@ -1022,7 +995,6 @@
                 document.getElementById(customInputDivId)?.classList.add('hidden');
                 const selectField = document.getElementById(id);
                 if (selectField && selectField.options.length > 1) {
-                    // Set to the first option that is NOT "custom"
                     let defaultIndex = 0;
                     if (selectField.options[0].value === "custom" && selectField.options[1]) {
                         defaultIndex = 1;
@@ -1044,7 +1016,11 @@
                  audioMixingContent.classList.add('hidden');
                  document.getElementById('showAudioMixing').value = 'false';
             }
-            generatePrompt();
+            // Clear prompt outputs on reset
+            const generatedPromptDiv = document.getElementById('generatedPrompt');
+            const generatedPromptEnglishDiv = document.getElementById('generatedPromptEnglish');
+            if(generatedPromptDiv) generatedPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>';
+            if(generatedPromptEnglishDiv) generatedPromptEnglishDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>';
         });
 
         document.getElementById('clearPromptButton')?.addEventListener('click', () => {
@@ -1053,6 +1029,47 @@
             if(generatedPromptDiv) generatedPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>';
             if(generatedPromptEnglishDiv) generatedPromptEnglishDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>';
         });
+
+        // API Key Modal Logic
+        const setupApiKeyButton = document.getElementById('setupApiKeyButton');
+        const apiKeyModal = document.getElementById('apiKeyModal');
+        const closeApiKeyModalButton = document.getElementById('closeApiKeyModal');
+        const saveApiKeyButton = document.getElementById('saveApiKeyButton');
+        const geminiApiKeyInput = document.getElementById('geminiApiKey');
+        const apiKeySuccessMessage = document.getElementById('apiKeySuccessMessage');
+
+
+        if (setupApiKeyButton && apiKeyModal && closeApiKeyModalButton && saveApiKeyButton) {
+            setupApiKeyButton.addEventListener('click', () => {
+                apiKeyModal.classList.add('active');
+            });
+            closeApiKeyModalButton.addEventListener('click', () => {
+                apiKeyModal.classList.remove('active');
+                apiKeySuccessMessage.classList.add('hidden'); // Hide success message on close
+            });
+            apiKeyModal.addEventListener('click', (event) => { // Close on overlay click
+                if (event.target === apiKeyModal) {
+                    apiKeyModal.classList.remove('active');
+                    apiKeySuccessMessage.classList.add('hidden');
+                }
+            });
+            saveApiKeyButton.addEventListener('click', () => {
+                const apiKey = geminiApiKeyInput.value;
+                if (apiKey.trim() !== "") {
+                    // In a real app, you'd save this securely (e.g., localStorage, or send to a backend)
+                    // For this demo, just show success and close
+                    console.log("API Key to save (placeholder):", apiKey);
+                    apiKeySuccessMessage.classList.remove('hidden');
+                    // Optionally close modal after a delay or keep it open to show success
+                    setTimeout(() => {
+                        apiKeyModal.classList.remove('active');
+                        apiKeySuccessMessage.classList.add('hidden');
+                    }, 2500);
+                } else {
+                    alert("Silakan masukkan API Key Gemini Anda.");
+                }
+            });
+        }
 
 
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1073,7 +1090,11 @@
                 }
             });
 
-            generatePrompt(false); 
+            // Do not generate prompt on load
+            const generatedPromptDiv = document.getElementById('generatedPrompt');
+            const generatedPromptEnglishDiv = document.getElementById('generatedPromptEnglish');
+            if(generatedPromptDiv) generatedPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>';
+            if(generatedPromptEnglishDiv) generatedPromptEnglishDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>';
         });
 
     </script>
