@@ -11,6 +11,22 @@
       } else {
         document.documentElement.classList.remove('dark');
       }
+
+      // Apply scrollbar theme class based on initial theme
+      function applyInitialScrollbarTheme() {
+        const generatedPromptDiv = document.getElementById('generatedPrompt');
+        if (generatedPromptDiv) {
+          if (document.documentElement.classList.contains('dark')) {
+            generatedPromptDiv.classList.add('dark-mode-scrollbar');
+          } else {
+            generatedPromptDiv.classList.remove('dark-mode-scrollbar');
+          }
+        }
+      }
+      // Ensure this runs after DOM is available but before full load if possible,
+      // or at least early in DOMContentLoaded.
+      // However, generatedPromptDiv might not be available yet if this script is too high in <head>.
+      // Moving this to DOMContentLoaded is safer.
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -79,13 +95,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Subjek Utama -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Subjek Utama</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subjek Utama</label>
                                 <input type="text" id="subject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green" placeholder="Contoh: Seorang atlet profesional yang sedang berlari di lintasan">
                             </div>
 
                             <!-- Karakteristik Subjek -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Karakteristik Subjek</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Karakteristik Subjek</label>
                                 <select id="subjectCharacteristics" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Pasar & Perdagangan">
                                         <option value="pedagang pasar tradisional yang ramah">Pedagang Pasar Tradisional yang Ramah</option>
@@ -212,7 +228,7 @@
 
                             <!-- Aksi Utama -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Aksi Utama</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Aksi Utama</label>
                                 <select id="mainAction" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Aktivitas Pasar">
                                         <option value="berjualan dengan ramah">Berjualan dengan Ramah</option>
@@ -288,7 +304,7 @@
 
                             <!-- Emosi -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Emosi</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Emosi</label>
                                 <select id="emotion" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Emosi Positif">
                                         <option value="ramah tamah">Ramah Tamah</option>
@@ -329,7 +345,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Lokasi -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lokasi</label>
                                 <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Pasar & Perdagangan">
                                         <option value="pasar tradisional yang ramai">Pasar Tradisional yang Ramai</option>
@@ -371,7 +387,7 @@
 
                             <!-- Waktu -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Waktu</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Waktu</label>
                                 <select id="time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Pagi">
                                         <option value="subuh yang sejuk">Subuh yang Sejuk</option>
@@ -406,7 +422,7 @@
 
                             <!-- Cuaca -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Cuaca</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cuaca</label>
                                 <select id="weather" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Cerah">
                                         <option value="cerah berkilau">Cerah Berkilau</option>
@@ -441,7 +457,7 @@
 
                             <!-- Musim -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Musim</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Musim</label>
                                 <select id="season" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <optgroup label="Musim Kemarau">
                                         <option value="kemarau yang terik">Kemarau yang Terik</option>
@@ -475,7 +491,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Gaya -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gaya</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gaya</label>
                                 <select id="style" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="sinematik yang epik">Sinematik yang Epik</option>
                                     <option value="dokumenter yang mendalam">Dokumenter yang Mendalam</option>
@@ -491,7 +507,7 @@
 
                             <!-- Pergerakan Kamera -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pergerakan Kamera</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pergerakan Kamera</label>
                                 <select id="cameraMovement" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="statik yang stabil">Statik yang Stabil</option>
                                     <option value="panning yang halus">Panning yang Halus</option>
@@ -506,7 +522,7 @@
 
                             <!-- Sudut Kamera -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Sudut Kamera</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sudut Kamera</label>
                                 <select id="cameraAngle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="setinggi mata yang natural">Setinggi Mata yang Natural</option>
                                     <option value="sudut rendah yang dramatis">Sudut Rendah yang Dramatis</option>
@@ -519,7 +535,7 @@
 
                             <!-- Panjang Fokus -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Panjang Fokus</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Panjang Fokus</label>
                                 <select id="focalLength" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="lebar (24mm) yang luas">Lebar (24mm) yang Luas</option>
                                     <option value="medium (50mm) yang natural">Medium (50mm) yang Natural</option>
@@ -531,7 +547,7 @@
 
                             <!-- Pencahayaan -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pencahayaan</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pencahayaan</label>
                                 <select id="lighting" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="alami yang natural">Alami yang Natural</option>
                                     <option value="dramatis yang intens">Dramatis yang Intens</option>
@@ -546,7 +562,7 @@
 
                             <!-- Gradiasi Warna -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gradiasi Warna</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gradiasi Warna</label>
                                 <select id="colorGrading" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="alami yang natural">Alami yang Natural</option>
                                     <option value="hangat yang menyejukkan">Hangat yang Menyejukkan</option>
@@ -567,7 +583,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Dialog -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Dialog</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dialog</label>
                                 <select id="dialog" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">Tanpa Dialog</option>
                                     <option value="narasi yang informatif">Narasi yang Informatif</option>
@@ -584,7 +600,7 @@
 
                             <!-- Karakter Dialog -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Karakter Dialog</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Karakter Dialog</label>
                                 <select id="dialogCharacter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">Tidak Ada</option>
                                     <optgroup label="Pembawa Berita">
@@ -636,7 +652,7 @@
 
                             <!-- Isi Dialog -->
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Isi Dialog</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Isi Dialog</label>
                                 <div id="dialogInputs" class="space-y-4">
                                     <div class="flex gap-4 items-start">
                                         <div class="w-1/4">
@@ -675,7 +691,7 @@
 
                             <!-- Suasana Suara -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Suasana Suara</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Suasana Suara</label>
                                 <select id="voiceMood" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">Tidak Ada</option>
                                     <optgroup label="Emosi">
@@ -699,7 +715,7 @@
 
                             <!-- Musik Latar -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Musik Latar</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Musik Latar</label>
                                 <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field mb-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">Tanpa Musik</option>
                                     <optgroup label="Genre">
@@ -726,7 +742,7 @@
 
                             <!-- Efek Suara -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Efek Suara</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Efek Suara</label>
                                 <select id="soundEffects" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field mb-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">Tanpa Efek</option>
                                     <optgroup label="Alam">
@@ -770,7 +786,7 @@
 
                             <!-- Volume -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Volume</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume</label>
                                 <select id="volume" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="rendah yang halus">Rendah yang Halus</option>
                                     <option value="sedang yang seimbang">Sedang yang Seimbang</option>
@@ -784,7 +800,7 @@
 
                             <!-- Background Music -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Background Music</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Background Music</label> <!-- This was a duplicate ID, assuming it's a typo and should be a new label or removed -->
                                 <select id="backgroundMusic" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">No Background Music</option>
                                     <option value="dangdut koplo">Dangdut Koplo</option>
@@ -800,7 +816,7 @@
 
                             <!-- Audio Translation -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Audio Translation</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Audio Translation</label>
                                 <select id="audioTranslation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="none">No Translation</option>
                                     <option value="english">Translate to English (Keep Dialog Original)</option>
@@ -816,7 +832,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Kualitas Video -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kualitas Video</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kualitas Video</label>
                                 <select id="videoQuality" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                     <option value="standar yang jernih">Standar yang Jernih</option>
                                     <option value="hd yang tajam">HD yang Tajam</option>
@@ -827,7 +843,7 @@
 
                             <!-- Detail Tambahan -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Tambahan</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Detail Tambahan</label>
                                 <textarea id="additionalDetails" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green" rows="3" placeholder="Tambahkan detail tambahan atau persyaratan spesifik untuk meningkatkan kualitas video..."></textarea>
                             </div>
                         </div>
@@ -851,47 +867,47 @@
                     <!-- Audio Mixing -->
                     <div class="md:col-span-2 bg-gray-50 p-2 sm:p-3 md:p-4 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Pengaturan Audio Mixing</h3>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Pengaturan Audio Mixing</h3>
                             <label class="flex items-center space-x-2 cursor-pointer">
                                 <input type="checkbox" id="showAudioMixing" class="form-checkbox h-5 w-5 text-neon-green rounded border-gray-300 focus:ring-neon-green transition-colors duration-200">
-                                <span class="text-sm text-gray-600">Tampilkan Pengaturan</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300">Tampilkan Pengaturan</span>
                             </label>
                         </div>
                         <div id="audioMixingContent" class="hidden">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Dialog Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Dialog</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Dialog</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="dialogVolume" min="0" max="100" value="80" class="w-full">
-                                        <span id="dialogVolumeValue" class="text-sm text-gray-600">80%</span>
+                                        <span id="dialogVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">80%</span>
                                     </div>
                                 </div>
 
                                 <!-- Music Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Musik</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Musik</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="musicVolume" min="0" max="100" value="60" class="w-full">
-                                        <span id="musicVolumeValue" class="text-sm text-gray-600">60%</span>
+                                        <span id="musicVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">60%</span>
                                     </div>
                                 </div>
 
                                 <!-- Effects Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Efek Suara</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Efek Suara</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="effectsVolume" min="0" max="100" value="40" class="w-full">
-                                        <span id="effectsVolumeValue" class="text-sm text-gray-600">40%</span>
+                                        <span id="effectsVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">40%</span>
                                     </div>
                                 </div>
 
                                 <!-- Overall Mix -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Volume Keseluruhan</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Volume Keseluruhan</label>
                                     <div class="flex items-center gap-2">
                                         <input type="range" id="overallVolume" min="0" max="100" value="100" class="w-full">
-                                        <span id="overallVolumeValue" class="text-sm text-gray-600">100%</span>
+                                        <span id="overallVolumeValue" class="text-sm text-gray-600 dark:text-gray-300">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -901,17 +917,17 @@
                     <!-- Audio Processing -->
                     <div class="md:col-span-2 bg-gray-50 p-2 sm:p-3 md:p-4 rounded-lg dark:bg-gray-700/60 dark:border dark:border-gray-600/30">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Pengolahan Audio</h3>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Pengolahan Audio</h3>
                             <label class="flex items-center space-x-2 cursor-pointer">
                                 <input type="checkbox" id="showAudioProcessing" class="form-checkbox h-5 w-5 text-neon-green rounded border-gray-300 focus:ring-neon-green transition-colors duration-200">
-                                <span class="text-sm text-gray-600">Tampilkan Pengaturan</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300">Tampilkan Pengaturan</span>
                             </label>
                         </div>
                         <div id="audioProcessingContent" class="hidden">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Equalizer -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Equalizer</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Equalizer</label>
                                     <select id="equalizer" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                         <option value="none">Tanpa Equalizer</option>
                                         <option value="vocal boost">Vocal Boost</option>
@@ -924,7 +940,7 @@
 
                                 <!-- Compression -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kompresi</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kompresi</label>
                                     <select id="compression" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                         <option value="none">Tanpa Kompresi</option>
                                         <option value="light">Ringan</option>
@@ -936,7 +952,7 @@
 
                                 <!-- Reverb -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Reverb</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reverb</label>
                                     <select id="reverb" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                         <option value="none">Tanpa Reverb</option>
                                         <option value="room">Room</option>
@@ -948,7 +964,7 @@
 
                                 <!-- Spatial Audio -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Spatial Audio</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Spatial Audio</label>
                                     <select id="spatialAudio" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green input-field dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:hover:border-gray-500 dark:focus:border-neon-green">
                                         <option value="none">Tanpa Spatial Audio</option>
                                         <option value="stereo">Stereo</option>
@@ -1678,7 +1694,53 @@
 
         // Initialize when the page loads
         document.addEventListener('DOMContentLoaded', async function() {
-            // Add all event listeners
+                const generatedPromptDiv = document.getElementById('generatedPrompt'); // Get reference here for initial scrollbar setup
+
+                // Function to apply scrollbar theme based on current documentElement class
+                function applyScrollbarTheme() {
+                    if (generatedPromptDiv) {
+                        if (document.documentElement.classList.contains('dark')) {
+                            generatedPromptDiv.classList.add('dark-mode-scrollbar');
+                        } else {
+                            generatedPromptDiv.classList.remove('dark-mode-scrollbar');
+                        }
+                    }
+                }
+
+                applyInitialScrollbarTheme(); // Call the function defined in the head, now that div is available
+                                            // Self-correction: applyInitialScrollbarTheme was defined in <head>,
+                                            // let's redefine or call applyScrollbarTheme directly.
+                applyScrollbarTheme(); // Apply scrollbar theme on initial load based on class in <html>
+
+                // Theme toggle button setup
+                const themeToggleBtn = document.getElementById('theme-toggle');
+                const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+                const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+                function updateThemeIconsVisibility() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        themeToggleDarkIcon.classList.remove('hidden');
+                        themeToggleLightIcon.classList.add('hidden');
+                    } else {
+                        themeToggleDarkIcon.classList.add('hidden');
+                        themeToggleLightIcon.classList.remove('hidden');
+                    }
+                    applyScrollbarTheme(); // Update scrollbar on theme toggle
+                }
+
+                updateThemeIconsVisibility(); // Initial icon visibility
+
+                themeToggleBtn.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    if (document.documentElement.classList.contains('dark')) {
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                    updateThemeIconsVisibility(); // Update icons and scrollbar
+                });
+
+                // Add all event listeners for form inputs
             addInputListeners();
             
             // Set initial volume displays

@@ -147,3 +147,16 @@ body {
 .lg\:sticky {
     transition: all 0.3s ease;
 }
+
+/* Dark mode scrollbar styles */
+#generatedPrompt.dark-mode-scrollbar::-webkit-scrollbar-track {
+    background: #2d3748; /* Tailwind gray-800 or similar dark background */
+}
+
+#generatedPrompt.dark-mode-scrollbar::-webkit-scrollbar-thumb {
+    background: #718096; /* Tailwind gray-600 or a suitable thumb color for dark bg */
+}
+
+#generatedPrompt.dark-mode-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0; /* Tailwind gray-500 or a lighter hover color */
+}
