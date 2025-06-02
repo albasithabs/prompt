@@ -569,8 +569,8 @@
     <script type="module">
         const GEMINI_API_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
         const API_KEY_STORAGE_KEY = 'geminiApiKey';
-        const GEMINI_MODEL_FOR_TRANSLATION = 'gemini-2.0-flash'; // Using gemini-2.0-flash
-        const GEMINI_MODEL_FOR_REFINEMENT = 'gemini-2.0-flash'; // Can be the same or different
+        const GEMINI_MODEL_FOR_TRANSLATION = 'gemini-2.0-flash'; 
+        const GEMINI_MODEL_FOR_REFINEMENT = 'gemini-2.0-flash'; 
 
         const apiKeyStatusIcon = document.getElementById('apiKeyStatusIcon');
         const apiKeyStatusText = document.getElementById('apiKeyStatusText');
@@ -640,6 +640,8 @@
                         clearApiKey(); 
                     } else if (response.status === 429) {
                         errorMessage = "Terlalu banyak permintaan ke API (Quota Exceeded). Coba lagi nanti.";
+                    } else if (response.status === 503) { // Specifically catch 503
+                        errorMessage = "Model sedang overload. Silakan coba lagi setelah beberapa saat.";
                     }
                     return { success: false, data: null, error: errorMessage };
                 }
@@ -709,7 +711,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 };
 
                 const subject = getElementValue('subject');
-                const mainAction = getElementValue('mainAction'); // Changed from select to input
+                const mainAction = getElementValue('mainAction'); 
 
                 if (!subject.trim() || !mainAction.trim()) {
                     alert("Field 'Subjek' dan 'Aksi Utama' wajib diisi.");
@@ -717,7 +719,6 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                     return;
                 }
                 
-                // --- Refine Prompt with Gemini ---
                 const refinementResult = await promptHandler.refinePrompt(subject, mainAction, currentApiKey);
                 let basePromptIndonesia;
 
@@ -729,7 +730,6 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                     return;
                 }
 
-                // --- Collect Optional Details ---
                 const subjectCharacteristics = getVal('subjectCharacteristics', '#customSubjectCharacteristicsInput input');
                 const emotion = getVal('emotion', '#customEmotionInput input');
                 const location = getVal('location', '#customLocationInput input');
@@ -737,7 +737,6 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const weather = getVal('weather', '#customWeatherInput input');
                 const season = getVal('season', '#customSeasonInput input');
                 
-                // These cinematic details might be overridden or complemented by the refined prompt
                 const style = getVal('style', '#customStyleInput input');
                 const cameraMovement = getVal('cameraMovement', '#customCameraMovementInput input');
                 const cameraAngle = getVal('cameraAngle', '#customCameraAngleInput input');
@@ -762,21 +761,23 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const effectsVolume = showAudioMixing ? getElementValue('effectsVolume', '40') : null; 
                 const overallMasterVolume = showAudioMixing ? getElementValue('overallVolume', '100') : null;
 
-                // --- Construct Final Indonesian Prompt ---
                 let finalPromptIndonesia = basePromptIndonesia;
 
                 let optionalVisuals = [];
-                if (subjectCharacteristics && subjectCharacteristics !== 'custom' && subjectCharacteristics.trim() !== '') optionalVisuals.push(`Karakteristik subjek: ${subjectCharacteristics}`);
-                if (emotion && emotion !== 'custom' && emotion.trim() !== '') optionalVisuals.push(`Emosi yang ditonjolkan: ${emotion}`);
-                if (location && location !== 'custom' && location.trim() !== '') optionalVisuals.push(`Berlokasi di ${location}`);
-                if (time && time !== 'custom' && time.trim() !== '') optionalVisuals.push(`Pada waktu ${time}`);
-                if (weather && weather !== 'custom' && weather.trim() !== '') optionalVisuals.push(`Dengan cuaca ${weather}`);
-                if (season && season !== 'custom' && season.trim() !== '') optionalVisuals.push(`Pada ${season}`);
+                if (subjectCharacteristics && subjectCharacteristics !== 'custom' && subjectCharacteristics.trim() !== '' && subjectCharacteristics.trim() !== 'Tidak Ada Karakteristik Spesifik') optionalVisuals.push(`Karakteristik subjek: ${subjectCharacteristics}`);
+                if (emotion && emotion !== 'custom' && emotion.trim() !== '' && emotion.trim() !== 'Tidak Ada Emosi Spesifik') optionalVisuals.push(`Emosi yang ditonjolkan: ${emotion}`);
+                if (location && location !== 'custom' && location.trim() !== '' && location.trim() !== 'Tidak Ada Lokasi Spesifik') optionalVisuals.push(`Berlokasi di ${location}`);
+                if (time && time !== 'custom' && time.trim() !== '' && time.trim() !== 'Tidak Ada Waktu Spesifik') optionalVisuals.push(`Pada waktu ${time}`);
+                if (weather && weather !== 'custom' && weather.trim() !== '' && weather.trim() !== 'Tidak Ada Cuaca Spesifik') optionalVisuals.push(`Dengan cuaca ${weather}`);
+                if (season && season !== 'custom' && season.trim() !== '') optionalVisuals.push(`Pada ${season}`); // Assuming no "Tidak Ada Musim Spesifik" default
                 
-                // Append optional cinematic details if not already covered by AI or if user wants to specify
-                if (style && style !== 'custom' && style.trim() !== '') optionalVisuals.push(`Gaya video tambahan: ${style}`);
-                if (cameraMovement && cameraMovement !== 'custom' && cameraMovement.trim() !== '') optionalVisuals.push(`Pergerakan kamera tambahan: ${cameraMovement}`);
-                // ... and so on for cameraAngle, focalLength, lighting, colorGrading if you want to allow overrides/additions
+                if (style && style !== 'custom' && style.trim() !== '' && style.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Gaya video tambahan: ${style}`);
+                if (cameraMovement && cameraMovement !== 'custom' && cameraMovement.trim() !== '' && cameraMovement.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Pergerakan kamera tambahan: ${cameraMovement}`);
+                if (cameraAngle && cameraAngle !== 'custom' && cameraAngle.trim() !== '' && cameraAngle.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Sudut kamera tambahan: ${cameraAngle}`);
+                if (focalLength && focalLength !== 'custom' && focalLength.trim() !== '' && focalLength.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Panjang fokus tambahan: ${focalLength}`);
+                if (lighting && lighting !== 'custom' && lighting.trim() !== '' && lighting.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Pencahayaan tambahan: ${lighting}`);
+                if (colorGrading && colorGrading !== 'custom' && colorGrading.trim() !== '' && colorGrading.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Gradiasi warna tambahan: ${colorGrading}`);
+
 
                 if (optionalVisuals.length > 0) {
                     finalPromptIndonesia += `\n\nDetail Tambahan Visual: ${optionalVisuals.join('. ')}.`;
@@ -785,6 +786,8 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 let audioDescriptionParts = [];
                  if (dialogText && dialogText !== 'none' && dialogText.trim() !== '') {
                     let currentDialogText = `Dialog: "${dialogText}"`;
+                    // Note: dialogCharText and voiceMoodText are now standalone selects, not tied to dialogText directly in UI
+                    // If they should only apply when dialogText is present, this logic is fine.
                     if (dialogCharText && dialogCharText !== 'none' && dialogCharText.trim() !== '') currentDialogText += ` oleh ${dialogCharText}`;
                     if (voiceMoodText && voiceMoodText !== 'none' && voiceMoodText.trim() !== '') currentDialogText += ` dengan suasana ${voiceMoodText}`;
                     if (dialogVolume) currentDialogText += ` (Volume: ${dialogVolume}%)`;
@@ -842,7 +845,13 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
         }
         
         function setupCopyButtons() { /* ... unchanged ... */ document.querySelectorAll('.copy-btn-output').forEach(button => { button.addEventListener('click', async function() { const targetId = this.getAttribute('data-target'); const textElement = document.getElementById(targetId); if (!textElement) return; const textToCopy = textElement.innerText || textElement.textContent; const originalButtonHTML = this.innerHTML; try { await navigator.clipboard.writeText(textToCopy); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (err) { console.warn('navigator.clipboard.writeText failed, trying execCommand:', err); const textArea = document.createElement("textarea"); textArea.value = textToCopy; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (execErr) { console.error('Failed to copy with execCommand: ', execErr); this.innerHTML = 'Gagal Salin'; this.classList.add('text-red-500', 'border-red-400'); this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } document.body.removeChild(textArea); } finally { setTimeout(() => { this.innerHTML = originalButtonHTML; this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-red-500', 'border-red-400'); if (this.textContent.trim().includes('Salin')) { this.classList.add('text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } else if (this.textContent.trim().includes('Copy')) { this.classList.add('text-green-600', 'border-green-200', 'hover:bg-green-50'); } }, 2000); } }); }); }
-        const fieldsWithCustomInput = [ /* ... unchanged ... */ 'mainAction', 'subjectCharacteristics', 'emotion', 'location', 'time', 'weather', 'season', 'style', 'cameraMovement', 'cameraAngle', 'focalLength', 'lighting', 'colorGrading', 'dialog', 'dialogCharacter', 'voiceMood', 'backgroundMusic', 'soundEffects', 'volume' ];
+        const fieldsWithCustomInput = [ 
+            'subjectCharacteristics', 'emotion', 'location', 'time', 'weather', 'season', 
+            'style', 'cameraMovement', 'cameraAngle', 'focalLength', 'lighting', 'colorGrading',
+            'dialog', 'backgroundMusic', 'soundEffects'
+             // mainAction is now a text input, not a select with custom option
+             // dialogCharacter, voiceMood, volume are also now standalone selects in the Audio section
+        ];
 
         function addInputListeners() {
             fieldsWithCustomInput.forEach(id => { 
@@ -869,7 +878,39 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             }
         }
         
-        document.getElementById('resetButton')?.addEventListener('click', () => { /* ... unchanged, but no auto-prompt ... */ document.getElementById('promptForm').reset(); fieldsWithCustomInput.forEach(id => { const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; document.getElementById(customInputDivId)?.classList.add('hidden'); const selectField = document.getElementById(id); if (selectField && selectField.options.length > 1) { let defaultIndex = 0; if (selectField.options[0].value === "custom" && selectField.options[1]) { defaultIndex = 1; } selectField.selectedIndex = defaultIndex; } else if (selectField && selectField.options.length === 1 && selectField.options[0].value !== "custom") { selectField.selectedIndex = 0; } }); updateVolumeDisplay('dialogVolume', 'dialogVolumeValue'); updateVolumeDisplay('musicVolume', 'musicVolumeValue'); updateVolumeDisplay('effectsVolume', 'effectsVolumeValue'); updateVolumeDisplay('overallVolume', 'overallVolumeValue'); const audioMixingContent = document.getElementById('audioMixingContent'); if (audioMixingContent && !audioMixingContent.classList.contains('hidden')) { document.getElementById('audioMixingChevron').classList.remove('rotate-180'); audioMixingContent.classList.add('hidden'); document.getElementById('showAudioMixing').value = 'false'; } const genPromptDiv = document.getElementById('generatedPrompt'); const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; });
+        document.getElementById('resetButton')?.addEventListener('click', () => { 
+            document.getElementById('promptForm').reset(); 
+            fieldsWithCustomInput.forEach(id => { 
+                const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; 
+                document.getElementById(customInputDivId)?.classList.add('hidden'); 
+                const selectField = document.getElementById(id); 
+                if (selectField && selectField.options.length > 0) { 
+                    // Find the first non-custom, non-empty-value option to set as default
+                    let defaultIndex = 0;
+                    for(let i=0; i < selectField.options.length; i++) {
+                        if(selectField.options[i].value !== 'custom' && selectField.options[i].value !== '') {
+                            defaultIndex = i;
+                            break;
+                        }
+                    }
+                    selectField.selectedIndex = defaultIndex;
+                }
+            }); 
+            updateVolumeDisplay('dialogVolume', 'dialogVolumeValue'); 
+            updateVolumeDisplay('musicVolume', 'musicVolumeValue'); 
+            updateVolumeDisplay('effectsVolume', 'effectsVolumeValue'); 
+            updateVolumeDisplay('overallVolume', 'overallVolumeValue'); 
+            const audioMixingContent = document.getElementById('audioMixingContent'); 
+            if (audioMixingContent && !audioMixingContent.classList.contains('hidden')) { 
+                document.getElementById('audioMixingChevron').classList.remove('rotate-180'); 
+                audioMixingContent.classList.add('hidden'); 
+                document.getElementById('showAudioMixing').value = 'false'; 
+            } 
+            const genPromptDiv = document.getElementById('generatedPrompt'); 
+            const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); 
+            if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; 
+            if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; 
+        });
         document.getElementById('clearPromptButton')?.addEventListener('click', () => { /* ... unchanged ... */ const genPromptDiv = document.getElementById('generatedPrompt'); const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; });
 
         const setupApiKeyButton = document.getElementById('setupApiKeyButton');
@@ -901,7 +942,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             saveApiKeyButton.addEventListener('click', async () => {
                 const apiKey = geminiApiKeyInput.value.trim();
                 if (apiKey) {
-                    saveApiKey(apiKey); // Save optimistically, actual validation happens on first use
+                    saveApiKey(apiKey); 
                     apiKeySuccessMessage.classList.remove('hidden');
                     apiKeyErrorMessage.classList.add('hidden');
                     setTimeout(() => {
@@ -925,7 +966,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             updateVolumeDisplay('effectsVolume', 'effectsVolumeValue');
             updateVolumeDisplay('overallVolume', 'overallVolumeValue');
             
-            fieldsWithCustomInput.forEach(id => { /* ... unchanged ... */ const select = document.getElementById(id); const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; const customInputDiv = document.getElementById(customInputDivId); if (select && customInputDiv) { customInputDiv.classList.toggle('hidden', select.value !== 'custom'); } });
+            fieldsWithCustomInput.forEach(id => { const select = document.getElementById(id); const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; const customInputDiv = document.getElementById(customInputDivId); if (select && customInputDiv) { customInputDiv.classList.toggle('hidden', select.value !== 'custom'); } });
 
             updateApiKeyStatusUI(!!getApiKey()); 
 
