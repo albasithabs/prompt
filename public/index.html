@@ -15,7 +15,7 @@
                         secondary: '#1E40AF',
                         accent: '#60A5FA',
                         dark: '#1F2937',
-                        light: '#F9FAFB', 
+                        light: '#F9FAFB',
                         purple: {
                             DEFAULT: '#8B5CF6',
                             dark: '#7C3AED',
@@ -48,10 +48,10 @@
         .input-field, .select-field { transition: all 0.3s ease; border-color: #D1D5DB; }
         .input-field:focus, .select-field:focus { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1); border-color: #3B82F6; ring-width: 1px; ring-color: #3B82F6; }
         .form-category-title { font-size: 1.125rem; font-weight: 600; color: #374151; padding-bottom: 0.5rem; border-bottom: 1px solid #E5E7EB; margin-bottom: 1rem; }
-        #generatedPrompt::-webkit-scrollbar, #generatedPromptEnglish::-webkit-scrollbar { width: 6px; }
-        #generatedPrompt::-webkit-scrollbar-track, #generatedPromptEnglish::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
-        #generatedPrompt::-webkit-scrollbar-thumb, #generatedPromptEnglish::-webkit-scrollbar-thumb { background: #a8a29e; border-radius: 3px; }
-        #generatedPrompt::-webkit-scrollbar-thumb:hover, #generatedPromptEnglish::-webkit-scrollbar-thumb:hover { background: #78716c; }
+        #generatedPrompt::-webkit-scrollbar, #generatedPromptEnglish::-webkit-scrollbar, #promptHistoryContainer::-webkit-scrollbar { width: 6px; }
+        #generatedPrompt::-webkit-scrollbar-track, #generatedPromptEnglish::-webkit-scrollbar-track, #promptHistoryContainer::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+        #generatedPrompt::-webkit-scrollbar-thumb, #generatedPromptEnglish::-webkit-scrollbar-thumb, #promptHistoryContainer::-webkit-scrollbar-thumb { background: #a8a29e; border-radius: 3px; }
+        #generatedPrompt::-webkit-scrollbar-thumb:hover, #generatedPromptEnglish::-webkit-scrollbar-thumb:hover, #promptHistoryContainer::-webkit-scrollbar-thumb:hover { background: #78716c; }
         .range-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: #8B5CF6; cursor: pointer; border-radius: 50%; }
         .range-slider::-moz-range-thumb { width: 16px; height: 16px; background: #8B5CF6; cursor: pointer; border-radius: 50%; border: none; }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -60,11 +60,31 @@
         .modal-overlay.active .modal-content { transform: scale(1); }
         button:disabled { background-color: #9CA3AF !important; border-color: #9CA3AF !important; color: #E5E7EB !important; cursor: not-allowed !important; }
         button:disabled:hover { background-color: #9CA3AF !important; }
+        .speaker-entry { border-left: 3px solid #A78BFA; }
+        /* Toast Notification Style */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-size: 0.875rem;
+        }
+        .toast-notification.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="font-sans text-gray-800">
     <div class="container mx-auto px-4 py-8">
 
+        <!-- API Key Status Section -->
         <div class="max-w-4xl mx-auto mb-6 p-4 border border-gray-200 rounded-lg shadow-sm bg-white">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center">
@@ -76,15 +96,26 @@
             <p id="apiKeyInfoText" class="text-sm text-gray-600 mb-3">
                 Generator memerlukan API Key Gemini untuk berfungsi. Silakan atur API Key Anda.
             </p>
-            <div class="mt-4">
-                <button id="setupApiKeyButton" class="w-full sm:w-auto flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-green-600 text-green-700 hover:bg-green-50 transition-colors duration-150">
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button id="setupApiKeyButton" class="flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-green-600 text-green-700 hover:bg-green-50 transition-colors duration-150">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H5v-2H3v-2H1v-4a6 6 0 016-6h7zm0 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0h2m0 0h2m0 0h2m0 0h2"></path></svg>
-                    <span id="setupApiKeyButtonText">Setup API Key</span>
+                    <span id="setupApiKeyButtonText">Setup API Key Pribadi</span>
                 </button>
+                <div id="sharedApiKeySection" class="mt-3 sm:mt-0">
+                    <p class="text-xs text-gray-500 mb-1">Tidak punya API Key? Salin API Key gratis kami (penggunaan bersama):</p>
+                    <div class="flex items-center">
+                        <input type="text" id="sharedApiKeyDisplay" value="AIzaSyBXLRt1DizlFrqJ68lIQNFrc-cirx1MHTQ" readonly class="w-auto text-xs p-2 border border-gray-300 rounded-l-md bg-gray-50 focus:outline-none">
+                        <button id="copySharedApiKeyButton" class="px-3 py-2 text-xs font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-r-md transition-colors duration-150 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8zM6 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h4a1 1 0 100-2H7z"></path><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1h10a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                            Salin API Key Gratis
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
+            <!-- Form Section -->
             <div class="flex-1">
                 <div class="bg-gradient-to-r from-purple-600 to-pink-500 p-4 rounded-t-xl flex items-center text-white">
                     <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -93,50 +124,73 @@
 
                 <div class="card rounded-b-xl p-6 lg:p-8">
                     <form id="promptForm" class="space-y-8"> 
+                        <!-- Section 1: Detail Utama Prompt -->
                         <div class="p-4 border border-gray-200 rounded-lg bg-white">
-                            <h2 class="form-category-title">1. Detail Subjek dan Aksi (Wajib)</h2>
+                            <h2 class="form-category-title">1. Detail Utama Prompt</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
-                                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">1. Subjek</label>
-                                    <input type="text" id="subject" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Contoh: naga, seorang koki">
+                                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">1. Subjek Utama</label>
+                                    <input type="text" id="subject" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Contoh: naga, seorang koki, mobil sport">
                                 </div>
                                 <div>
-                                    <label for="mainAction" class="block text-sm font-medium text-gray-700 mb-1">2. Aksi Utama</label>
-                                    <input type="text" id="mainAction" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Contoh: terbang di langit, memasak rendang">
+                                    <label for="mainAction" class="block text-sm font-medium text-gray-700 mb-1">2. Aksi Utama Subjek</label>
+                                    <input type="text" id="mainAction" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Contoh: terbang di langit, memasak rendang, melaju kencang">
+                                </div>
+                                <div>
+                                    <label for="promptPurpose" class="block text-sm font-medium text-gray-700 mb-1">3. Kebutuhan Prompt Untuk</label>
+                                    <select id="promptPurpose" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="custom">Input Manual</option>
+                                        <option value="video_sinematik" selected>Video Sinematik (Veo 3)</option>
+                                        <option value="gambar_realistis">Gambar Realistis (Text-to-Image)</option>
+                                        <option value="gambar_seni_digital">Gambar Seni Digital (Text-to-Image)</option>
+                                        <option value="iklan_produk">Iklan Produk (Video/Gambar)</option>
+                                        <option value="konten_medsos">Konten Media Sosial (Video/Gambar)</option>
+                                        <option value="presentasi_edukasi">Presentasi / Edukasi (Visual)</option>
+                                        <option value="podcast_visual">Visual Pendukung Podcast (Audio)</option>
+                                        <option value="konsep_game">Konsep Seni Game</option>
+                                        <option value="lainnya">Lainnya (Jelaskan di Detail Tambahan)</option>
+                                    </select>
+                                    <div id="customPromptPurposeInput" class="hidden mt-2">
+                                        <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan kebutuhan prompt...">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="outputMediaType" class="block text-sm font-medium text-gray-700 mb-1">4. Target Output Media</label>
+                                    <select id="outputMediaType" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
+                                        <option value="video" selected>Video (Untuk Veo 3 / Model Teks-ke-Video)</option>
+                                        <option value="gambar">Gambar (Untuk Model Teks-ke-Gambar)</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Section 2: Detail Visual & Suasana -->
                         <div class="p-4 border border-gray-200 rounded-lg bg-white">
-                            <h2 class="form-category-title">2. Detail Tambahan (Opsional)</h2>
+                            <h2 class="form-category-title">2. Detail Visual & Suasana (Opsional)</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
-                                    <label for="subjectCharacteristics" class="block text-sm font-medium text-gray-700 mb-1">3. Karakteristik Subjek</label>
+                                    <label for="subjectCharacteristics" class="block text-sm font-medium text-gray-700 mb-1">Karakteristik Subjek</label>
                                     <select id="subjectCharacteristics" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
-                                        <optgroup label="Pasar & Perdagangan">
+                                        <option value="">Tidak Ada Karakteristik Spesifik</option>
+                                        <optgroup label="Manusia">
+                                            <option value="seorang wanita Asia, usia 30-an, rambut dikuncir longgar">Wanita Asia, 30an, rambut dikuncir</option>
+                                            <option value="pria Kaukasia, berjanggut, memakai kacamata">Pria Kaukasia, berjanggut, kacamata</option>
+                                            <option value="anak kecil dengan senyum ceria">Anak kecil ceria</option>
+                                        </optgroup>
+                                        <optgroup label="Hewan">
+                                            <option value="kucing oranye berbulu lebat">Kucing oranye lebat</option>
+                                            <option value="anjing golden retriever yang bersemangat">Anjing golden retriever semangat</option>
+                                            <option value="burung elang terbang gagah">Burung elang gagah</option>
+                                        </optgroup>
+                                        <optgroup label="Makhluk Fantasi">
+                                            <option value="naga perkasa dengan sisik berkilau">Naga perkasa bersisik</option>
+                                            <option value="peri hutan dengan sayap transparan">Peri hutan bersayap</option>
+                                        </optgroup>
+                                        <optgroup label="Profesi (Contoh)">
                                             <option value="pedagang pasar tradisional yang ramah">Pedagang Pasar Tradisional yang Ramah</option>
-                                            <option value="pedagang kaki lima yang gigih">Pedagang Kaki Lima yang Gigih</option>
-                                            <option value="pedagang warung kopi yang ceria">Pedagang Warung Kopi yang Ceria</option>
-                                            <option value="pedagang makanan tradisional yang bersemangat">Pedagang Makanan Tradisional yang Bersemangat</option>
-                                            <option value="pedagang buah-buahan yang ramah">Pedagang Buah-buahan yang Ramah</option>
-                                            <option value="pedagang ikan yang tangguh">Pedagang Ikan yang Tangguh</option>
-                                            <option value="pedagang sayuran yang tekun">Pedagang Sayuran yang Tekun</option>
-                                            <option value="pedagang bumbu dapur yang teliti">Pedagang Bumbu Dapur yang Teliti</option>
-                                        </optgroup>
-                                        <optgroup label="Pertanian & Perkebunan">
                                             <option value="petani padi yang tekun">Petani Padi yang Tekun</option>
-                                            <option value="petani sayuran yang teliti">Petani Sayuran yang Teliti</option>
-                                            <option value="petani buah-buahan yang sabar">Petani Buah-buahan yang Sabar</option>
-                                            <option value="petani kopi yang berdedikasi">Petani Kopi yang Berdedikasi</option>
-                                            <option value="petani teh yang telaten">Petani Teh yang Telaten</option>
-                                            <option value="petani rempah yang cermat">Petani Rempah yang Cermat</option>
-                                            <option value="petani organik yang inovatif">Petani Organik yang Inovatif</option>
-                                            <option value="petani hidroponik yang modern">Petani Hidroponik yang Modern</option>
-                                        </optgroup>
-                                        <optgroup label="Pembawa Acara & Presenter">
                                             <option value="pembawa acara talkshow yang interaktif">Pembawa Acara Talkshow yang Interaktif</option>
-                                            <option value="pembawa berita profesional yang tegas">Pembawa Berita Profesional yang Tegas</option>
                                         </optgroup>
                                     </select>
                                     <div id="customSubjectCharacteristicsInput" class="hidden mt-2">
@@ -144,37 +198,30 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="emotion" class="block text-sm font-medium text-gray-700 mb-1">4. Emosi</label>
+                                    <label for="emotion" class="block text-sm font-medium text-gray-700 mb-1">Emosi / Ekspresi</label>
                                     <select id="emotion" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Tidak Ada Emosi Spesifik</option>
                                         <optgroup label="Emosi Positif">
                                             <option value="ramah tamah">Ramah Tamah</option>
-                                            <option value="sopan santun">Sopan Santun</option>
-                                            <option value="ikhlas">Ikhlas</option>
-                                            <option value="sabar">Sabar</option>
-                                            <option value="gigih">Gigih</option>
-                                        </optgroup>
-                                        <optgroup label="Semangat">
-                                            <option value="bersemangat">Bersemangat</option>
-                                            <option value="penuh semangat">Penuh Semangat</option>
-                                            <option value="bergairah">Bergairah</option>
-                                            <option value="antusias">Antusias</option>
-                                            <option value="bersemangat tinggi">Bersemangat Tinggi</option>
-                                        </optgroup>
-                                        <optgroup label="Ketenangan">
-                                            <option value="tenang">Tenang</option>
-                                            <option value="tenteram">Tenteram</option>
-                                            <option value="damai">Damai</option>
-                                            <option value="nyaman">Nyaman</option>
-                                            <option value="tentram">Tentram</option>
-                                        </optgroup>
-                                        <optgroup label="Kebahagiaan">
-                                            <option value="gembira">Gembira</option>
                                             <option value="ceria">Ceria</option>
                                             <option value="bahagia">Bahagia</option>
-                                            <option value="riang">Riang</option>
-                                            <option value="sukacita">Sukacita</option>
+                                            <option value="bersemangat">Bersemangat</option>
+                                            <option value="antusias">Antusias</option>
+                                            <option value="penuh harap">Penuh Harap</option>
+                                        </optgroup>
+                                        <optgroup label="Emosi Negatif">
+                                            <option value="sedih">Sedih</option>
+                                            <option value="marah">Marah</option>
+                                            <option value="takut">Takut</option>
+                                            <option value="cemas">Cemas</option>
+                                        </optgroup>
+                                        <optgroup label="Emosi Netral/Kompleks">
+                                            <option value="tenang">Tenang</option>
+                                            <option value="fokus">Fokus</option>
+                                            <option value="penasaran">Penasaran</option>
+                                            <option value="misterius">Misterius</option>
+                                            <option value="bijaksana">Bijaksana</option>
                                         </optgroup>
                                     </select>
                                     <div id="customEmotionInput" class="hidden mt-2">
@@ -182,21 +229,32 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">5. Tempat (Lokasi)</label>
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Tempat (Lokasi)</label>
                                     <select id="location" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Tidak Ada Lokasi Spesifik</option>
-                                        <optgroup label="Pasar & Perdagangan">
-                                            <option value="pasar tradisional yang ramai">Pasar Tradisional yang Ramai</option>
-                                            <option value="pasar pagi yang sibuk">Pasar Pagi yang Sibuk</option>
-                                            <option value="warung kopi yang nyaman">Warung Kopi yang Nyaman</option>
+                                        <optgroup label="Dalam Ruangan">
+                                            <option value="dapur bernuansa kayu modern">Dapur bernuansa kayu modern</option>
+                                            <option value="perpustakaan tua yang megah">Perpustakaan tua yang megah</option>
+                                            <option value="studio seni yang terang">Studio seni yang terang</option>
+                                            <option value="kafe yang nyaman dengan interior vintage">Kafe nyaman interior vintage</option>
                                         </optgroup>
-                                        <optgroup label="Alam">
-                                            <option value="sawah yang hijau">Sawah yang Hijau</option>
-                                            <option value="kebun yang subur">Kebun yang Subur</option>
-                                            <option value="hutan hujan tropis">Hutan Hujan Tropis</option>
-                                            <option value="pegunungan yang megah">Pegunungan yang Megah</option>
-                                            <option value="pantai yang indah">Pantai yang Indah</option>
+                                        <optgroup label="Luar Ruangan - Alam">
+                                            <option value="hutan hujan tropis yang lebat">Hutan hujan tropis yang lebat</option>
+                                            <option value="pegunungan bersalju saat matahari terbit">Pegunungan bersalju saat matahari terbit</option>
+                                            <option value="pantai berpasir putih dengan air jernih">Pantai berpasir putih, air jernih</option>
+                                            <option value="padang rumput luas di bawah langit biru">Padang rumput luas, langit biru</option>
+                                            <option value="sungai yang mengalir deras di antara bebatuan">Sungai deras di antara bebatuan</option>
+                                        </optgroup>
+                                        <optgroup label="Luar Ruangan - Perkotaan">
+                                            <option value="jalan perkotaan yang ramai di malam hari">Jalan perkotaan ramai di malam hari</option>
+                                            <option value="taman kota dengan bunga berwarna-warni">Taman kota dengan bunga</option>
+                                            <option value="atap gedung pencakar langit dengan pemandangan kota">Atap gedung, pemandangan kota</option>
+                                        </optgroup>
+                                         <optgroup label="Fantasi/Fiksi Ilmiah">
+                                            <option value="planet alien dengan flora bercahaya">Planet alien, flora bercahaya</option>
+                                            <option value="kastil melayang di atas awan">Kastil melayang di awan</option>
+                                            <option value="ruang kontrol pesawat luar angkasa futuristik">Ruang kontrol pesawat luar angkasa</option>
                                         </optgroup>
                                     </select>
                                     <div id="customLocationInput" class="hidden mt-2">
@@ -204,7 +262,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">6. Waktu</label>
+                                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">Waktu</label>
                                     <select id="time" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Tidak Ada Waktu Spesifik</option>
@@ -220,9 +278,10 @@
                                         <optgroup label="Sore">
                                             <option value="sore yang hangat">Sore yang Hangat</option>
                                             <option value="senja (golden hour)">Senja (Golden Hour)</option>
+                                            <option value="blue hour setelah matahari terbenam">Blue Hour (Setelah Matahari Terbenam)</option>
                                         </optgroup>
                                         <optgroup label="Malam">
-                                            <option value="malam yang sejuk">Malam yang Sejuk</option>
+                                            <option value="malam yang sejuk berbintang">Malam yang Sejuk Berbintang</option>
                                             <option value="tengah malam yang sunyi">Tengah Malam yang Sunyi</option>
                                         </optgroup>
                                     </select>
@@ -231,7 +290,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="weather" class="block text-sm font-medium text-gray-700 mb-1">7. Cuaca</label>
+                                    <label for="weather" class="block text-sm font-medium text-gray-700 mb-1">Cuaca</label>
                                     <select id="weather" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                          <option value="">Tidak Ada Cuaca Spesifik</option>
@@ -242,10 +301,18 @@
                                         <optgroup label="Hujan">
                                             <option value="hujan rintik-rintik">Hujan Rintik-rintik</option>
                                             <option value="hujan deras">Hujan Deras</option>
+                                            <option value="badai petir">Badai Petir</option>
                                         </optgroup>
                                          <optgroup label="Berawan">
                                             <option value="berawan lembut">Berawan Lembut</option>
                                             <option value="mendung">Mendung</option>
+                                            <option value="langit dramatis berawan tebal">Langit Dramatis Berawan Tebal</option>
+                                        </optgroup>
+                                        <optgroup label="Khusus">
+                                            <option value="angin sepoi-sepoi">Angin Sepoi-sepoi</option>
+                                            <option value="angin kencang">Angin Kencang</option>
+                                            <option value="berkabut tebal">Berkabut Tebal</option>
+                                            <option value="salju turun perlahan">Salju Turun Perlahan</option>
                                         </optgroup>
                                     </select>
                                     <div id="customWeatherInput" class="hidden mt-2">
@@ -259,19 +326,26 @@
                             </div>
                         </div>
 
+                        <!-- Section 3: Detail Sinematografi -->
                         <div class="p-4 border border-gray-200 rounded-lg bg-white">
                             <h2 class="form-category-title">3. Detail Sinematografi (Opsional)</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
-                                    <label for="style" class="block text-sm font-medium text-gray-700 mb-1">Gaya Video</label>
+                                    <label for="style" class="block text-sm font-medium text-gray-700 mb-1">Gaya Visual/Video</label>
                                     <select id="style" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="sinematik yang epik">Sinematik yang Epik</option>
-                                        <option value="dokumenter yang mendalam">Dokumenter yang Mendalam</option>
-                                        <option value="anime yang dinamis">Anime yang Dinamis</option>
-                                        <option value="kartun yang ceria">Kartun yang Ceria</option>
-                                        <option value="realistis yang natural">Realistis yang Natural</option>
+                                        <option value="sinematik">Sinematik</option>
+                                        <option value="dokumenter">Dokumenter</option>
+                                        <option value="anime">Anime</option>
+                                        <option value="kartun">Kartun</option>
+                                        <option value="realistis">Realistis</option>
+                                        <option value="vintage">Vintage</option>
+                                        <option value="futuristik">Futuristik</option>
+                                        <option value="film noir">Film Noir</option>
+                                        <option value="surealis">Surealis</option>
+                                        <option value="abstrak">Abstrak</option>
+                                        <option value="minimalis">Minimalis</option>
                                     </select>
                                     <div id="customStyleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gaya video...">
@@ -282,11 +356,16 @@
                                     <select id="cameraMovement" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="statik yang stabil">Statik yang Stabil</option>
-                                        <option value="panning yang halus">Panning yang Halus</option>
-                                        <option value="dolly yang dinamis">Dolly yang Dinamis</option>
-                                        <option value="tracking yang mengalir">Tracking yang Mengalir</option>
-                                        <option value="drone yang spektakuler">Drone yang Spektakuler</option>
+                                        <option value="statik (static)">Statik (Static)</option>
+                                        <option value="panning (panning)">Panning</option>
+                                        <option value="tilting (tilting)">Tilting</option>
+                                        <option value="dolly shot">Dolly Shot</option>
+                                        <option value="tracking shot">Tracking Shot</option>
+                                        <option value="crane shot">Crane Shot</option>
+                                        <option value="handheld">Handheld</option>
+                                        <option value="zoom in/out">Zoom In/Out</option>
+                                        <option value="slow motion">Slow Motion</option>
+                                        <option value="time-lapse">Time-lapse</option>
                                     </select>
                                     <div id="customCameraMovementInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gerakan kamera...">
@@ -297,10 +376,14 @@
                                     <select id="cameraAngle" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="setinggi mata yang natural">Setinggi Mata (Eye Level)</option>
-                                        <option value="sudut rendah yang dramatis">Sudut Rendah (Low Angle)</option>
-                                        <option value="sudut tinggi yang mengesankan">Sudut Tinggi (High Angle)</option>
-                                        <option value="sudut mata burung yang spektakuler">Sudut Mata Burung (Bird's Eye View)</option>
+                                        <option value="eye-level shot">Eye-Level Shot</option>
+                                        <option value="low angle shot">Low Angle Shot</option>
+                                        <option value="high angle shot">High Angle Shot</option>
+                                        <option value="bird's eye view">Bird's Eye View</option>
+                                        <option value="worm's eye view">Worm's Eye View</option>
+                                        <option value="dutch angle / canted angle">Dutch Angle / Canted Angle</option>
+                                        <option value="over-the-shoulder shot">Over-the-Shoulder Shot</option>
+                                        <option value="point of view (POV) shot">Point of View (POV) Shot</option>
                                     </select>
                                     <div id="customCameraAngleInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan sudut kamera...">
@@ -311,10 +394,13 @@
                                     <select id="focalLength" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="lebar (wide angle)">Lebar (Wide Angle, mis: 24mm)</option>
-                                        <option value="medium (standard)">Medium (Standard, mis: 50mm)</option>
-                                        <option value="telefoto (telephoto)">Telefoto (Telephoto, mis: 85mm)</option>
-                                        <option value="makro (macro)">Makro (Macro)</option>
+                                        <option value="lensa wide-angle (mis: 16-35mm)">Lensa Wide-Angle (mis: 16-35mm)</option>
+                                        <option value="lensa standar (mis: 35-70mm)">Lensa Standar (mis: 35-70mm)</option>
+                                        <option value="lensa telefoto (mis: 70-200mm atau lebih)">Lensa Telefoto (mis: 70-200mm+)</option>
+                                        <option value="lensa makro">Lensa Makro</option>
+                                        <option value="lensa fisheye">Lensa Fisheye</option>
+                                        <option value="shallow depth of field (bokeh)">Shallow Depth of Field (Bokeh)</option>
+                                        <option value="deep depth of field">Deep Depth of Field</option>
                                     </select>
                                     <div id="customFocalLengthInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan panjang fokus...">
@@ -325,13 +411,17 @@
                                     <select id="lighting" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="alami (natural light)">Alami (Natural Light)</option>
-                                        <option value="dramatis (dramatic lighting)">Dramatis</option>
-                                        <option value="lembut (soft lighting)">Lembut (Soft Lighting)</option>
-                                        <option value="golden hour">Golden Hour</option>
-                                        <option value="blue hour">Blue Hour</option>
-                                        <option value="low key">Low Key</option>
-                                        <option value="high key">High Key</option>
+                                        <option value="cahaya alami (natural light)">Cahaya Alami (Natural Light)</option>
+                                        <option value="pencahayaan studio (studio lighting)">Pencahayaan Studio</option>
+                                        <option value="golden hour (pagi/sore)">Golden Hour (Pagi/Sore)</option>
+                                        <option value="blue hour (setelah matahari terbenam/sebelum terbit)">Blue Hour</option>
+                                        <option value="low-key lighting (dramatis, bayangan kuat)">Low-Key Lighting</option>
+                                        <option value="high-key lighting (terang, minim bayangan)">High-Key Lighting</option>
+                                        <option value="cahaya lembut (soft diffused light)">Cahaya Lembut (Soft Diffused)</option>
+                                        <option value="cahaya keras (hard light, bayangan tajam)">Cahaya Keras (Hard Light)</option>
+                                        <option value="backlight (cahaya dari belakang subjek)">Backlight</option>
+                                        <option value="rim light (cahaya pinggir)">Rim Light</option>
+                                        <option value="pencahayaan neon">Pencahayaan Neon</option>
                                     </select>
                                     <div id="customLightingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan pencahayaan...">
@@ -342,13 +432,17 @@
                                     <select id="colorGrading" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
                                         <option value="custom">Input Manual</option>
                                         <option value="">Biarkan AI Memilih</option>
-                                        <option value="alami dan natural">Alami dan Natural</option>
-                                        <option value="hangat (warm tones)">Hangat (Warm Tones)</option>
-                                        <option value="dingin (cool tones)">Dingin (Cool Tones)</option>
-                                        <option value="vintage atau retro">Vintage atau Retro</option>
+                                        <option value="warna alami dan realistis">Warna Alami dan Realistis</option>
+                                        <option value="tone hangat (warm tones)">Tone Hangat (Warm Tones)</option>
+                                        <option value="tone dingin (cool tones)">Tone Dingin (Cool Tones)</option>
+                                        <option value="gaya vintage atau retro">Gaya Vintage atau Retro</option>
                                         <option value="monokrom (hitam putih)">Monokrom (Hitam Putih)</option>
-                                        <option value="saturasi tinggi (vibrant)">Saturasi Tinggi (Vibrant)</option>
-                                        <option value="desaturasi (muted)">Desaturasi (Muted)</option>
+                                        <option value="sepia tone">Sepia Tone</option>
+                                        <option value="saturasi tinggi (vibrant colors)">Saturasi Tinggi (Vibrant Colors)</option>
+                                        <option value="desaturasi (muted colors)">Desaturasi (Muted Colors)</option>
+                                        <option value="kontras tinggi">Kontras Tinggi</option>
+                                        <option value="kontras rendah (flat look)">Kontras Rendah (Flat Look)</option>
+                                        <option value="teal and orange look">Teal and Orange Look</option>
                                     </select>
                                     <div id="customColorGradingInput" class="hidden mt-2">
                                         <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan gradiasi warna...">
@@ -368,19 +462,28 @@
                             </div>
                         </div>
 
+                        <!-- Section 4: Detail Audio -->
                         <div class="p-4 border border-gray-200 rounded-lg bg-white">
                             <h2 class="form-category-title">4. Detail Audio (Opsional)</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                 <div>
+                                <div>
                                     <label for="dialog" class="block text-sm font-medium text-gray-700 mb-1">Dialog</label>
                                     <select id="dialog" class="w-full px-3 py-2 border rounded-md focus:outline-none select-field">
-                                        <option value="custom">Input Manual</option>
                                         <option value="none" selected>Tanpa Dialog</option>
-                                        <option value="narasi yang informatif">Narasi yang Informatif</option>
-                                        <option value="dialog yang natural">Dialog yang Natural</option>
+                                        <option value="custom">Input Manual (Untuk Narasi/Dialog Singkat)</option>
+                                        <option value="multi_person">Dialog Antar Karakter (Multi-Orang)</option>
+                                        <option value="narasi yang informatif">Narasi yang Informatif (Otomatis)</option>
+                                        <option value="dialog yang natural">Dialog yang Natural (Otomatis)</option>
                                     </select>
-                                     <div id="customDialogInput" class="hidden mt-2">
-                                        <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan dialog...">
+                                    <div id="customDialogInput" class="hidden mt-2">
+                                        <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-none input-field" placeholder="Deskripsikan narasi atau dialog singkat...">
+                                    </div>
+                                    <div id="multiPersonDialogContainer" class="hidden mt-3 space-y-3">
+                                        <!-- Speaker entries will be added here by JavaScript -->
+                                        <button type="button" id="addSpeakerButton" class="mt-2 text-sm text-purple-600 hover:text-purple-800 font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                            Tambah Pembicara
+                                        </button>
                                     </div>
                                 </div>
                                 <div>
@@ -457,11 +560,21 @@
                         <input type="hidden" id="spatialAudio" value="none">
                         <input type="hidden" id="showAudioMixing" value="false"> 
                         <input type="hidden" id="showAudioProcessing" value="false">
-                        <input type="hidden" id="dialogCharacter" value="none"> <input type="hidden" id="voiceMood" value="none"> <input type="hidden" id="volume" value="sedang yang seimbang"> <div class="pt-4 space-y-3">
-                            <button type="submit" id="generatePromptButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path></svg>
-                                Buat Prompt Profesional
-                            </button>
+                        <input type="hidden" id="dialogCharacter" value="none"> 
+                        <input type="hidden" id="voiceMood" value="none"> 
+                        <input type="hidden" id="volume" value="sedang yang seimbang"> 
+
+                        <!-- Action Buttons -->
+                        <div class="pt-4 space-y-3">
+                            <div class="flex space-x-3">
+                                <button type="submit" id="generatePromptButton" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path></svg>
+                                    Buat Prompt Profesional
+                                </button>
+                                <button type="button" id="regeneratePromptButton" class="flex-shrink-0 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center" title="Generate Ulang Prompt dengan Input Saat Ini">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
+                                </button>
+                            </div>
                             <div class="flex space-x-3">
                                 <button type="button" id="resetButton" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
@@ -477,6 +590,7 @@
                 </div>
             </div>
 
+            <!-- Output and History Section -->
             <div class="w-full lg:w-[500px] space-y-6">
                 <div class="card rounded-xl p-6">
                     <div class="flex justify-between items-center mb-3">
@@ -486,7 +600,7 @@
                             Salin
                         </button>
                     </div>
-                    <div id="generatedPrompt" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px] max-h-[calc(50vh-150px)] overflow-y-auto text-sm text-gray-700 whitespace-pre-line">
+                    <div id="generatedPrompt" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px] max-h-[calc(33vh-100px)] overflow-y-auto text-sm text-gray-700 whitespace-pre-line">
                         <p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>
                     </div>
                 </div>
@@ -498,14 +612,27 @@
                             Copy
                         </button>
                     </div>
-                    <div id="generatedPromptEnglish" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px] max-h-[calc(50vh-150px)] overflow-y-auto text-sm text-gray-700 whitespace-pre-line">
+                    <div id="generatedPromptEnglish" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px] max-h-[calc(33vh-100px)] overflow-y-auto text-sm text-gray-700 whitespace-pre-line">
                         <p class="text-gray-500">Professional English prompt will appear here...</p>
+                    </div>
+                </div>
+                <div class="card rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-lg font-semibold text-gray-700">Riwayat Prompt</h2>
+                        <button type="button" id="clearHistoryButton" class="text-red-500 hover:text-red-700 text-xs font-medium flex items-center gap-1 px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Bersihkan Riwayat
+                        </button>
+                    </div>
+                    <div id="promptHistoryContainer" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[150px] max-h-[calc(34vh-100px)] overflow-y-auto text-sm text-gray-700 space-y-3">
+                        <p class="text-gray-400 italic">Riwayat prompt akan muncul di sini...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- API Key Modal -->
     <div id="apiKeyModal" class="modal-overlay">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
@@ -565,44 +692,83 @@
         </div>
     </div>
 
+    <!-- Toast Notification Placeholder -->
+    <div id="toastNotification" class="toast-notification">Pesan Toast!</div>
+
 
     <script type="module">
         const GEMINI_API_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
         const API_KEY_STORAGE_KEY = 'geminiApiKey';
-        const GEMINI_MODEL_FOR_TRANSLATION = 'gemini-2.0-flash'; 
-        const GEMINI_MODEL_FOR_REFINEMENT = 'gemini-2.0-flash'; 
+        const API_KEY_TYPE_STORAGE_KEY = 'geminiApiKeyType'; 
+        const SHARED_API_KEY = "AIzaSyBXLRt1DizlFrqJ68lIQNFrc-cirx1MHTQ"; 
+        const PROMPT_HISTORY_STORAGE_KEY = 'promptGeneratorHistory_v1';
+        const MAX_HISTORY_ITEMS = 10; 
+
+        // --- Model Definitions with Fallback ---
+        const PRIMARY_GEMINI_MODEL = 'gemini-2.0-flash'; // Model utama yang akan dicoba pertama
+        const FALLBACK_GEMINI_MODELS = ['gemini-1.5-flash-latest', 'gemini-pro']; // Model alternatif jika utama overload
+
+        // Digunakan untuk menentukan model mana yang dipakai untuk task tertentu
+        const GEMINI_MODELS_FOR_TRANSLATION = [PRIMARY_GEMINI_MODEL, ...FALLBACK_GEMINI_MODELS];
+        const GEMINI_MODELS_FOR_REFINEMENT = [PRIMARY_GEMINI_MODEL, ...FALLBACK_GEMINI_MODELS];
 
         const apiKeyStatusIcon = document.getElementById('apiKeyStatusIcon');
         const apiKeyStatusText = document.getElementById('apiKeyStatusText');
         const apiKeyInfoText = document.getElementById('apiKeyInfoText');
         const generatePromptButton = document.getElementById('generatePromptButton');
+        const regeneratePromptButton = document.getElementById('regeneratePromptButton'); 
         const setupApiKeyButtonText = document.getElementById('setupApiKeyButtonText');
+        const sharedApiKeyDisplay = document.getElementById('sharedApiKeyDisplay'); 
+        const copySharedApiKeyButton = document.getElementById('copySharedApiKeyButton'); 
+        const dialogSelect = document.getElementById('dialog');
+        const customDialogInputDiv = document.getElementById('customDialogInput');
+        const multiPersonDialogContainer = document.getElementById('multiPersonDialogContainer');
+        const addSpeakerButton = document.getElementById('addSpeakerButton');
+        const promptHistoryContainer = document.getElementById('promptHistoryContainer');
+        const clearHistoryButton = document.getElementById('clearHistoryButton');
+        const toastNotification = document.getElementById('toastNotification');
+
 
         function getApiKey() {
             return localStorage.getItem(API_KEY_STORAGE_KEY);
         }
+        function getApiKeyType() {
+            return localStorage.getItem(API_KEY_TYPE_STORAGE_KEY);
+        }
 
-        function saveApiKey(key) {
+        function saveApiKey(key, type = "pribadi") { 
             localStorage.setItem(API_KEY_STORAGE_KEY, key);
-            updateApiKeyStatusUI(true);
+            localStorage.setItem(API_KEY_TYPE_STORAGE_KEY, type);
+            updateApiKeyStatusUI(true, type);
         }
         
         function clearApiKey() { 
             localStorage.removeItem(API_KEY_STORAGE_KEY);
+            localStorage.removeItem(API_KEY_TYPE_STORAGE_KEY);
             updateApiKeyStatusUI(false);
         }
 
-        function updateApiKeyStatusUI(isKeySet) {
+        function showToast(message, duration = 3000) {
+            if (!toastNotification) return;
+            toastNotification.textContent = message;
+            toastNotification.classList.add('show');
+            setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, duration);
+        }
+
+        function updateApiKeyStatusUI(isKeySet, keyType = "pribadi") {
             if (isKeySet) {
                 apiKeyStatusIcon.classList.remove('text-red-500');
                 apiKeyStatusIcon.classList.add('text-green-500');
                 apiKeyStatusIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
-                apiKeyStatusText.textContent = 'API Key Aktif';
+                apiKeyStatusText.textContent = `API Key Aktif (${keyType === "gratis_bersama" ? "Gratis Bersama" : "Pribadi"})`;
                 apiKeyStatusText.classList.remove('text-red-700', 'bg-red-100', 'border-red-300');
                 apiKeyStatusText.classList.add('text-green-700', 'bg-green-100', 'border-green-300');
                 apiKeyInfoText.textContent = 'Anda siap menggunakan generator dengan API Key Gemini Anda.';
                 if (generatePromptButton) generatePromptButton.disabled = false;
-                if(setupApiKeyButtonText) setupApiKeyButtonText.textContent = "Ganti API Key";
+                if (regeneratePromptButton) regeneratePromptButton.disabled = false; 
+                if(setupApiKeyButtonText) setupApiKeyButtonText.textContent = "Ganti API Key Pribadi";
 
             } else {
                 apiKeyStatusIcon.classList.remove('text-green-500');
@@ -611,73 +777,127 @@
                 apiKeyStatusText.textContent = 'API Key Belum Diatur';
                 apiKeyStatusText.classList.remove('text-green-700', 'bg-green-100', 'border-green-300');
                 apiKeyStatusText.classList.add('text-red-700', 'bg-red-100', 'border-red-300');
-                apiKeyInfoText.textContent = 'Untuk menggunakan generator, Anda wajib menghubungkan API Key Gemini Anda.';
+                apiKeyInfoText.textContent = 'Untuk menggunakan generator, Anda wajib menghubungkan API Key Gemini Anda atau gunakan API Key Gratis dari kami.';
                 if (generatePromptButton) generatePromptButton.disabled = true;
-                if(setupApiKeyButtonText) setupApiKeyButtonText.textContent = "Setup API Key";
+                if (regeneratePromptButton) regeneratePromptButton.disabled = true; 
+                if(setupApiKeyButtonText) setupApiKeyButtonText.textContent = "Setup API Key Pribadi";
             }
         }
 
-        async function callGeminiAPI(apiKey, model, promptText) {
-            const endpoint = `${GEMINI_API_ENDPOINT_BASE}${model}:generateContent?key=${apiKey}`;
-            const requestBody = {
-                "contents": [{"parts": [{"text": promptText}]}]
-            };
-            try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(requestBody),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error(`Gemini API Error (${model}):`, errorData);
-                    let errorMessage = `Error ${response.status}: ${response.statusText}.`;
-                    if (errorData.error && errorData.error.message) {
-                        errorMessage += ` Details: ${errorData.error.message}`;
+        async function callGeminiAPI(apiKey, modelsToTry, promptText, taskName = "operasi") {
+            let lastError = null;
+            let usedModel = modelsToTry[0]; // Default ke model utama
+
+            for (const model of modelsToTry) {
+                const endpoint = `${GEMINI_API_ENDPOINT_BASE}${model}:generateContent?key=${apiKey}`;
+                const requestBody = {
+                    "contents": [{"parts": [{"text": promptText}]}]
+                };
+                try {
+                    console.log(`Mencoba ${taskName} dengan model: ${model}`);
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(requestBody),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`Respon sukses dari ${model} untuk ${taskName}:`, data);
+                        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
+                            let refinedText = data.candidates[0].content.parts[0].text;
+                            refinedText = refinedText.replace(/\*/g, '');
+                            if (model !== modelsToTry[0]) { // Jika model fallback yang berhasil
+                                showToast(`Menggunakan model alternatif (${model}) karena model utama overload.`, 4000);
+                                console.warn(`Sukses dengan model fallback: ${model} untuk ${taskName}. Model utama (${modelsToTry[0]}) mungkin overload.`);
+                            }
+                            usedModel = model;
+                            return { success: true, data: refinedText, error: null, usedModel: usedModel };
+                        } else if (data.promptFeedback && data.promptFeedback.blockReason) {
+                             lastError = `Prompt diblokir oleh ${model}. Alasan: ${data.promptFeedback.blockReason}. Detail: ${data.promptFeedback.safetyRatings.map(r => `${r.category} - ${r.probability}`).join(', ')}`;
+                             // Jika diblokir, kemungkinan besar akan diblokir oleh model lain juga, jadi hentikan percobaan.
+                             return { success: false, data: null, error: lastError, usedModel: model };
+                        }
+                        lastError = `Tidak ada konten dalam respon dari ${model} atau format tidak terduga.`;
+                        // Jangan 'continue' di sini, biarkan loop mencoba model berikutnya jika ini bukan error fatal
+                    } else { // response.ok is false
+                        const errorData = await response.json();
+                        console.error(`Error API Gemini (${model} untuk ${taskName}):`, errorData);
+                        lastError = `Error ${response.status} dari ${model}: ${errorData.error?.message || response.statusText}.`;
+
+                        if (response.status === 503) { // Model overload
+                            console.warn(`Model ${model} overload untuk ${taskName}, mencoba model berikutnya jika ada...`);
+                            if (modelsToTry.indexOf(model) < modelsToTry.length - 1) {
+                                continue; // Coba model berikutnya
+                            } else {
+                                // Ini adalah model terakhir yang dicoba dan masih overload
+                                return { success: false, data: null, error: `Semua model (${modelsToTry.join(', ')}) overload atau gagal untuk ${taskName}. Error terakhir: ${lastError}`, usedModel: model };
+                            }
+                        } else if (response.status === 400 && errorData.error && errorData.error.message.toLowerCase().includes("api key not valid")) {
+                            clearApiKey();
+                            return { success: false, data: null, error: "API Key tidak valid. Silakan periksa kembali atau ganti API Key Anda.", usedModel: model };
+                        } else if (response.status === 429) {
+                            return { success: false, data: null, error: `Terlalu banyak permintaan ke API (${model}) untuk ${taskName}. Coba lagi nanti.`, usedModel: model };
+                        }
+                        // Untuk galat lain yang tidak ditangani secara spesifik, hentikan dan kembalikan error.
+                        return { success: false, data: null, error: lastError, usedModel: model };
                     }
-                    if (response.status === 400 && errorData.error.message.toLowerCase().includes("api key not valid")) {
-                        errorMessage = "API Key tidak valid. Silakan periksa kembali atau ganti API Key Anda.";
-                        clearApiKey(); 
-                    } else if (response.status === 429) {
-                        errorMessage = "Terlalu banyak permintaan ke API (Quota Exceeded). Coba lagi nanti.";
-                    } else if (response.status === 503) { // Specifically catch 503
-                        errorMessage = "Model sedang overload. Silakan coba lagi setelah beberapa saat.";
+                } catch (error) { // Network error atau error parsing JSON
+                    console.error(`Error jaringan atau lainnya saat pemanggilan API (${model} untuk ${taskName}):`, error);
+                    lastError = `Error jaringan dengan ${model}: ${error.message}. Periksa konsol.`;
+                    // Jika ini model terakhir atau error jaringan, kembalikan error
+                    if (modelsToTry.indexOf(model) === modelsToTry.length - 1 || !navigator.onLine) {
+                        return { success: false, data: null, error: lastError, usedModel: model };
                     }
-                    return { success: false, data: null, error: errorMessage };
+                    // Jika ada model lain dan ini bukan error jaringan yang pasti, coba model berikutnya
+                    console.warn(`Gagal dengan ${model}, mencoba model berikutnya untuk ${taskName}...`);
                 }
-                const data = await response.json();
-                console.log(`Gemini API Response (${model}):`, data);
-                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-                    return { success: true, data: data.candidates[0].content.parts[0].text, error: null };
-                } else if (data.promptFeedback && data.promptFeedback.blockReason) {
-                     return { success: false, data: null, error: `Blocked. Reason: ${data.promptFeedback.blockReason}. Details: ${data.promptFeedback.safetyRatings.map(r => `${r.category} - ${r.probability}`).join(', ')}`};
-                }
-                return { success: false, data: null, error: "No content in response or unexpected format."};
-            } catch (error) {
-                console.error(`Network or other error during API call (${model}):`, error);
-                return { success: false, data: null, error: `Network error: ${error.message}. Check console.`};
             }
+            // Jika loop selesai tanpa return sukses
+            return { success: false, data: null, error: lastError || `Semua model yang dicoba (${modelsToTry.join(', ')}) gagal untuk ${taskName}.`, usedModel: modelsToTry[modelsToTry.length - 1] };
         }
+
 
         const promptHandler = {
-            refinePrompt: async (subject, action, apiKey) => {
+            refinePrompt: async (subject, action, apiKey, promptPurpose, outputMediaType) => {
                 if (!apiKey) return { success: false, data: null, error: "API Key is missing for prompt refinement." };
                 
-                const refinementInstruction = `Anda adalah asisten pembuatan prompt video yang ahli untuk platform Veo 3. Berdasarkan Subjek dan Aksi berikut, buatlah prompt video dalam Bahasa Indonesia yang sangat sinematik dan deskriptif. Sertakan detail seperti jenis shot (misalnya, establishing shot, close-up), pergerakan kamera, sudut kamera, pencahayaan (misalnya, golden hour, low key), dan gradasi warna untuk menciptakan visual yang menarik dan imersif. JANGAN sertakan bagian "Audio" atau "Kualitas Video" atau "Detail Tambahan" dalam output Anda, fokus hanya pada deskripsi visual sinematik.
+                let baseInstruction = `Anda adalah asisten pembuatan prompt yang ahli. Berdasarkan Subjek dan Aksi berikut, buatlah prompt dalam Bahasa Indonesia yang detail dan deskriptif. Hindari penggunaan markdown atau karakter khusus seperti asterisk (*) untuk penekanan; gunakan bahasa alami yang mengalir.`;
+
+                if (outputMediaType === "video") {
+                    baseInstruction += ` Fokus pada pembuatan prompt untuk video (misalnya untuk Veo 3), sertakan detail visual sinematik seperti jenis shot (misalnya, establishing shot, close-up), pergerakan kamera, sudut kamera, parameter lensa jika relevan, pencahayaan (misalnya, golden hour), dan gradasi warna.`;
+                } else if (outputMediaType === "gambar") {
+                    baseInstruction += ` Fokus pada pembuatan prompt untuk gambar (text-to-image), sertakan detail visual yang kaya, komposisi, gaya seni jika relevan, pencahayaan, dan palet warna. Hindari penyebutan pergerakan kamera kecuali jika sangat relevan untuk adegan statis.`;
+                }
+
+                let purposeSpecifics = "";
+                switch (promptPurpose) {
+                    case "video_sinematik": purposeSpecifics = "Tujuan utama adalah video sinematik yang imersif."; break;
+                    case "gambar_realistis": purposeSpecifics = "Tujuan utama adalah gambar fotorealistik."; break;
+                    case "gambar_seni_digital": purposeSpecifics = "Tujuan utama adalah gambar seni digital dengan gaya tertentu (misalnya, fantasi, surealis, abstrak)."; break;
+                    case "iklan_produk": purposeSpecifics = "Tujuan utama adalah iklan produk yang menarik dan persuasif, menonjolkan produk (subjek)."; break;
+                    case "konten_medsos": purposeSpecifics = "Tujuan utama adalah konten media sosial yang singkat, menarik perhatian, dan mudah dicerna."; break;
+                    case "presentasi_edukasi": purposeSpecifics = "Tujuan utama adalah visual pendukung untuk presentasi atau materi edukasi yang jelas dan informatif."; break;
+                    case "podcast_visual": purposeSpecifics = "Tujuan utama adalah visual pendukung yang atmosferik untuk podcast audio."; break;
+                    case "konsep_game": purposeSpecifics = "Tujuan utama adalah konsep seni untuk game, menggambarkan karakter, lingkungan, atau adegan penting."; break;
+                    case "lainnya": purposeSpecifics = "Tujuan prompt akan dijelaskan lebih lanjut dalam detail tambahan."; break;
+                }
+
+                const refinementInstruction = `${baseInstruction} ${purposeSpecifics}
 
 Subjek: "${subject}"
 Aksi: "${action}"
 
-Contoh output yang diinginkan (hanya sebagai referensi gaya, jangan meniru persis):
-'Sebuah naga perkasa terbang tinggi di angkasa. Shot establishing dari wide angle lens (24mm, f/8) menangkap seluruh cakrawala, dengan naga sebagai titik fokus dinamis di tengah frame. Pencahayaan golden hour memberikan backlight dramatis, menyoroti siluet naga dan tekstur sisiknya. Color grading hangat dengan sentuhan teal di langit untuk menciptakan kontras visual yang menarik.'
+Contoh output yang diinginkan (hanya sebagai referensi gaya, jangan meniru persis dan JANGAN GUNAKAN ASTERISK, sesuaikan dengan kebutuhan output video atau gambar):
+'${outputMediaType === "video" ? "Sebuah naga perkasa terbang tinggi di angkasa. Shot establishing dari wide angle lens (24mm, f/8) menangkap seluruh cakrawala, dengan naga sebagai titik fokus dinamis di tengah frame. Pencahayaan golden hour memberikan backlight dramatis, menyoroti siluet naga dan tekstur sisiknya. Color grading hangat dengan sentuhan teal di langit untuk menciptakan kontras visual yang menarik." : "Sebuah lukisan digital detail tinggi menampilkan naga perkasa dengan sisik berwarna merah menyala, terbang melintasi langit senja yang dramatis dengan awan berwarna ungu dan oranye. Fokus tajam pada mata naga yang bersinar, tekstur sisik terlihat jelas. Gaya seni fantasi epik."}'
 
-Prompt Video Sinematik (Bahasa Indonesia):`;
-                return await callGeminiAPI(apiKey, GEMINI_MODEL_FOR_REFINEMENT, refinementInstruction);
+Prompt (Bahasa Indonesia):`;
+                return await callGeminiAPI(apiKey, GEMINI_MODELS_FOR_REFINEMENT, refinementInstruction, "penyempurnaan prompt");
             },
             translateText: async (text, apiKey) => {
                 if (!apiKey) return { success: false, data: null, error: "API Key is missing for translation." };
-                const translationInstruction = `Translate the following Indonesian text to proficient and natural-sounding English. Maintain the original structure, placeholders (e.g., (Volume: X%)), and any technical video terms if present: "${text}"`;
-                return await callGeminiAPI(apiKey, GEMINI_MODEL_FOR_TRANSLATION, translationInstruction);
+                const translationInstruction = `Translate the following Indonesian text to proficient and natural-sounding English. Maintain the original structure, placeholders (e.g., (Volume: X%)), and any technical video/image terms if present. Ensure the translation is fluent and avoids literal translations of "yang" that result in awkward "that is/which is" phrasing where a more natural adjectival or clausal structure would be better in English: "${text}"`;
+                return await callGeminiAPI(apiKey, GEMINI_MODELS_FOR_TRANSLATION, translationInstruction, "penerjemahan");
             }
         };
         
@@ -685,6 +905,106 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
         function getCustomInputValue(selector, defaultValue = '') { const el = document.querySelector(selector); return el ? (el.value.trim() || defaultValue) : defaultValue; }
         function updateVolumeDisplay(inputId, displayId) { const i = document.getElementById(inputId), d = document.getElementById(displayId); if (i && d) d.textContent = i.value + '%'; }
         window.toggleAudioMixing = function() { const c = document.getElementById('audioMixingContent'), v = document.getElementById('audioMixingChevron'); c.classList.toggle('hidden'); v.classList.toggle('rotate-180'); document.getElementById('showAudioMixing').value = !c.classList.contains('hidden').toString(); };
+
+        function addSpeakerEntry() {
+            const speakerId = Date.now(); 
+            const entryDiv = document.createElement('div');
+            entryDiv.classList.add('speaker-entry', 'p-3', 'rounded-md', 'bg-purple-50', 'space-y-2');
+            entryDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <label for="speakerName_${speakerId}" class="block text-xs font-medium text-gray-600">Nama Pembicara</label>
+                    <button type="button" class="remove-speaker-btn text-red-500 hover:text-red-700 text-xs">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+                <input type="text" id="speakerName_${speakerId}" class="speaker-name w-full px-2 py-1.5 border border-purple-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-400" placeholder="Contoh: Narator, Alex, Siti">
+                <label for="speakerDialog_${speakerId}" class="block text-xs font-medium text-gray-600 mt-1">Baris Dialog</label>
+                <textarea id="speakerDialog_${speakerId}" class="speaker-dialog w-full px-2 py-1.5 border border-purple-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-400" rows="2" placeholder="Masukkan dialog untuk pembicara ini..."></textarea>
+            `;
+            multiPersonDialogContainer.insertBefore(entryDiv, addSpeakerButton);
+            entryDiv.querySelector('.remove-speaker-btn').addEventListener('click', () => {
+                entryDiv.remove();
+            });
+        }
+
+        function getMultiPersonDialogText() {
+            const dialogEntries = [];
+            multiPersonDialogContainer.querySelectorAll('.speaker-entry').forEach(entry => {
+                const name = entry.querySelector('.speaker-name').value.trim();
+                const dialog = entry.querySelector('.speaker-dialog').value.trim();
+                if (name && dialog) {
+                    dialogEntries.push(`${name}: "${dialog}"`);
+                } else if (dialog && !name){ 
+                    dialogEntries.push(`"${dialog}"`);
+                }
+            });
+            return dialogEntries.join('; ');
+        }
+        
+        function savePromptToHistory(indonesianPrompt, englishPrompt) {
+            let history = JSON.parse(localStorage.getItem(PROMPT_HISTORY_STORAGE_KEY)) || [];
+            const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+            history.unshift({ indonesianPrompt, englishPrompt, timestamp }); 
+            if (history.length > MAX_HISTORY_ITEMS) {
+                history = history.slice(0, MAX_HISTORY_ITEMS); 
+            }
+            localStorage.setItem(PROMPT_HISTORY_STORAGE_KEY, JSON.stringify(history));
+            loadPromptHistory(); 
+        }
+
+        function loadPromptHistory() {
+            const history = JSON.parse(localStorage.getItem(PROMPT_HISTORY_STORAGE_KEY)) || [];
+            promptHistoryContainer.innerHTML = ''; 
+
+            if (history.length === 0) {
+                promptHistoryContainer.innerHTML = '<p class="text-gray-400 italic">Riwayat prompt akan muncul di sini...</p>';
+                if(clearHistoryButton) clearHistoryButton.classList.add('hidden');
+                return;
+            }
+            if(clearHistoryButton) clearHistoryButton.classList.remove('hidden');
+
+            history.forEach((item, index) => {
+                const historyItemDiv = document.createElement('div');
+                historyItemDiv.classList.add('p-3', 'border', 'border-gray-200', 'rounded-md', 'bg-white', 'shadow-sm', 'hover:shadow-md', 'transition-shadow');
+                historyItemDiv.innerHTML = `
+                    <p class="text-xs text-gray-400 mb-1">${item.timestamp}</p>
+                    <p class="font-medium text-xs text-purple-700 mb-1">Indonesia:</p>
+                    <p class="text-xs text-gray-600 mb-2 whitespace-pre-line break-words">${item.indonesianPrompt.substring(0,150)}${item.indonesianPrompt.length > 150 ? '...' : ''}</p>
+                    <p class="font-medium text-xs text-green-700 mb-1">English:</p>
+                    <p class="text-xs text-gray-600 mb-2 whitespace-pre-line break-words">${item.englishPrompt.substring(0,150)}${item.englishPrompt.length > 150 ? '...' : ''}</p>
+                    <div class="mt-2 flex gap-2">
+                        <button class="copy-history-btn text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-2 py-1 rounded-md" data-type="indonesian" data-index="${index}">Salin ID</button>
+                        <button class="copy-history-btn text-xs bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded-md" data-type="english" data-index="${index}">Salin EN</button>
+                    </div>
+                `;
+                promptHistoryContainer.appendChild(historyItemDiv);
+            });
+
+            promptHistoryContainer.querySelectorAll('.copy-history-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const index = parseInt(this.dataset.index);
+                    const historyData = JSON.parse(localStorage.getItem(PROMPT_HISTORY_STORAGE_KEY)) || [];
+                    if (historyData[index]) {
+                        const textToCopy = type === 'indonesian' ? historyData[index].indonesianPrompt : historyData[index].englishPrompt;
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            const originalText = this.textContent;
+                            this.textContent = 'Tersalin!';
+                            setTimeout(() => { this.textContent = originalText; }, 1500);
+                        }).catch(err => console.error('Gagal menyalin dari riwayat:', err));
+                    }
+                });
+            });
+        }
+
+        function clearPromptHistory() {
+            // Menggunakan konfirmasi modal kustom jika tersedia, jika tidak, gunakan konfirmasi browser standar
+            // Untuk saat ini, kita akan tetap menggunakan confirm() bawaan browser karena tidak ada modal konfirmasi kustom yang diimplementasikan.
+            if (confirm("Apakah Anda yakin ingin menghapus semua riwayat prompt?")) {
+                localStorage.removeItem(PROMPT_HISTORY_STORAGE_KEY);
+                loadPromptHistory();
+            }
+        }
 
         async function generatePromptLogic() {
             const currentApiKey = getApiKey();
@@ -697,35 +1017,38 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             const generatedPromptDiv = document.getElementById('generatedPrompt');
             const generatedPromptEnglishDiv = document.getElementById('generatedPromptEnglish');
             
-            generatedPromptDiv.innerHTML = `<div class="flex items-center justify-center p-4"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div><span class="ml-2 text-gray-500 text-sm">Membuat prompt sinematik...</span></div>`;
+            generatedPromptDiv.innerHTML = `<div class="flex items-center justify-center p-4"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div><span class="ml-2 text-gray-500 text-sm">Membuat prompt dasar...</span></div>`;
             generatedPromptEnglishDiv.innerHTML = `<p class="text-gray-500">Menunggu prompt Bahasa Indonesia...</p>`;
-
 
             try {
                 const getVal = (id, customInputSelector, defaultValIfEmpty = '') => {
                     let val = getElementValue(id);
-                    if (val === 'custom') {
+                    if (val === 'custom' && customInputSelector) { 
                         val = getCustomInputValue(customInputSelector, ''); 
+                    } else if (val === 'multi_person') { 
+                        return 'multi_person'; 
                     }
                     return val || defaultValIfEmpty; 
                 };
 
                 const subject = getElementValue('subject');
                 const mainAction = getElementValue('mainAction'); 
+                const promptPurpose = getVal('promptPurpose', '#customPromptPurposeInput input');
+                const outputMediaType = getElementValue('outputMediaType');
 
                 if (!subject.trim() || !mainAction.trim()) {
-                    alert("Field 'Subjek' dan 'Aksi Utama' wajib diisi.");
-                    generatedPromptDiv.innerHTML = '<p class="text-red-500">Field Subjek dan Aksi Utama wajib diisi.</p>';
+                    alert("Field 'Subjek Utama' dan 'Aksi Utama Subjek' wajib diisi.");
+                    generatedPromptDiv.innerHTML = '<p class="text-red-500">Field Subjek Utama dan Aksi Utama Subjek wajib diisi.</p>';
                     return;
                 }
                 
-                const refinementResult = await promptHandler.refinePrompt(subject, mainAction, currentApiKey);
+                const refinementResult = await promptHandler.refinePrompt(subject, mainAction, currentApiKey, promptPurpose, outputMediaType);
                 let basePromptIndonesia;
 
                 if (refinementResult.success) {
                     basePromptIndonesia = refinementResult.data;
                 } else {
-                    generatedPromptDiv.innerHTML = `<p class="text-red-500">Gagal membuat prompt sinematik: ${refinementResult.error}</p>`;
+                    generatedPromptDiv.innerHTML = `<p class="text-red-500">Gagal membuat prompt dasar: ${refinementResult.error} (Model: ${refinementResult.usedModel || 'tidak diketahui'})</p>`;
                     generatedPromptEnglishDiv.innerHTML = `<p class="text-red-500">Menunggu prompt Bahasa Indonesia yang berhasil...</p>`;
                     return;
                 }
@@ -735,7 +1058,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const location = getVal('location', '#customLocationInput input');
                 const time = getVal('time', '#customTimeInput input');
                 const weather = getVal('weather', '#customWeatherInput input');
-                const season = getVal('season', '#customSeasonInput input');
+                // const season = getVal('season', '#customSeasonInput input'); // Uncomment if season field exists
                 
                 const style = getVal('style', '#customStyleInput input');
                 const cameraMovement = getVal('cameraMovement', '#customCameraMovementInput input');
@@ -744,17 +1067,21 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const lighting = getVal('lighting', '#customLightingInput input');
                 const colorGrading = getVal('colorGrading', '#customColorGradingInput input');
                 
-                const dialogText = getVal('dialog', '#customDialogInput input');
-                const dialogCharText = getVal('dialogCharacter', '#customDialogCharacterInput input');
-                const voiceMoodText = getVal('voiceMood', '#customVoiceMoodInput input');
+                let dialogTextValue = dialogSelect.value;
+                let dialogContent = "";
+                if (dialogTextValue === 'custom') {
+                    dialogContent = getCustomInputValue('#customDialogInput input', '');
+                } else if (dialogTextValue === 'multi_person') {
+                    dialogContent = getMultiPersonDialogText();
+                } else if (dialogTextValue !== 'none') {
+                    dialogContent = dialogTextValue; 
+                }
+
                 const backgroundMusicText = getVal('backgroundMusic', '#customMusicInput input');
                 const soundEffectsText = getVal('soundEffects', '#customSoundEffectsInput input');
-                const volumeCharacteristic = getVal('volume', '#customVolumeInput input');
-
                 const audioTranslation = getElementValue('audioTranslation'); 
                 const videoQuality = getElementValue('videoQuality'); 
                 const additionalDetails = getElementValue('additionalDetails');
-
                 const showAudioMixing = document.getElementById('showAudioMixing').value === 'true';
                 const dialogVolume = showAudioMixing ? getElementValue('dialogVolume', '80') : null;
                 const musicVolume = showAudioMixing ? getElementValue('musicVolume', '60') : null;
@@ -762,34 +1089,27 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const overallMasterVolume = showAudioMixing ? getElementValue('overallVolume', '100') : null;
 
                 let finalPromptIndonesia = basePromptIndonesia;
-
-                let optionalVisuals = [];
-                if (subjectCharacteristics && subjectCharacteristics !== 'custom' && subjectCharacteristics.trim() !== '' && subjectCharacteristics.trim() !== 'Tidak Ada Karakteristik Spesifik') optionalVisuals.push(`Karakteristik subjek: ${subjectCharacteristics}`);
-                if (emotion && emotion !== 'custom' && emotion.trim() !== '' && emotion.trim() !== 'Tidak Ada Emosi Spesifik') optionalVisuals.push(`Emosi yang ditonjolkan: ${emotion}`);
-                if (location && location !== 'custom' && location.trim() !== '' && location.trim() !== 'Tidak Ada Lokasi Spesifik') optionalVisuals.push(`Berlokasi di ${location}`);
-                if (time && time !== 'custom' && time.trim() !== '' && time.trim() !== 'Tidak Ada Waktu Spesifik') optionalVisuals.push(`Pada waktu ${time}`);
-                if (weather && weather !== 'custom' && weather.trim() !== '' && weather.trim() !== 'Tidak Ada Cuaca Spesifik') optionalVisuals.push(`Dengan cuaca ${weather}`);
-                if (season && season !== 'custom' && season.trim() !== '') optionalVisuals.push(`Pada ${season}`); // Assuming no "Tidak Ada Musim Spesifik" default
+                let optionalDetailsArray = [];
+                if (subjectCharacteristics && subjectCharacteristics.trim() !== '' && subjectCharacteristics.trim() !== 'Tidak Ada Karakteristik Spesifik') optionalDetailsArray.push(`Karakteristik subjek: ${subjectCharacteristics}`);
+                if (emotion && emotion.trim() !== '' && emotion.trim() !== 'Tidak Ada Emosi Spesifik') optionalDetailsArray.push(`Emosi yang ditonjolkan: ${emotion}`);
+                if (location && location.trim() !== '' && location.trim() !== 'Tidak Ada Lokasi Spesifik') optionalDetailsArray.push(`Berlokasi di ${location}`);
+                if (time && time.trim() !== '' && time.trim() !== 'Tidak Ada Waktu Spesifik') optionalDetailsArray.push(`Pada waktu ${time}`);
+                if (weather && weather.trim() !== '' && weather.trim() !== 'Tidak Ada Cuaca Spesifik') optionalDetailsArray.push(`Dengan cuaca ${weather}`);
                 
-                if (style && style !== 'custom' && style.trim() !== '' && style.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Gaya video tambahan: ${style}`);
-                if (cameraMovement && cameraMovement !== 'custom' && cameraMovement.trim() !== '' && cameraMovement.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Pergerakan kamera tambahan: ${cameraMovement}`);
-                if (cameraAngle && cameraAngle !== 'custom' && cameraAngle.trim() !== '' && cameraAngle.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Sudut kamera tambahan: ${cameraAngle}`);
-                if (focalLength && focalLength !== 'custom' && focalLength.trim() !== '' && focalLength.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Panjang fokus tambahan: ${focalLength}`);
-                if (lighting && lighting !== 'custom' && lighting.trim() !== '' && lighting.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Pencahayaan tambahan: ${lighting}`);
-                if (colorGrading && colorGrading !== 'custom' && colorGrading.trim() !== '' && colorGrading.trim() !== 'Biarkan AI Memilih') optionalVisuals.push(`Gradiasi warna tambahan: ${colorGrading}`);
+                if (style && style.trim() !== '' && style.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Gaya visual tambahan: ${style}`);
+                if (cameraMovement && cameraMovement.trim() !== '' && cameraMovement.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Pergerakan kamera tambahan: ${cameraMovement}`);
+                if (cameraAngle && cameraAngle.trim() !== '' && cameraAngle.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Sudut kamera tambahan: ${cameraAngle}`);
+                if (focalLength && focalLength.trim() !== '' && focalLength.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Panjang fokus tambahan: ${focalLength}`);
+                if (lighting && lighting.trim() !== '' && lighting.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Pencahayaan tambahan: ${lighting}`);
+                if (colorGrading && colorGrading.trim() !== '' && colorGrading.trim() !== 'Biarkan AI Memilih') optionalDetailsArray.push(`Gradiasi warna tambahan: ${colorGrading}`);
 
-
-                if (optionalVisuals.length > 0) {
-                    finalPromptIndonesia += `\n\nDetail Tambahan Visual: ${optionalVisuals.join('. ')}.`;
+                if (optionalDetailsArray.length > 0) {
+                    finalPromptIndonesia += `\n\nDetail Tambahan Spesifik: ${optionalDetailsArray.join('. ')}.`;
                 }
                 
                 let audioDescriptionParts = [];
-                 if (dialogText && dialogText !== 'none' && dialogText.trim() !== '') {
-                    let currentDialogText = `Dialog: "${dialogText}"`;
-                    // Note: dialogCharText and voiceMoodText are now standalone selects, not tied to dialogText directly in UI
-                    // If they should only apply when dialogText is present, this logic is fine.
-                    if (dialogCharText && dialogCharText !== 'none' && dialogCharText.trim() !== '') currentDialogText += ` oleh ${dialogCharText}`;
-                    if (voiceMoodText && voiceMoodText !== 'none' && voiceMoodText.trim() !== '') currentDialogText += ` dengan suasana ${voiceMoodText}`;
+                 if (dialogContent && dialogContent.trim() !== '') { 
+                    let currentDialogText = `Dialog: ${dialogContent}`;
                     if (dialogVolume) currentDialogText += ` (Volume: ${dialogVolume}%)`;
                     audioDescriptionParts.push(currentDialogText);
                 }
@@ -803,20 +1123,16 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                     if (effectsVolume) currentEffectsText += ` (Volume: ${effectsVolume}%)`;
                     audioDescriptionParts.push(currentEffectsText);
                 }
-                if(volumeCharacteristic && volumeCharacteristic !== 'custom' && volumeCharacteristic.trim() !== '' && volumeCharacteristic.toLowerCase() !== 'sedang yang seimbang'){
-                     audioDescriptionParts.push(`Karakteristik Volume Audio: ${volumeCharacteristic}`);
-                }
                  if(audioTranslation && audioTranslation !== 'none'){
-                     audioDescriptionParts.push(`Terjemahan Audio: ${audioTranslation}`);
+                       audioDescriptionParts.push(`Terjemahan Audio: ${audioTranslation}`);
                 }
-
 
                 if (audioDescriptionParts.length > 0) {
                     finalPromptIndonesia += `\n\nAudio: ${audioDescriptionParts.join(', ')}.`;
                     if (overallMasterVolume) finalPromptIndonesia += ` Volume Master Audio: ${overallMasterVolume}%.`;
                 }
                 
-                finalPromptIndonesia += `\n\nKualitas Video: ${videoQuality || 'HD (16:9)'}.`;
+                finalPromptIndonesia += `\n\nKualitas Output: ${videoQuality || 'HD (16:9)'}.`; 
 
                 if (additionalDetails && additionalDetails.trim() !== '') {
                     finalPromptIndonesia += `\n\nCatatan Tambahan Penting: ${additionalDetails}`;
@@ -833,8 +1149,9 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const translationResult = await promptHandler.translateText(finalPromptIndonesia, currentApiKey);
                 if (translationResult.success) {
                     generatedPromptEnglishDiv.innerHTML = `<p class="text-gray-800 whitespace-pre-line">${translationResult.data}</p>`;
+                    savePromptToHistory(finalPromptIndonesia, translationResult.data);
                 } else {
-                    generatedPromptEnglishDiv.innerHTML = `<p class="text-red-500">Gagal menerjemahkan: ${translationResult.error}</p>`;
+                    generatedPromptEnglishDiv.innerHTML = `<p class="text-red-500">Gagal menerjemahkan: ${translationResult.error} (Model: ${translationResult.usedModel || 'tidak diketahui'})</p>`;
                 }
 
             } catch (error) {
@@ -844,13 +1161,11 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             }
         }
         
-        function setupCopyButtons() { /* ... unchanged ... */ document.querySelectorAll('.copy-btn-output').forEach(button => { button.addEventListener('click', async function() { const targetId = this.getAttribute('data-target'); const textElement = document.getElementById(targetId); if (!textElement) return; const textToCopy = textElement.innerText || textElement.textContent; const originalButtonHTML = this.innerHTML; try { await navigator.clipboard.writeText(textToCopy); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (err) { console.warn('navigator.clipboard.writeText failed, trying execCommand:', err); const textArea = document.createElement("textarea"); textArea.value = textToCopy; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (execErr) { console.error('Failed to copy with execCommand: ', execErr); this.innerHTML = 'Gagal Salin'; this.classList.add('text-red-500', 'border-red-400'); this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } document.body.removeChild(textArea); } finally { setTimeout(() => { this.innerHTML = originalButtonHTML; this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-red-500', 'border-red-400'); if (this.textContent.trim().includes('Salin')) { this.classList.add('text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } else if (this.textContent.trim().includes('Copy')) { this.classList.add('text-green-600', 'border-green-200', 'hover:bg-green-50'); } }, 2000); } }); }); }
+        function setupCopyButtons() { document.querySelectorAll('.copy-btn-output').forEach(button => { button.addEventListener('click', async function() { const targetId = this.getAttribute('data-target'); const textElement = document.getElementById(targetId); if (!textElement) return; const textToCopy = textElement.innerText || textElement.textContent; const originalButtonHTML = this.innerHTML; try { await navigator.clipboard.writeText(textToCopy); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (err) { console.warn('navigator.clipboard.writeText failed, trying execCommand:', err); const textArea = document.createElement("textarea"); textArea.value = textToCopy; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); this.innerHTML = `<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1">${this.textContent.trim().includes('Salin') ? 'Tersalin!' : 'Copied!'}</span>`; this.classList.add('text-green-600', 'border-green-400', 'bg-green-50'); this.classList.remove('text-blue-600', 'border-blue-200', 'hover:bg-blue-50', 'text-red-500', 'border-red-400'); } catch (execErr) { console.error('Failed to copy with execCommand: ', execErr); this.innerHTML = 'Gagal Salin'; this.classList.add('text-red-500', 'border-red-400'); this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } document.body.removeChild(textArea); } finally { setTimeout(() => { this.innerHTML = originalButtonHTML; this.classList.remove('text-green-600', 'border-green-400', 'bg-green-50', 'text-red-500', 'border-red-400'); if (this.textContent.trim().includes('Salin')) { this.classList.add('text-blue-600', 'border-blue-200', 'hover:bg-blue-50'); } else if (this.textContent.trim().includes('Copy')) { this.classList.add('text-green-600', 'border-green-200', 'hover:bg-green-50'); } }, 2000); } }); }); }
         const fieldsWithCustomInput = [ 
-            'subjectCharacteristics', 'emotion', 'location', 'time', 'weather', 'season', 
+            'promptPurpose', 'subjectCharacteristics', 'emotion', 'location', 'time', 'weather', 'season', 
             'style', 'cameraMovement', 'cameraAngle', 'focalLength', 'lighting', 'colorGrading',
             'dialog', 'backgroundMusic', 'soundEffects'
-             // mainAction is now a text input, not a select with custom option
-             // dialogCharacter, voiceMood, volume are also now standalone selects in the Audio section
         ];
 
         function addInputListeners() {
@@ -860,14 +1175,43 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 const customInputDiv = document.getElementById(customInputDivId); 
                 if (select && customInputDiv) { 
                     select.addEventListener('change', function() { 
-                        customInputDiv.classList.toggle('hidden', this.value !== 'custom'); 
-                        if(this.value !== 'custom') { 
-                            const inputField = customInputDiv.querySelector('input'); 
-                            if(inputField) inputField.value = ''; 
-                        } 
+                        if (id === 'dialog') {
+                            customInputDiv.classList.toggle('hidden', this.value !== 'custom');
+                            multiPersonDialogContainer.classList.toggle('hidden', this.value !== 'multi_person');
+                            if (this.value !== 'custom' && customInputDiv.querySelector('input')) {
+                                customInputDiv.querySelector('input').value = '';
+                            }
+                            if (this.value !== 'multi_person') {
+                                multiPersonDialogContainer.querySelectorAll('.speaker-entry').forEach(e => e.remove());
+                            }
+                        } else {
+                             customInputDiv.classList.toggle('hidden', this.value !== 'custom'); 
+                             if(this.value !== 'custom') { 
+                                 const inputField = customInputDiv.querySelector('input'); 
+                                 if(inputField) inputField.value = ''; 
+                             } 
+                        }
                     }); 
                 } 
             });
+            
+            if (dialogSelect) {
+                dialogSelect.addEventListener('change', function() {
+                    customDialogInputDiv.classList.toggle('hidden', this.value !== 'custom');
+                    multiPersonDialogContainer.classList.toggle('hidden', this.value !== 'multi_person');
+
+                    if (this.value !== 'custom' && customDialogInputDiv.querySelector('input')) {
+                        customDialogInputDiv.querySelector('input').value = ''; 
+                    }
+                    if (this.value !== 'multi_person') {
+                         multiPersonDialogContainer.querySelectorAll('.speaker-entry').forEach(e => e.remove()); 
+                    }
+                });
+            }
+
+            if (addSpeakerButton) {
+                addSpeakerButton.addEventListener('click', addSpeakerEntry);
+            }
             
             const promptForm = document.getElementById('promptForm');
             if (promptForm) {
@@ -876,26 +1220,57 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                     generatePromptLogic();
                 });
             }
+
+            if (regeneratePromptButton) { 
+                regeneratePromptButton.addEventListener('click', function() {
+                    generatePromptLogic(); 
+                });
+            }
+            if (clearHistoryButton) {
+                clearHistoryButton.addEventListener('click', clearPromptHistory);
+            }
         }
         
         document.getElementById('resetButton')?.addEventListener('click', () => { 
             document.getElementById('promptForm').reset(); 
             fieldsWithCustomInput.forEach(id => { 
                 const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; 
-                document.getElementById(customInputDivId)?.classList.add('hidden'); 
+                const customInputDiv = document.getElementById(customInputDivId);
+                if (customInputDiv) customInputDiv.classList.add('hidden'); 
+                
                 const selectField = document.getElementById(id); 
                 if (selectField && selectField.options.length > 0) { 
-                    // Find the first non-custom, non-empty-value option to set as default
                     let defaultIndex = 0;
                     for(let i=0; i < selectField.options.length; i++) {
-                        if(selectField.options[i].value !== 'custom' && selectField.options[i].value !== '') {
+                        if(selectField.options[i].value && 
+                           selectField.options[i].value !== 'custom' &&
+                           selectField.options[i].value !== 'multi_person') { 
                             defaultIndex = i;
                             break;
                         }
                     }
                     selectField.selectedIndex = defaultIndex;
+                    if (id === 'dialog') {
+                         const event = new Event('change');
+                         selectField.dispatchEvent(event);
+                    }
                 }
             }); 
+            const promptPurposeSelect = document.getElementById('promptPurpose');
+            if(promptPurposeSelect) promptPurposeSelect.value = "video_sinematik";
+            const outputMediaTypeSelect = document.getElementById('outputMediaType');
+            if(outputMediaTypeSelect) outputMediaTypeSelect.value = "video";
+
+            if (multiPersonDialogContainer) {
+                multiPersonDialogContainer.classList.add('hidden');
+                multiPersonDialogContainer.querySelectorAll('.speaker-entry').forEach(e => e.remove());
+            }
+             if (customDialogInputDiv) { 
+                customDialogInputDiv.classList.add('hidden');
+                const inputField = customDialogInputDiv.querySelector('input');
+                if (inputField) inputField.value = '';
+            }
+
             updateVolumeDisplay('dialogVolume', 'dialogVolumeValue'); 
             updateVolumeDisplay('musicVolume', 'musicVolumeValue'); 
             updateVolumeDisplay('effectsVolume', 'effectsVolumeValue'); 
@@ -911,7 +1286,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; 
             if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; 
         });
-        document.getElementById('clearPromptButton')?.addEventListener('click', () => { /* ... unchanged ... */ const genPromptDiv = document.getElementById('generatedPrompt'); const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; });
+        document.getElementById('clearPromptButton')?.addEventListener('click', () => { const genPromptDiv = document.getElementById('generatedPrompt'); const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); if(genPromptDiv) genPromptDiv.innerHTML = '<p class="text-gray-500">Prompt Bahasa Indonesia akan muncul di sini...</p>'; if(genPromptEngDiv) genPromptEngDiv.innerHTML = '<p class="text-gray-500">Professional English prompt will appear here...</p>'; });
 
         const setupApiKeyButton = document.getElementById('setupApiKeyButton');
         const apiKeyModal = document.getElementById('apiKeyModal');
@@ -942,7 +1317,7 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
             saveApiKeyButton.addEventListener('click', async () => {
                 const apiKey = geminiApiKeyInput.value.trim();
                 if (apiKey) {
-                    saveApiKey(apiKey); 
+                    saveApiKey(apiKey, "pribadi"); 
                     apiKeySuccessMessage.classList.remove('hidden');
                     apiKeyErrorMessage.classList.add('hidden');
                     setTimeout(() => {
@@ -955,20 +1330,71 @@ Prompt Video Sinematik (Bahasa Indonesia):`;
                 }
             });
         }
+        
+        if (copySharedApiKeyButton && sharedApiKeyDisplay) {
+            copySharedApiKeyButton.addEventListener('click', async () => {
+                const sharedKey = sharedApiKeyDisplay.value;
+                const originalButtonText = copySharedApiKeyButton.innerHTML;
+                const originalButtonClasses = [...copySharedApiKeyButton.classList]; 
+
+                const textArea = document.createElement("textarea");
+                textArea.value = sharedKey;
+                textArea.style.position = "fixed"; 
+                textArea.style.left = "-9999px"; 
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copySharedApiKeyButton.innerHTML = `
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                        Tersalin!`;
+                    copySharedApiKeyButton.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                    copySharedApiKeyButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                    alert("API Key Gratis telah disalin! Silakan buka 'Setup API Key Pribadi' dan tempel (paste) di sana untuk menggunakannya.");
+                } catch (err) {
+                    console.error('Gagal menyalin API Key gratis dengan execCommand: ', err);
+                    copySharedApiKeyButton.innerHTML = 'Gagal Salin';
+                    copySharedApiKeyButton.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                    copySharedApiKeyButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                    alert("Gagal menyalin API Key. Coba lagi secara manual.");
+                } finally {
+                    document.body.removeChild(textArea);
+                    setTimeout(() => {
+                        copySharedApiKeyButton.innerHTML = originalButtonText;
+                        copySharedApiKeyButton.className = ''; 
+                        originalButtonClasses.forEach(cls => copySharedApiKeyButton.classList.add(cls));
+                    }, 2500);
+                }
+            });
+        }
 
 
         document.addEventListener('DOMContentLoaded', async function() {
             addInputListeners();
             setupCopyButtons();
+            loadPromptHistory(); 
             
             updateVolumeDisplay('dialogVolume', 'dialogVolumeValue');
             updateVolumeDisplay('musicVolume', 'musicVolumeValue');
             updateVolumeDisplay('effectsVolume', 'effectsVolumeValue');
             updateVolumeDisplay('overallVolume', 'overallVolumeValue');
             
-            fieldsWithCustomInput.forEach(id => { const select = document.getElementById(id); const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; const customInputDiv = document.getElementById(customInputDivId); if (select && customInputDiv) { customInputDiv.classList.toggle('hidden', select.value !== 'custom'); } });
+            fieldsWithCustomInput.forEach(id => { 
+                const select = document.getElementById(id); 
+                const customInputDivId = `custom${id.charAt(0).toUpperCase() + id.slice(1)}Input`; 
+                const customInputDiv = document.getElementById(customInputDivId); 
+                if (select && customInputDiv) { 
+                    if (id === 'dialog') {
+                        customInputDiv.classList.toggle('hidden', select.value !== 'custom');
+                        multiPersonDialogContainer.classList.toggle('hidden', select.value !== 'multi_person');
+                    } else {
+                        customInputDiv.classList.toggle('hidden', select.value !== 'custom'); 
+                    }
+                } 
+            });
 
-            updateApiKeyStatusUI(!!getApiKey()); 
+            updateApiKeyStatusUI(!!getApiKey(), getApiKeyType()); 
 
             const genPromptDiv = document.getElementById('generatedPrompt'); 
             const genPromptEngDiv = document.getElementById('generatedPromptEnglish'); 
